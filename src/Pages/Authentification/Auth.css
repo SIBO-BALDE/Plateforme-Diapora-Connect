@@ -1,0 +1,53 @@
+/* inscription css */
+.content-flex-signin{
+    width: 70% !important;
+    display: grid;
+    grid-template-columns: 45% 50%;
+    margin-top: 30px;
+  }
+  .img-content-form{
+    background-color: #D46F4D;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;;
+  }
+  .img-content-form img{
+    width: 100%;
+    height: 71%;
+    border-top-left-radius: 20px;
+  
+  }
+  .content-left-form{
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+  
+  }
+  .content-left-form Form{
+    width: 94%;
+    /* border: 1px solid red; */
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .btn-colour{
+  background-color: #D46F4D !important ;
+  border: #D46F4D !important;
+  }
+  .content-link{
+    text-decoration: none;
+  }
+  .btn-content-position{
+    display: flex;
+    justify-content: end;
+  } 
+
+
+  /* Connexion */
+  #image-form{
+    width: 100%;
+    height: 100%;
+    border-bottom-left-radius: 20px;
+
+  }

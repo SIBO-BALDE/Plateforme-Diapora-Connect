@@ -1,0 +1,33 @@
+:root{
+    --principal:#D46F4D;
+    --seconde:#fff;
+    --troisieme:#0000;
+}  
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none !important;
+    
+}
+
+
+
+.whatsapp-button {
+    position: fixed;
+    bottom: 20px; 
+    right: 20px;   
+    background-color: #25D366;  
+    color: #ffffff;          
+    border: none;
+    border-radius: 50%;
+    /* padding: 25px; */
+    cursor: pointer;
+    font-size: 30px;
+    padding: 10px 18px;
+  }
+  /* button watsapp */
+  .whatsapp-button[data-tip]::after {
+    background-color: #25D366;  /* Couleur de fond de l'infobulle */
+  }
