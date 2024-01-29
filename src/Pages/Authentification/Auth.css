@@ -1,20 +1,37 @@
 /* inscription css */
+
+:root{
+  --principal:#D46F4D;
+  --seconde:#fff;
+  --troisieme:#0000;
+}  
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none !important; 
+}
 .content-flex-signin{
-    width: 70% !important;
+    width: 65% !important;
     display: grid;
     grid-template-columns: 45% 50%;
     margin-top: 30px;
+    height: 30vh;
+    /* align-items: center; */
+   
   }
   .img-content-form{
-    background-color: #D46F4D;
+    background-color: var(--principal);
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;;
   }
   .img-content-form img{
     width: 100%;
-    height: 71%;
+    height: 100%;
     border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
   
   }
   .content-left-form{
@@ -32,8 +49,23 @@
   }
   
   .btn-colour{
-  background-color: #D46F4D !important ;
-  border: #D46F4D !important;
+  background-color: var(--principal) !important ;
+  border: var(--principal) !important;
+  }
+  .btn-colour:hover{
+    background-color: var(--seconde) !important;
+    border: 1px solid var(--principal) !important;
+    color: var(--principal) !important;
+  }
+  #btn-colour1{
+    background-color: var(--seconde);
+    color: var(--principal);
+    border: 1px solid var(--principal);
+  }
+  #btn-colour1:hover{
+    background-color: var(--principal) !important ;
+    color: var(--seconde);
+
   }
   .content-link{
     text-decoration: none;

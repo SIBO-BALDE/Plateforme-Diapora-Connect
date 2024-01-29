@@ -290,6 +290,9 @@
     display: flex;
 
   }
+  #underline-home-content{
+    padding-top: 20px !important;
+  }
 
   .card_partenaire {
     width: 300px;

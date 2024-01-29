@@ -29,6 +29,13 @@
     border-bottom: 8px solid var(--principal);
     /* border: 2px solid green; */
 }
+.card-land-band:hover{
+    cursor: pointer;
+    transition-duration: 1s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    scale: 1.1;
+}
 .card1land {
     justify-content: space-evenly;
 }
@@ -69,6 +76,31 @@
     border: none !important;
     color: var(--seconde);
 
+}
+#btn1:hover{
+    background-color: var(--principal) !important;
+    color: var(--seconde) !important;
+    cursor: pointer;
+    transition-duration: 1s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    rotate: 360deg;
+}
+#btn2:hover{
+    background-color: var(--seconde) !important;
+    border: 1px solid var(--principal) !important;
+    color: var(--principal);
+    cursor: pointer;
+    transition-duration: 1s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    rotate: 360deg;
+}
+#link-contentland1:hover{
+    color: var(--seconde) !important;
+}
+#link-contentland2:hover{
+    color: var(--principal) !important;
 }
 .pricelandcontent{
     background-color: var(--seconde);

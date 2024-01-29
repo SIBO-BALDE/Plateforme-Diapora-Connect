@@ -61,7 +61,9 @@ export default function Accueil() {
 
       <div className='maincontenthome' id='maincontenthome'>
         {/* Diamond icon */}
+        <div  id='underline-home-content'>
         <Underline text='Nos offres' />
+        </div>
        
        <div className="Section_hand">
           <div className="Section_hand_Left" id='Section_hand_Left'>

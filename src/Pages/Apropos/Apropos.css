@@ -89,6 +89,23 @@ ul.timeline-list li {
 	/* border: 2px solid var(--principal); */
 	background-color:#fff
 }
+.timeline_content:hover{
+    cursor: pointer;
+    transition-duration: 1s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    scale: 1.1;
+}
+#content1:hover{
+    background-color: var(--principal);
+    color: var(--seconde);
+
+}
+#timeline_content:hover{
+    background-color: var(--seconde);
+    color: black;
+
+}
 .timeline-img{
     height: 100%;
     width: 100%;
@@ -175,6 +192,13 @@ ul.timeline-list li:before {
 .contain-card{
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     border-radius: 35%; 
+}
+.contain-card:hover{
+    cursor: pointer;
+    transition-duration: 1s;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+    scale: 1.1;
 }
 
 .content-bottom{

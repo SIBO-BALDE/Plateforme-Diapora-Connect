@@ -1,7 +1,9 @@
 import { faMagnifyingGlass, faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form,Modal } from "react-bootstrap";
- import React, { useState } from 'react'
+ import React, { useEffect, useState } from 'react'
+import axios from "axios";
+import Swal from "sweetalert2";
  
 
  
@@ -14,7 +16,134 @@ import { Button, Form,Modal } from "react-bootstrap";
   const handleCloseCategories = () => setShowCategories(false);
   const handleshowCategories = () => setShowCategories(true);
   const handleCloseEditCategories = () => setShowEditModalCategories(false);
-  const  handleShowEditCategories= () => setShowEditModalCategories(true);
+
+  // Gestionnaire de clic pour le bouton de modification
+  const  handleShowEditCategories= (categorie) =>{
+    setEditCategoryData({
+      id: categorie.id,
+      titre: categorie.titre,
+      description: categorie.description,
+    });
+    setShowEditModalCategories(true);
+  };;
+
+
+// etat pour ajout maison
+const [categoryData, setCategoryData] = useState({
+  titre: '',
+  description: '',
+});
+
+//  etat pour modifier maison
+const [editCategoryData, setEditCategoryData] = useState({
+  id: null,
+  titre: '',
+  description: '',
+});
+ 
+// tableau ou stocker la liste des maison
+const [categories, setCategories] = useState([]); 
+
+// function pour ajouter une categorie
+const ajouterCategory = async () => {
+  try {
+    const response = await axios.post('http://localhost:8000/api/categorie/create', categoryData);
+
+    // Vérifiez si la requête a réussi
+    if (response.status === 200) {
+       // Ajoutez la nouvelle maison à la liste existante
+       setCategories([...categories, response.data]);
+      // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+      setCategoryData({
+        titre: '',
+        description: '',
+      });
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès!',
+        text: 'categorie ajouter avec succée!',
+      });
+      // Fermez le modal 
+      handleCloseCategories();
+    } else {
+      
+      console.error('Erreur dans lajout de maison');
+    }
+  } catch (error) {
+    // Gestion des erreurs Axios
+    console.error('Erreur Axios:', error);
+  }
+
+}
+//  Lister les categories
+useEffect(() => {
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/api/categorie/liste');
+      // setCategories(response.categories);
+      setCategories(response.data.categories);
+
+      console.log(categories)
+    } catch (error) {
+      console.error('Erreur lors de la récupération des catégories:', error);
+    }
+  };
+  fetchCategories();
+}, []);
+
+// Fonction pour mettre à jour une catégorie
+const modifierCategory = async () => {
+  try {
+    const response = await axios.put(`http://localhost:8000/api/categorie/edit/${editCategoryData.id}`, editCategoryData);
+
+    if (response.status === 200) {
+      const updatedCategories = categories.map((category) =>
+      category.id === editCategoryData.id ? response.data.categorie : category
+);
+
+      setCategories(updatedCategories);
+      handleCloseEditCategories();
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès!',
+        text: 'Catégorie mise à jour avec succès!',
+      });
+    } else {
+      console.error('erreur lors de la modification de la catégorie');
+    }
+  } catch (error) {
+    console.error('une erreur  Axios:', error);
+  }
+};
+
+// Function pour supprimer une catégorie
+const supprimerCategory =  async (id) =>{
+  try {
+    const response = await axios.delete(`http://localhost:8000/api/categorie/supprimer/${id}`);
+    if (response.status === 200) {
+      // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+      const updatedCategories = categories.filter((category) => category.id !== id);
+
+      setCategories(updatedCategories);
+      Swal.fire({
+        icon: 'success',
+        title: 'Succès!',
+        text: 'Catégorie supprimée avec succès!',
+      });
+    } else {
+      console.error('Erreur lors de la suppression de la catégorie');
+    }
+    
+  } catch (error) {
+    
+  }
+
+}
+
+
+
+
+
    return (
     <div className='container'>
     <div className='d-flex justify-content-between mt-5'>
@@ -55,23 +184,33 @@ import { Button, Form,Modal } from "react-bootstrap";
           </tr>
         </thead>
         <tbody>
-          <tr className=''>
-            <td>R+4</td>
-            <td>Maison au bord de la plage</td>
+        { categories.map((categorie) => (
+          <tr key={categorie.id}>
+            <td style={{color:'black'}}>{categorie.titre}</td>
+            <td style={{color:'black'}}>{categorie.description}</td>
             <td className='d-flex justify-content-evenly'>
-              <Button variant="primary" onClick={handleShowEditCategories} style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}} id='buttonModifier'>
+              <Button
+                variant="primary"
+                onClick={() => handleShowEditCategories(categorie)}
+                style={{ backgroundColor: '#fff', border: '1px solid #d46f4d', color: '#d46f4d' }}
+                id='buttonModifier'
+              >
                 <FontAwesomeIcon icon={faPenToSquare} />
               </Button>
-              <Button style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
+              <Button 
+              style={{ backgroundColor: '#fff', border: '1px solid #d46f4d', color: '#d46f4d' }}
+              onClick={() => supprimerCategory(categorie.id)}
+              >
                 <FontAwesomeIcon icon={faTrash} />
               </Button>
-              
             </td>
           </tr>
+        ))}
           
         </tbody>
       </table>
     </div>
+    
 
     {/* modal debut  ajouter maison*/}
     <>
@@ -83,17 +222,25 @@ import { Button, Form,Modal } from "react-bootstrap";
       <Form>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Titre</Form.Label>
-          <Form.Control type="text" placeholder="" />
+          <Form.Control 
+           value={categoryData.titre}
+           onChange={(e) => setCategoryData({ ...categoryData, titre: e.target.value })} 
+          type="text" placeholder="" 
+          />
         </Form.Group>
        
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
           <Form.Label>Description</Form.Label>
-          <Form.Control as="textarea" rows={3} />
+          <Form.Control as="textarea" rows={3} 
+           value={categoryData.description}
+           onChange={(e) => setCategoryData({ ...categoryData, description: e.target.value })} 
+
+          />
         </Form.Group>
     </Form>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="secondary" onClick={handleCloseCategories}>
+      <Button variant="secondary" onClick={ajouterCategory}>
         Ajouter
       </Button>
       <Button variant="primary" onClick={handleCloseCategories}>
@@ -114,16 +261,25 @@ import { Button, Form,Modal } from "react-bootstrap";
       <Form>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
           <Form.Label>Titre</Form.Label>
-          <Form.Control type="text" placeholder="" />
+          <Form.Control 
+          type="text" placeholder=""
+          value={editCategoryData.titre}
+          onChange={(e) => setEditCategoryData({ ...editCategoryData, titre: e.target.value })}
+           />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
           <Form.Label>Description</Form.Label>
-          <Form.Control as="textarea" rows={3} />
+          <Form.Control 
+          as="textarea" rows={3}
+          value={editCategoryData.description}
+          onChange={(e) => setEditCategoryData({ ...editCategoryData, description: e.target.value })}
+
+          />
         </Form.Group>
     </Form>
     </Modal.Body>
     <Modal.Footer>
-      <Button variant="secondary" onClick={handleCloseEditCategories}>
+      <Button variant="secondary" onClick={ modifierCategory}>
         Ajouter
       </Button>
       <Button variant="primary" onClick={handleCloseEditCategories}>

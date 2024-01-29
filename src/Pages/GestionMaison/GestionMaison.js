@@ -6,6 +6,7 @@ import profilemaison from '../../fichiers/bann accueil.jpeg'
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 export default function GestionMaison() {
   // pour le modal debut
@@ -16,7 +17,54 @@ export default function GestionMaison() {
   const handleShow = () => setShow(true);
   const handleCloseEdit = () => setshowEditModal(false);
   const handleShowEdit = () => setshowEditModal(true);
+
+
+  // etat pour ajout maison
+  const [maisonData, setMaisonData] = useState({
+    adresse: '',
+    superficie: '',
+    prix: '',
+    categorie: '',
+    image: '',
+    date_construction: '',
+    description: '',
+  });
+   
+  // tableau ou stocker la liste des maison
+  const [maisons, setMaisons] = useState([]); 
+  
   // pour le modal fin
+  const ajouterMaison = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/maison/create', maisonData);
+  
+      // Vérifiez si la requête a réussi
+      if (response.status === 201) {
+         // Ajoutez la nouvelle maison à la liste existante
+         setMaisons([...maisons, response.data]);
+        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+        setMaisonData({
+          adresse: '',
+          superficie: '',
+          prix: '',
+          categorie: '',
+          image: '',
+          date_construction: '',
+          description: '',
+        });
+        alert('ajouter avec succéé')
+        // Fermez le modal ou effectuez d'autres actions nécessaires après l'ajout réussi
+        handleClose();
+      } else {
+        // Gestion d'erreurs ou affichage de messages d'erreur
+        console.error('Erreur dans lajout de maison');
+      }
+    } catch (error) {
+      // Gestion des erreurs Axios
+      console.error('Erreur Axios:', error);
+    }
+
+  }
   return (
     <div className='container'>
         <div className='d-flex justify-content-between mt-5'>
@@ -116,11 +164,19 @@ export default function GestionMaison() {
             <div className='d-flex justify-content-around '>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Adresse</Form.Label>
-              <Form.Control type="text" placeholder="" />
+              <Form.Control 
+              value={maisonData.adresse} 
+              onChange={(e) => setMaisonData({ ...maisonData, adresse: e.target.value })}
+              type="text" placeholder=""
+               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Superficie</Form.Label>
-              <Form.Control type="text" placeholder="" />
+              <Form.Control
+              value={maisonData.superficie}
+              onChange={(e) => setMaisonData({ ...maisonData, superficie: e.target.value })} 
+              type="text" placeholder=""
+               />
             </Form.Group>
             </div>
             <div className='d-flex justify-content-around'>
@@ -156,7 +212,7 @@ export default function GestionMaison() {
         </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={ajouterMaison}>
             Ajouter
           </Button>
           <Button variant="primary" onClick={handleClose}>

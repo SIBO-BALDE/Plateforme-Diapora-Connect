@@ -39,7 +39,7 @@ export default function Services() {
             <div className='content-bottom-card'>
             <div><h6 className='text-center mt-3 '>Contruction de maison</h6></div>
             <div className='btn-content-service'>
-            <Button ><Link to={'/detailservices'} id='detail-content-service'>Voir détail</Link></Button>
+            <Button className='btn-service' ><Link to={'/detailservices'} id='detail-content-service'>Voir détail</Link></Button>
             </div>
             </div>
 

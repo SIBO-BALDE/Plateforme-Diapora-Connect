@@ -52,12 +52,7 @@ export default function Maisons() {
                       <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">Diamniadio rue 123 Diomaye </span></p>
                       <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">150m2</span></p>
                       <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">50.000.000 FCFA</span></p>
-                      <p className=''>
-                      
                      
-                      {/* <span id="prop"><FontAwesomeIcon icon={faSink} id='iccon-sectionright-content' /></span>
-                      <span id="prop"><FontAwesomeIcon icon={faBed} id='iccon-sectionright-content' /></span> */}
-                  </p>
                     <div className='d-flex btn-content-section-right mt-5 '>
                       <button className='btn1'><Link to={'/detailmaison'}  id='link-detail-maison-content'>Voir détail</Link></button>
                       <button className='btn2' >Contactez</button>

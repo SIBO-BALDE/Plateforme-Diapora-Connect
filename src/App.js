@@ -17,6 +17,7 @@ import Apropos from "./Pages/Apropos/Apropos";
 import DetailFavorie from "./Pages/GestionFavorie/DetailFavorie";
 import DetailServicesAdmin from "./Pages/GestionServices/DetailServicesAdmin";
 import DetailMaisonAdmin from "./Pages/GestionMaison/DetailMaisonAdmin";
+import DashboardUser from "./Pages/DashboardUser/DashboardUser";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="connexion" element={<Connexion />}></Route>
         <Route path="contact" element={<Contacts />}></Route>
         <Route path="dashbordAdmin" element={<DashbordAdmin />}></Route>
+        <Route path="dashbordUser" element={<DashboardUser />}></Route>
         <Route path="maisons" element={<Maisons />}></Route>
         <Route path="detailmaison" element={<DetailMaison />}></Route>
         <Route path="services" element={<Services />}></Route>
