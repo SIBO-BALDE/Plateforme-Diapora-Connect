@@ -78,8 +78,8 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
           <hr />
         </div>
         <div id="content-try-content">
-          {links.map((link) => (
-            <div
+          {links.map((link, index) => (
+            <div key={index}
               className={`contentlink mt-4 ${
                 name === link.path && "active text-light"
               }`}

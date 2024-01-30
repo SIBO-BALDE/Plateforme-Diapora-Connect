@@ -28,20 +28,20 @@ import Swal from "sweetalert2";
   };;
 
 
-// etat pour ajout maison
+// etat pour ajout categorie
 const [categoryData, setCategoryData] = useState({
   titre: '',
   description: '',
 });
 
-//  etat pour modifier maison
+//  etat pour modifier categorie
 const [editCategoryData, setEditCategoryData] = useState({
   id: null,
   titre: '',
   description: '',
 });
  
-// tableau ou stocker la liste des maison
+// tableau ou stocker la liste des categories
 const [categories, setCategories] = useState([]); 
 
 // function pour ajouter une categorie
