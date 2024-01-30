@@ -25,7 +25,7 @@ import Swal from "sweetalert2";
       description: categorie.description,
     });
     setShowEditModalCategories(true);
-  };;
+  };
 
 
 // etat pour ajout categorie
@@ -252,7 +252,7 @@ const supprimerCategory =  async (id) =>{
     {/* modal fin ajouter maison */}
 
 
-    {/* modal debut modifier maison */}
+    {/* modal debut modifier categorie */}
     <Modal show={showEditModalCategories} onHide={handleCloseEditCategories} id='buttonModifier'>
     <Modal.Header closeButton>
       <Modal.Title>Modifier Catégorie</Modal.Title>

@@ -7,21 +7,24 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
 import { Button, Form, Image } from "react-bootstrap";
-import profilemaison from "../../fichiers/bann accueil.jpeg";
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function GestionMaison() {
   // pour le modal debut
-  const [show, setShow] = useState(false);
-  const [showEditModal, setshowEditModal] = useState(false);
+  // const [show, setShow] = useState(false);
+  const [showMaison, setshowMaison] = useState(false);
+  const [showEditModalMaisons, setShowEditModalMaisons] = useState(false);
+  // const handleCloseEditMaison = () => setShowEditModalMaisons(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const handleCloseEdit = () => setshowEditModal(false);
-  const handleShowEdit = () => setshowEditModal(true);
+  // const handleClose = () => setshowMaison(false);
+  // const handleShow = () => setshowMaison(true);
+  const handleCloseEdit = () => setshowMaison(false);
+  const handleShowEdit = () => setshowMaison(true);
+  const handleCloseEditMaisons = () => setShowEditModalMaisons(false);
 
   // etat pour ajout maison
   const [maisonData, setMaisonData] = useState({
@@ -33,6 +36,34 @@ export default function GestionMaison() {
     annee_construction: "",
     description: "",
   });
+
+  //  etat pour modifier categorie
+  const [editMaisonData, setEditMaisonData] = useState({
+    id: null,
+    addresse: "",
+    superficie: "",
+    prix: "",
+    categories_id: "",
+    image: "",
+    annee_construction: "",
+    description: "",
+  });
+
+  // Gestionnaire de clic pour le bouton de modification
+  const handleShowEditMaisons = (maison) => {
+    setEditMaisonData({
+      id: maison.id,
+      addresse: maison.addresse,
+      superficie: maison.superficie,
+      prix: maison.prix,
+      categories_id: maison.categories_id,
+      image: maison.image,
+      annee_construction: maison.annee_construction,
+      description: maison.description,
+    });
+    setShowEditModalMaisons(true);
+  };
+
   const [categories, setCategories] = useState([]);
 
   // tableau ou stocker la liste des maison
@@ -62,11 +93,15 @@ export default function GestionMaison() {
           annee_construction: "",
           description: "",
         });
-        
-        alert("ajouter avec succéé");
+
+        Swal.fire({
+          icon: "success",
+          title: "Succès!",
+          text: "Maison ajouté avec succès!",
+        });
         // fetchMaison();
         // Fermez le modal ou effectuez d'autres actions nécessaires après l'ajout réussi
-        handleClose();
+        handleCloseEdit();
         fetchMaison();
       } else {
         // Gestion d'erreurs ou affichage de messages d'erreur
@@ -78,7 +113,6 @@ export default function GestionMaison() {
     }
   };
 
-  
   // function pour lister les maison
   const fetchMaison = async () => {
     try {
@@ -93,13 +127,11 @@ export default function GestionMaison() {
       console.error("Erreur lors de la récupération des maisons:", error);
     }
   };
-  
+
   // recuperer la liste des maisons
   useEffect(() => {
     fetchMaison();
   }, []);
-  
-  // console.log()
 
   // recuperer les categorie
   useEffect(() => {
@@ -117,7 +149,36 @@ export default function GestionMaison() {
     };
     RecupererCategories();
   }, []);
-  
+
+  // Modifier maison
+
+  const modifierMaison = async (id) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
+        editMaisonData
+      );
+
+      if (response.status === 200) {
+        const updatedMaisons = maisons.map((maison) =>
+          maison.id === editMaisonData.id ? response.data.categorie : maison
+        );
+
+        setMaisons(updatedMaisons);
+        handleCloseEditMaisons();
+        Swal.fire({
+          icon: "success",
+          title: "Succès!",
+          text: "Catégorie mise à jour avec succès!",
+        });
+        // handleShowEditMaisons();
+      } else {
+        console.error("erreur lors de la modification de la catégorie");
+      }
+    } catch (error) {
+      console.error("une erreur  Axios:", error);
+    }
+  };
 
   // console.log(categories, "les categories");
 
@@ -127,7 +188,7 @@ export default function GestionMaison() {
         <div>
           <Button
             variant="primary"
-            onClick={handleShow}
+            onClick={handleShowEdit}
             className="ms-4"
             style={{ backgroundColor: "#d46f4d", border: "none" }}
             id="buttonAjouter"
@@ -200,68 +261,75 @@ export default function GestionMaison() {
             {maisons &&
               maisons.map((maison) => (
                 <tr key={maison.id}>
-                  <td
-                    
-                  >
-                    <Image src={maison.image} alt 
-                    className="img-profile-tab-maison"
-                    id="img-profile-tab-maison"
-                    style={{
-                      height: "30px",
-                      width: "30px",
-                      borderRadius: "50%",
-                    }}
+                  <td>
+                    <Image
+                      src={maison.image}
+                      alt
+                      className="img-profile-tab-maison"
+                      id="img-profile-tab-maison"
+                      style={{
+                        height: "30px",
+                        width: "30px",
+                        borderRadius: "50%",
+                      }}
                     />
                   </td>
                   <td>{maison.addresse}</td>
                   <td>{maison.superficie}m2 </td>
                   <td>{maison.prix}FCFA </td>
-                  <td>{maison.categorie && maison.categorie.titre ? maison.categorie.titre : 'Catégorie non définie'} </td>
+                  <td>
+                    {maison.categorie && maison.categorie.titre
+                      ? maison.categorie.titre
+                      : "Catégorie non définie"}{" "}
+                  </td>
                   <td className=" d-flex justify-content-evenly">
-
-                  <Button
-                    variant="primary"
-                    onClick={handleShowEdit}
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #d46f4d",
-                      color: "#d46f4d",
-                    }}
-                    id="buttonModifier"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                  </Button>
-                  <Button
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #d46f4d",
-                      color: "#d46f4d",
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                  <Button
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #d46f4d",
-                      color: "#d46f4d",
-                    }}
-                  >
-                    <Link to={"/detailmaison"} style={{ color: "#d46f4d" }}>
-                      <FontAwesomeIcon icon={faEye} />
-                    </Link>
-                  </Button>
+                    <Button
+                      variant="primary"
+                      // onClick={handleShowEdit}
+                      onClick={() => handleShowEditMaisons(maison)}
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                      id="buttonModifier"
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                    >
+                      <Link to={"/detailmaison"} style={{ color: "#d46f4d" }}>
+                        <FontAwesomeIcon icon={faEye} />
+                      </Link>
+                    </Button>
                   </td>
                 </tr>
               ))}
-              
           </tbody>
         </table>
       </div>
 
       {/* modal debut  ajouter maison*/}
       <>
-        <Modal show={show} onHide={handleClose} id="buttonAjouter">
+        <Modal
+          show={showMaison}
+          onHide={handleCloseEditMaisons}
+          id="buttonAjouter"
+        >
           <Modal.Header closeButton>
             <Modal.Title>Ajouter maison</Modal.Title>
           </Modal.Header>
@@ -400,7 +468,7 @@ export default function GestionMaison() {
             <Button variant="secondary" onClick={ajouterMaison}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleCloseEdit}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -409,7 +477,11 @@ export default function GestionMaison() {
       {/* modal fin ajouter maison */}
 
       {/* modal debut modifier maison */}
-      <Modal show={showEditModal} onHide={handleCloseEdit} id="buttonModifier">
+      <Modal
+        show={showEditModalMaisons}
+        onHide={handleCloseEditMaisons}
+        id="buttonModifier"
+      >
         <Modal.Header closeButton>
           <Modal.Title>Modifier maison</Modal.Title>
         </Modal.Header>
@@ -421,14 +493,34 @@ export default function GestionMaison() {
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Adresse</Form.Label>
-                <Form.Control type="text" placeholder="" />
+                <Form.Control
+                  type="text"
+                  placeholder=""
+                  value={editMaisonData.addresse}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      addresse: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Superficie</Form.Label>
-                <Form.Control type="text" placeholder="" />
+                <Form.Control
+                  type="text"
+                  placeholder=""
+                  value={editMaisonData.superficie}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      superficie: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
             </div>
             <div className="d-flex justify-content-around">
@@ -437,19 +529,35 @@ export default function GestionMaison() {
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Prix</Form.Label>
-                <Form.Control type="text" placeholder="" />
+                <Form.Control
+                  type="text"
+                  placeholder=""
+                  value={editMaisonData.prix}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      prix: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Categorie</Form.Label>
-                <Form.Select aria-label="Default select example">
+                <Form.Select
+                  aria-label="Default select example"
+                  value={editMaisonData.categories_id}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      categories_id: e.target.value,
+                    })
+                  }
+                >
                   <option>selectionner Categorie</option>
-                  <option value="1">R+2</option>
-                  <option value="2">R+3</option>
-                  <option value="3">R+4</option>
-                  <option value="3">R+5</option>
+                  <option value="1"> </option>
                 </Form.Select>
               </Form.Group>
             </div>
@@ -459,14 +567,37 @@ export default function GestionMaison() {
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Image</Form.Label>
-                <Form.Control type="text" placeholder="" className="w-100" />
+                <Form.Control
+                  type="text"
+                  placeholder=""
+                  className="w-100"
+                  value={ editMaisonData &&
+                     editMaisonData.image ? editMaisonData.image : "Image non trouver"}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      image: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
                 <Form.Label>Date de construction</Form.Label>
-                <Form.Control type="date" placeholder="" className="w-100" />
+                <Form.Control
+                  type="date"
+                  placeholder=""
+                  className="w-100"
+                  value={editMaisonData.annee_construction}
+                  onChange={(e) =>
+                    setEditMaisonData({
+                      ...editMaisonData,
+                      annee_construction: e.target.value,
+                    })
+                  }
+                />
               </Form.Group>
             </div>
             <Form.Group
@@ -474,15 +605,25 @@ export default function GestionMaison() {
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label>Description</Form.Label>
-              <Form.Control as="textarea" rows={3} />
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={editMaisonData.description}
+                onChange={(e) =>
+                  setEditMaisonData({
+                    ...editMaisonData,
+                    description: e.target.value,
+                  })
+                }
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseEdit}>
-            Ajouter
+          <Button variant="secondary" onClick={modifierMaison}>
+            Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEdit}>
+          <Button variant="primary" onClick={handleCloseEditMaisons}>
             Fermer
           </Button>
         </Modal.Footer>
