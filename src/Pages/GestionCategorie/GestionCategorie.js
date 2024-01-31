@@ -140,6 +140,8 @@ const supprimerCategory =  async (id) =>{
 
 }
 
+// Function pour supprimer une catégorie
+
 
 
 
@@ -280,7 +282,7 @@ const supprimerCategory =  async (id) =>{
     </Modal.Body>
     <Modal.Footer>
       <Button variant="secondary" onClick={ modifierCategory}>
-        Ajouter
+        Modifier
       </Button>
       <Button variant="primary" onClick={handleCloseEditCategories}>
         Fermer

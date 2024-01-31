@@ -48,7 +48,7 @@ function App() {
         {/* Composant coté admin */}
         <Route path="detailFavorie" element={<DetailFavorie/>}></Route>
         <Route path="detailservicesadmin" element={<DetailServicesAdmin/>}></Route>
-        <Route path="detailmaisonadmin" element={<DetailMaisonAdmin/>}></Route>
+        <Route path="detailmaisonadmin/:id" element={<DetailMaisonAdmin/>}></Route>
         {/* <Route path="detailterrainAdmin" element={<DetailTerrainAdmin/>}></Route> */}
       </Routes>
     </div>

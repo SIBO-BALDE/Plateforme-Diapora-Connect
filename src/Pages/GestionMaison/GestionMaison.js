@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export default function GestionMaison() {
+export default function GestionMaison({id}) {
   // pour le modal debut
   // const [show, setShow] = useState(false);
   const [showMaison, setshowMaison] = useState(false);
@@ -25,6 +25,13 @@ export default function GestionMaison() {
   const handleCloseEdit = () => setshowMaison(false);
   const handleShowEdit = () => setshowMaison(true);
   const handleCloseEditMaisons = () => setShowEditModalMaisons(false);
+
+   // tableau ou stocker la liste des maison
+   const [maisons, setMaisons] = useState([]);
+
+
+  //  state pour liste les categorie 
+  const [categories, setCategories] = useState([]);
 
   // etat pour ajout maison
   const [maisonData, setMaisonData] = useState({
@@ -49,6 +56,9 @@ export default function GestionMaison() {
     description: "",
   });
 
+  // etat pour detail maison
+  // const [detailMaison, setDetailMaison] = useState({})
+
   // Gestionnaire de clic pour le bouton de modification
   const handleShowEditMaisons = (maison) => {
     setEditMaisonData({
@@ -64,10 +74,6 @@ export default function GestionMaison() {
     setShowEditModalMaisons(true);
   };
 
-  const [categories, setCategories] = useState([]);
-
-  // tableau ou stocker la liste des maison
-  const [maisons, setMaisons] = useState([]);
 
   // function pour ajouter une maison
   const ajouterMaison = async (e) => {
@@ -122,7 +128,7 @@ export default function GestionMaison() {
       console.log(response, "response");
       setMaisons(response.data.maison);
 
-      console.log(maisons, "liste maison");
+      // console.log(maison, "liste maison");
     } catch (error) {
       console.error("Erreur lors de la récupération des maisons:", error);
     }
@@ -132,6 +138,7 @@ export default function GestionMaison() {
   useEffect(() => {
     fetchMaison();
   }, []);
+
 
   // recuperer les categorie
   useEffect(() => {
@@ -150,10 +157,15 @@ export default function GestionMaison() {
     RecupererCategories();
   }, []);
 
-  // Modifier maison
 
+  // Modifier maison
   const modifierMaison = async (id) => {
     try {
+      if (!editMaisonData.image) {
+        // Gérer le cas où l'image n'est pas définie
+        console.error("L'image n'est pas définie.");
+        return;
+      }
       const response = await axios.put(
         `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
         editMaisonData
@@ -180,7 +192,33 @@ export default function GestionMaison() {
     }
   };
 
-  // console.log(categories, "les categories");
+  // Function Supprimer maison
+  const supprimerMaison =  async (id) =>{
+    try {
+      const response = await axios.delete(`http://localhost:8000/api/maison/supprimer/${id}`);
+      if (response.status === 200) {
+        // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+        const updatedMaisons = maisons.filter((maison) => maison.id !== id);
+  
+        setCategories(updatedMaisons);
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès!',
+          text: 'Catégorie supprimée avec succès!',
+        });
+        fetchMaison();
+      } else {
+        console.error('Erreur lors de la suppression de la catégorie');
+      }
+      
+    } catch (error) {
+      
+    }
+  
+  }
+
+  
+ 
 
   return (
     <div className="container">
@@ -258,13 +296,14 @@ export default function GestionMaison() {
             </tr>
           </thead>
           <tbody>
-            {maisons &&
-              maisons.map((maison) => (
+            {maisons && maisons.map((maison) => {
+                return (
                 <tr key={maison.id}>
+                  {maison.image && (
                   <td>
                     <Image
                       src={maison.image}
-                      alt
+                      alt=""
                       className="img-profile-tab-maison"
                       id="img-profile-tab-maison"
                       style={{
@@ -272,8 +311,11 @@ export default function GestionMaison() {
                         width: "30px",
                         borderRadius: "50%",
                       }}
-                    />
+                    /> 
                   </td>
+                  )}
+                  
+                  
                   <td>{maison.addresse}</td>
                   <td>{maison.superficie}m2 </td>
                   <td>{maison.prix}FCFA </td>
@@ -297,28 +339,29 @@ export default function GestionMaison() {
                       <FontAwesomeIcon icon={faPenToSquare} />
                     </Button>
                     <Button
+                    onClick={() => supprimerMaison(maison.id)}
                       style={{
                         backgroundColor: "#fff",
                         border: "1px solid #d46f4d",
                         color: "#d46f4d",
-                      }}
-                    >
+                      }}>
                       <FontAwesomeIcon icon={faTrash} />
                     </Button>
+
+
                     <Button
                       style={{
                         backgroundColor: "#fff",
                         border: "1px solid #d46f4d",
                         color: "#d46f4d",
-                      }}
-                    >
-                      <Link to={"/detailmaison"} style={{ color: "#d46f4d" }}>
+                      }}>
+                      <Link to={`/detailmaisonadmin/${maison.id} || '' `} style={{ color: "#d46f4d" }}>
                         <FontAwesomeIcon icon={faEye} />
                       </Link>
                     </Button>
                   </td>
                 </tr>
-              ))}
+              )})}
           </tbody>
         </table>
       </div>
@@ -327,10 +370,10 @@ export default function GestionMaison() {
       <>
         <Modal
           show={showMaison}
-          onHide={handleCloseEditMaisons}
+          onHide={handleCloseEdit}
           id="buttonAjouter"
         >
-          <Modal.Header closeButton>
+          <Modal.Header closeButton >
             <Modal.Title>Ajouter maison</Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -556,8 +599,16 @@ export default function GestionMaison() {
                     })
                   }
                 >
+                  {/* recuperer la categorie selectionner par défaut pour la modifier */}
                   <option>selectionner Categorie</option>
-                  <option value="1"> </option>
+                  {categories &&
+                    categories.map((cat, index) => {
+                      return (
+                    <option key={index} value={cat.id}>
+                          {cat.titre}
+                        </option>
+      );
+    })}
                 </Form.Select>
               </Form.Group>
             </div>
@@ -571,8 +622,7 @@ export default function GestionMaison() {
                   type="text"
                   placeholder=""
                   className="w-100"
-                  value={ editMaisonData &&
-                     editMaisonData.image ? editMaisonData.image : "Image non trouver"}
+                  value={editMaisonData?.image || ""}
                   onChange={(e) =>
                     setEditMaisonData({
                       ...editMaisonData,
