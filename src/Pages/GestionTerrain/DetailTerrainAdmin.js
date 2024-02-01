@@ -41,11 +41,11 @@ export default function DetailTerrainAdmin() {
 
   return (
     <div>
-      <p class>addresse</p>
-      <p class>Superficie</p>
-      <p class>Prix</p>
-      <Image src={Image} />
-      <p class>Description</p>
+      <p className="para">{terrainDetails && terrainDetails.addresse}</p>
+      <p className="para">{terrainDetails && terrainDetails.superficie}</p>
+      <p className="para">{terrainDetails && terrainDetails.prix}</p>
+      <Image src={terrainDetails && terrainDetails.image} />
+      <p className="para">{terrainDetails && terrainDetails.description}</p>
     </div>
   );
 }

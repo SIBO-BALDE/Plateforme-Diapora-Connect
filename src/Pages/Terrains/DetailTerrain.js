@@ -1,15 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil'
 import Footer from '../../Components/Footer/Footer'
 import Underline from '../../Components/Underline/Underline'
 import detailterrain from '../../fichiers/land1.png'
 import { Button, Image } from 'react-bootstrap'
 import './DetailTerrain.css';
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faGlobe, faLocationDot, faTag } from '@fortawesome/free-solid-svg-icons'
+import axios from 'axios'
 
 export default function DetailTerrain() {
+  const { id } = useParams();
+  const [terrainDetails, setTerrainDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  // const [categories, setCategories] = useState([]);
+
+
+
+  useEffect(() => {
+    const fetchterrainDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/terrain/detail/${id}`
+        );
+
+        if (response.data.terrains) {
+          setTerrainDetails(response.data.terrains);
+          console.log(response.data, "ici la reponse de detail");
+        } else {
+          console.error("La réponse de détail est undefined ou null.");
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la récupération des détails de la maison:",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchterrainDetails();
+  }, [id]);
+
+  console.log("terrainDetails:", terrainDetails);
+
+  console.log("terrainDetails:", terrainDetails);
+
+ 
   return (
     <div>
      <NavbarAccueil />

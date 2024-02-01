@@ -9,6 +9,7 @@ import photo1 from '../../fichiers/bann accueil.jpeg'
 import './Apropos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebookF, faLinkedinIn, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
 
 
 export default function Apropos() {
@@ -21,6 +22,7 @@ export default function Apropos() {
       </div>
       <div className=''>
       <div className='mt-5'><Underline  text='A-propos'/></div>
+      <ButtonWatshapp />
       <div id='experience'>
         <div id="" className='container'>
         <div className="experience pt-100 pb-100" >

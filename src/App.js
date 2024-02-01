@@ -18,6 +18,7 @@ import DetailFavorie from "./Pages/GestionFavorie/DetailFavorie";
 import DetailServicesAdmin from "./Pages/GestionServices/DetailServicesAdmin";
 import DetailMaisonAdmin from "./Pages/GestionMaison/DetailMaisonAdmin";
 import DashboardUser from "./Pages/DashboardUser/DashboardUser";
+import DetailTerrainAdmin from "./Pages/GestionTerrain/DetailTerrainAdmin";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -34,7 +35,7 @@ function App() {
         <Route path="dashbordAdmin" element={<DashbordAdmin />}></Route>
         <Route path="dashbordUser" element={<DashboardUser />}></Route>
         <Route path="maisons" element={<Maisons />}></Route>
-        <Route path="detailmaison" element={<DetailMaison />}></Route>
+        <Route path="detailmaison/:id" element={<DetailMaison />}></Route>
         <Route path="services" element={<Services />}></Route>
         <Route path="detailservices" element={<DetailServices />}></Route>
         <Route path="terrains" element={<Terrains />}></Route>
@@ -47,8 +48,9 @@ function App() {
 
         {/* Composant coté admin */}
         <Route path="detailFavorie" element={<DetailFavorie/>}></Route>
-        <Route path="detailservicesadmin" element={<DetailServicesAdmin/>}></Route>
+        <Route path="detailservicesadmin/:id" element={<DetailServicesAdmin/>}></Route>
         <Route path="detailmaisonadmin/:id" element={<DetailMaisonAdmin/>}></Route>
+        <Route path="detailterrainadmin/:id" element={<DetailTerrainAdmin/>}></Route>
         {/* <Route path="detailterrainAdmin" element={<DetailTerrainAdmin/>}></Route> */}
       </Routes>
     </div>

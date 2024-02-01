@@ -12,7 +12,7 @@ import profileterrain from "../../fichiers/land1.png";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export default function GestionTerrain() {
+export default function GestionTerrain(id) {
   const [showLand, setShowLand] = useState(false);
   const [showEditModalLand, setshowEditModalLand] = useState(false);
 
@@ -31,8 +31,10 @@ export default function GestionTerrain() {
     annee_construction: "",
     description: "",
   });
+
   const [terrains, setTerrains] = useState([]);
 
+  
   // function pour ajouter une categorie
   const ajouterTerrain = async () => {
     try {
@@ -99,6 +101,8 @@ export default function GestionTerrain() {
     });
     setshowEditModalLand(true);
   };
+
+
   //  etat pour modifier categorie
   const [editTerrainData, setEditTerrainData] = useState({
     id: null,
@@ -108,6 +112,8 @@ export default function GestionTerrain() {
     image: "",
     description: "",
   });
+
+
   // Fonction pour mettre à jour une terrain
   const modifierTerrain = async () => {
     try {
@@ -115,11 +121,13 @@ export default function GestionTerrain() {
         `http://localhost:8000/api/terrain/edit/${editTerrainData.id}`,
         editTerrainData
       );
+      // console.log(editTerrainData, "this is the terrain edit");
 
       if (response.status === 200) {
         const updatedTerrains = terrains.map((terrain) =>
           terrain.id === editTerrainData.id ? response.data.categorie : terrain
         );
+        // console.log(updatedTerrains, "this is the img")
 
         setTerrains(updatedTerrains);
         handleCloseEditLand();
@@ -231,53 +239,64 @@ export default function GestionTerrain() {
             </tr>
           </thead>
           <tbody>
-            {terrains.map((terrain) => (
-              <tr key={terrain.id}>
-                <td>
-                  <Image
-                    src={terrain.image}
-                    className="img-profile-tab-maison"
-                    id="img-profile-tab-maison"
-                    style={{
-                      height: "30px",
-                      width: "30px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                </td>
-                <td style={{ color: "black" }}>{terrain.addresse}</td>
-                <td style={{ color: "black" }}>{terrain.superficie}</td>
-                <td style={{ color: "black" }}>{terrain.prix}</td>
-                <td className="d-flex justify-content-evenly">
-                  <Button
-                    variant="primary"
-                    onClick={() => handleShowEditTerrains(terrain)}
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #d46f4d",
-                      color: "#d46f4d",
-                    }}
-                    id="buttonModifier"
-                  >
-                    <FontAwesomeIcon icon={faPenToSquare} />
-                  </Button>
-                  <Button
-                    onClick={() => supprimerTerrain(terrain.id)}
-                    style={{
-                      backgroundColor: "#fff",
-                      border: "1px solid #d46f4d",
-                      color: "#d46f4d",
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
-                  <Button style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
-                <Link to={'/detailterrain'} style={{color:'#d46f4d'}}><FontAwesomeIcon icon={faEye} /></Link>
-              </Button>
-                </td>
-              </tr>
-            ))}
-           
+            { terrains &&
+              terrains.map((terrain) => (
+                <tr key={terrain.id}>
+                  <td>
+                    <Image
+                      src={terrain.image}
+                      className="img-profile-tab-maison"
+                      id="img-profile-tab-maison"
+                      style={{
+                        height: "30px",
+                        width: "30px",
+                        borderRadius: "50%",
+                      }}
+                    />
+                  </td>
+                  <td style={{ color: "black" }}>{terrain.addresse}</td>
+                  <td style={{ color: "black" }}>{terrain.superficie}</td>
+                  <td style={{ color: "black" }}>{terrain.prix}</td>
+                  <td className="d-flex justify-content-evenly">
+                    <Button
+                      variant="primary"
+                      onClick={() => handleShowEditTerrains(terrain)}
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                      id="buttonModifier"
+                    >
+                      <FontAwesomeIcon icon={faPenToSquare} />
+                    </Button>
+                    <Button
+                      onClick={() => supprimerTerrain(terrain.id)}
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                    <Button
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #d46f4d",
+                        color: "#d46f4d",
+                      }}
+                    >
+                      <Link
+                        style={{ color: "#d46f4d" }}
+                        to={`/detailterrainadmin/${terrain.id} || '' `}
+                      >
+                        <FontAwesomeIcon icon={faEye} />
+                      </Link>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>

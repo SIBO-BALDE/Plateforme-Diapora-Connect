@@ -1,11 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import "./GestionUtilisateurs"
 import { Button, Form, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import profileuser from '../../fichiers/profile.png'
+import axios from 'axios';
+
 
 export default function GestionUtilisateurs() {
+
+  const [userLists, setUserLists] = useState([]);
+
+  // useEffect(() =>
+  
+  // )[];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/users/liste"
+        );
+        // setCategories(response.categories);
+        setUserLists(response.data.users);
+        console.log(response, 'reponse')
+  
+        console.log(userLists);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des terrains:", error);
+
+      }
+    };
+    fetchUsers();
+  }, []);
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div className='container'>
         <div className='d-flex justify-content-between mt-5'>
@@ -14,7 +54,7 @@ export default function GestionUtilisateurs() {
             <div className="champsRecherche mt-2 mb-3 w-50">
               <Form>
                 <div
-                  class="input-group flex-nowrap "
+                  className="input-group flex-nowrap "
                   style={{borderColor:'#d46f4d'}}
                 >
                   <Form.Control
@@ -48,36 +88,24 @@ export default function GestionUtilisateurs() {
               </tr>
             </thead>
             <tbody>
-              <tr>
+            {userLists &&
+              userLists.map((userlist) => (
+              <tr key={userlist.id}>
                 <td>
-                <Image src={profileuser} className="img-profile-tab-user" id='img-profile-tab-user' 
+                <Image src={userlist.image} className="img-profile-tab-user" id='img-profile-tab-user' 
                   style={{height: "30px", width: "30px", borderRadius:"50%"}} />
                 </td>
-                <td>Amady</td>
-                <td>Fall</td>
-                <td>bass@gmail.com</td>
-                <td>778529967</td>
+                <td>{userlist.nom}</td>
+                <td>{userlist.prenom}</td>
+                <td>{userlist.eamil}</td>
+                <td>{userlist.telephone}</td>
                 <td>
                   <Button style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
                     <FontAwesomeIcon icon={faUserLock} />
                   </Button>
                 </td>
               </tr>
-              <tr>
-                <td>
-                <Image src={profileuser} className="img-profile-tab-user" id='img-profile-tab-user' 
-                  style={{height: "30px", width: "30px", borderRadius:"50%"}} />
-                </td>
-                <td>Amady</td>
-                <td>Fall</td>
-                <td>bass@gmail.com</td>
-                <td>778529967</td>
-                <td>
-                  <Button style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
-                    <FontAwesomeIcon icon={faUserLock} />
-                  </Button>
-                </td>
-              </tr>
+               ))}
             </tbody>
           </table>
         </div>

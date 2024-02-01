@@ -11,6 +11,7 @@ import './Contact.css';
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhone, faQuestion, faVoicemail } from '@fortawesome/free-solid-svg-icons'
+import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
 
 export default function Contacts() {
   return (
@@ -24,6 +25,7 @@ export default function Contacts() {
           </div>
           <div className='main-content-contact'>
            <div className='mt-5 mb-5 '> <Underline text="Nous contactez" /></div>
+           <ButtonWatshapp />
             <section className=''>
               
               <div className=' conain-main-contact container'>

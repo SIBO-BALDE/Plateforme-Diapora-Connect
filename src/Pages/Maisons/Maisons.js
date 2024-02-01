@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Maisons.css';
 import Underline from '../../Components/Underline/Underline'
 import { Button, Form, Image } from 'react-bootstrap';
@@ -11,9 +11,34 @@ import { faBed, faCartShopping, faComment, faGlobe, faHouse, faSink, faTag } fro
 import Pagination from '../../Components/Pagination/Pagination';
 import { Link } from 'react-router-dom';
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp';
+import axios from 'axios';
 
 
-export default function Maisons() {
+export default function Maisons({id}) {
+
+  const [maisonLists, setMaisonLists] = useState([]);
+
+  // useEffect(() =>
+  
+  // )[];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/maison/liste"
+        );
+        // setCategories(response.categories);
+        setMaisonLists(response.data.maison);
+        console.log(response, 'reponse')
+  
+        // console.log(response , 'maisonlist');
+      } catch (error) {
+        console.error("Erreur lors de la récupération des maison:", error);
+
+      }
+    };
+    fetchUsers();
+  }, []);
   return (
     <div>
       {/* navbbar */}
@@ -44,81 +69,25 @@ export default function Maisons() {
           </div>
               </div>
               <div className="Card_Mentor">
+              {maisonLists &&
+              maisonLists.map((maisonList) => (
                     <div className="card1">
                     <div className="section_left">
-                     <Image src={image1} alt="" id='section-left'/>
+                     <Image src={maisonList.image} alt="" id='section-left'/>
                     </div>
                     <div className="section_right">
-                      <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">Diamniadio rue 123 Diomaye </span></p>
-                      <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">150m2</span></p>
-                      <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">50.000.000 FCFA</span></p>
+                      <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">{maisonList.addresse}</span></p>
+                      <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">{maisonList.superficie} m2</span></p>
+                      <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">{maisonList.prix} FCFA</span></p>
                      
                     <div className='d-flex btn-content-section-right mt-5 '>
-                      <button className='btn1'><Link to={'/detailmaison'}  id='link-detail-maison-content'>Voir détail</Link></button>
-                      <button className='btn2' >Contactez</button>
+                      <button className='btn1'><Link to={`/detailmaison/${maisonList.id} || '' `}  id='link-detail-maison-content'>Voir détail</Link></button>
+                      <button className='btn2' >Plus d'info</button>
                       </div>
                     </div>
                     </div>
-                    <div className="card1">
-                    <div className="section_left">
-                     <Image src={image1} alt="" id='section-left'/>
-                    </div>
-                    <div className="section_right">
-                      <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">Diamniadio rue 123 Diomaye </span></p>
-                      <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">150m2</span></p>
-                      <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">50.000.000 FCFA</span></p>
-                      <p className=''>
-                      
-                     
-                      {/* <span id="prop"><FontAwesomeIcon icon={faSink} id='iccon-sectionright-content' /></span>
-                      <span id="prop"><FontAwesomeIcon icon={faBed} id='iccon-sectionright-content' /></span> */}
-                  </p>
-                    <div className='d-flex btn-content-section-right mt-5 '>
-                      <button className='btn1'><Link to={'/detailmaison'}  id='link-detail-maison-content'>Voir détail</Link></button>
-                      <button className='btn2' >Contactez</button>
-                      </div>
-                    </div>
-                    </div>
-                    <div className="card1">
-                    <div className="section_left">
-                     <Image src={image1} alt="" id='section-left'/>
-                    </div>
-                    <div className="section_right">
-                      <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">Diamniadio rue 123 Diomaye </span></p>
-                      <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">150m2</span></p>
-                      <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">50.000.000 FCFA</span></p>
-                      <p className=''>
-                      
-                     
-                      {/* <span id="prop"><FontAwesomeIcon icon={faSink} id='iccon-sectionright-content' /></span>
-                      <span id="prop"><FontAwesomeIcon icon={faBed} id='iccon-sectionright-content' /></span> */}
-                  </p>
-                    <div className='d-flex btn-content-section-right mt-5 '>
-                      <button className='btn1'><Link to={'/detailmaison'}  id='link-detail-maison-content'>Voir détail</Link></button>
-                      <button className='btn2' >Contactez</button>
-                      </div>
-                    </div>
-                    </div>
-                    <div className="card1">
-                    <div className="section_left">
-                     <Image src={image1} alt="" id='section-left'/>
-                    </div>
-                    <div className="section_right">
-                      <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">Diamniadio rue 123 Diomaye </span></p>
-                      <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">150m2</span></p>
-                      <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">50.000.000 FCFA</span></p>
-                      <p className=''>
-                      
-                     
-                      {/* <span id="prop"><FontAwesomeIcon icon={faSink} id='iccon-sectionright-content' /></span>
-                      <span id="prop"><FontAwesomeIcon icon={faBed} id='iccon-sectionright-content' /></span> */}
-                  </p>
-                    <div className='d-flex btn-content-section-right mt-5 '>
-                      <button className='btn1'><Link to={'/detailmaison'}  id='link-detail-maison-content'>Voir détail</Link></button>
-                      <button className='btn2' >Contactez</button>
-                      </div>
-                    </div>
-                    </div>
+                     ))}
+                   
              
               </div>
             </div>
