@@ -13,14 +13,17 @@ import Underline from '../../Components/Underline/Underline';
 import axios from 'axios';
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp';
 
-export default function Terrains() {
+export default function Terrains({id}) {
 
 
   const [terrainLists, setTerrainLists] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
 
-  // useEffect(() =>
-  
-  // )[];
+  // pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const terrainsParPage = 6;
+
+ 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -39,6 +42,25 @@ export default function Terrains() {
     };
     fetchUsers();
   }, []);
+
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+    setCurrentPage(1); 
+  };
+
+  const filteredTerrains = terrainLists.filter((terrain) =>
+    terrain.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayTerrains = searchValue === '' ? terrainLists : filteredTerrains;
+
+
+  // pagination
+const indexOfLastTerrain = currentPage * terrainsParPage;
+  const indexOfFirstTerrain = indexOfLastTerrain - terrainsParPage;
+  const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
+
+  const totalPaginationPages = Math.ceil(terrainLists.length / terrainsParPage);
   return (
     <div>
       <NavbarAccueil />
@@ -54,19 +76,22 @@ export default function Terrains() {
         <div className='container'>
         <div class="section_header  ">
           <div class="btn-section">
-            <p class="btn btn"><span className='contentnombremaison'>60</span><span className='contentnombremaison2'>Terrains</span></p>
+            <p class="btn btn"><span className='contentnombremaison'>{terrainLists ? terrainLists.length : 0}</span><span className='contentnombremaison2'>Terrains</span></p>
       
           </div>
           <div class="section_search">
             <Form action="" className='d-flex section-search-form'>
-              <Form.Control  type="text" placeholder="Cherchez un terrain"  id='input-searchcontent-maison'/>
+              <Form.Control  type="text" placeholder="Cherchez un terrain"  id='input-searchcontent-maison'
+               value={searchValue}
+               onChange={handleSearchChange}
+              />
               <Button type='submit' id='btn-searchmaison'>Rechercher</Button>
             </Form>
           </div>
           </div>
         <div className='contentlandbody container '>
-        {terrainLists &&
-              terrainLists.map((terrainList) => (
+        {currentTerrains &&
+              currentTerrains.map((terrainList) => (
           <div className='card-land-band'>
             <div className='card-land-imgcontent'><Image src={terrainList.image} className='card-land-img' /> </div>
           
@@ -85,7 +110,7 @@ export default function Terrains() {
           </div>
           <hr  id='referenceland'/>
           <div className='contentlan-btn'>
-            <Button id='btn1'><Link to={'/detailterrain'} id='link-contentland1'>Voir détail</Link></Button>
+            <Button id='btn1'><Link to={`/detailterrain/${terrainList.id} || '' `} id='link-contentland1'>Voir détail</Link></Button>
             <Button id='btn2'><Link to={'/panier'} id='link-contentland2'>Plus d'informations</Link></Button>
           </div>
           </div>
@@ -96,7 +121,12 @@ export default function Terrains() {
         
          
         </div>
-          <Pagination  id='paginationterrain'/>
+          <Pagination  id='paginationterrain'
+          currentPage={currentPage}
+          totalPaginationPages={totalPaginationPages}
+          setCurrentPage={setCurrentPage}
+          
+          />
          </div>
 
       </div>

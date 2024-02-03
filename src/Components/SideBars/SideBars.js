@@ -3,7 +3,7 @@ import "./SideBars.css";
 // import profile from "../../Assets/profile.png";
 import profile from '../../fichiers/profile.png'
 import { Button, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faComment,
@@ -16,6 +16,10 @@ import {
   faLayerGroup,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
+import axios from "../../Pages/Authentification/AxiosAuthIntercepteur";
+import Swal from "sweetalert2";
+
+
 
 const links = [
   {
@@ -66,8 +70,92 @@ const links = [
 ];
 
 export default function SideBars({ isOpen, name, handleChangePath }) {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    // const response = await axios.post("http://localhost:8000/api/auth/logout");
+    // console.log(response, 'logout response')
+  //   try {
+  //     const reponse= response
+  //     // console.log(reponse.data, 'response logout')
+  //     if (reponse.status === 200) {
+  //       // const data = response.data;
+  
+  //       Swal.fire({
+  //         title: "Etes vous sure ?",
+  //         text: "De vouloir se deconnecter!",
+  //         icon: "warning",
+  //         showCancelButton: true,
+  //         confirmButtonColor: "#3085d6",
+  //         cancelButtonColor: "#d33",
+  //         confirmButtonText: "Oui, Biensure!"
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           Swal.fire({
+  //             title: "Deconnexion!",
+  //             text: "Vous etes deconnecter avec succée.",
+  //             icon: "success"
+  //           });
+  //         }
+  //       });
+  //     navigate("/connexion");
+  //   }else{
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Oops!",
+  //       text: "echec de deconnexion!",
+  //     });
+
+  //   }
+  //   } catch (error) {
+  //     console.error("Erreur lors de la déconnexion :", error);
+  //   }
+  // };
+
+  try {
+    // Utilisez votre instance Axios configurée
+    const response = await axios.post("http://localhost:8000/api/auth/logout");
+
+    if (response.status === 200) {
+      // Votre code de déconnexion réussie ici
+
+      Swal.fire({
+        title: "Etes-vous sûr ?",
+        text: "De vouloir se déconnecter!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Oui, bien sûr!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Supprimer le token du localStorage lors de la déconnexion
+          localStorage.removeItem("token");
+
+          Swal.fire({
+            title: "Deconnexion!",
+            text: "Vous êtes déconnecté avec succès.",
+            icon: "success"
+          });
+          navigate("/connexion");
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Échec de déconnexion!",
+      });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion :", error);
+  }
+};
+
+
+
   return (
-    <div style={{ display: !isOpen ? "block" : "none" }}>
+    <div style={{ display: !isOpen ? "block" : "none", border:'none' }}>
       <div className="contentOneSidebar">
         <div className="contentimage">
           <div className="d-flex justify-content-center ">
@@ -101,7 +189,7 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
         </div>
         <div className="mainContentBottom">
           <div className="d-flex  justify-content-center">
-            <Button className="logout d-flex justify-content-center align-items-center " id="logout">
+            <Button className="logout d-flex justify-content-center align-items-center " id="logout" onClick={handleLogout}>
               <FontAwesomeIcon
                 icon={faSignOutAlt}
                 className="logouticon  "

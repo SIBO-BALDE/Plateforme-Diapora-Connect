@@ -59,8 +59,9 @@
     transition-duration: 1s;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 360deg;
+    rotate: 7deg;
 }
+
 
 
 #detail-content-service:hover{

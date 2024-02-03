@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import profileterrain from "../../fichiers/land1.png";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Pagination from "../../Components/Pagination/Pagination";
 
 export default function GestionTerrain(id) {
   const [showLand, setShowLand] = useState(false);
@@ -33,6 +34,17 @@ export default function GestionTerrain(id) {
   });
 
   const [terrains, setTerrains] = useState([]);
+
+  // pour la recherche  
+  const [searchValue, setSearchValue] = useState('');
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredTerrains = terrains.filter((terrain) =>
+  terrain.addresse && terrain.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayTerrains = searchValue === '' ? terrains : filteredTerrains;
 
   
   // function pour ajouter une categorie
@@ -166,6 +178,19 @@ export default function GestionTerrain(id) {
     } catch (error) {}
   };
 
+
+    // pour la pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const terrainsParPage = 6;
+
+
+   // pagination
+const indexOfLastTerrain = currentPage * terrainsParPage;
+const indexOfFirstTerrain = indexOfLastTerrain - terrainsParPage;
+const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
+
+const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
+
   return (
     <div className="container">
       <div className="d-flex justify-content-between mt-5">
@@ -193,6 +218,8 @@ export default function GestionTerrain(id) {
                   placeholder="Rechercher un utilisateur"
                   aria-label="user"
                   aria-describedby="addon-wrapping"
+                  value={searchValue}
+                  onChange={handleSearchChange}
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -239,8 +266,8 @@ export default function GestionTerrain(id) {
             </tr>
           </thead>
           <tbody>
-            { terrains &&
-              terrains.map((terrain) => (
+            { currentTerrains &&
+              currentTerrains.map((terrain) => (
                 <tr key={terrain.id}>
                   <td>
                     <Image
@@ -299,6 +326,12 @@ export default function GestionTerrain(id) {
               ))}
           </tbody>
         </table>
+        <Pagination  id='paginationterrain'
+          currentPage={currentPage}
+          totalPaginationPages={totalPaginationPages}
+          setCurrentPage={setCurrentPage}
+          
+          />
       </div>
 
       {/* modal debut  ajouter terrain*/}

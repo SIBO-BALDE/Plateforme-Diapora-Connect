@@ -12,6 +12,7 @@ import Modal from "react-bootstrap/Modal";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Pagination from "../../Components/Pagination/Pagination";
 
 export default function GestionMaison({id}) {
   // pour le modal debut
@@ -32,6 +33,19 @@ export default function GestionMaison({id}) {
 
   //  state pour liste les categorie 
   const [categories, setCategories] = useState([]);
+
+  //  pour le champ recherche
+  const [searchValue, setSearchValue] = useState('');
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredMaisons = maisons.filter((maison) =>
+  maison.addresse && maison.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayMaisons = searchValue === '' ? maisons : filteredMaisons;
+
+
 
   // etat pour ajout maison
   const [maisonData, setMaisonData] = useState({
@@ -217,6 +231,16 @@ export default function GestionMaison({id}) {
   
   }
 
+   // pour la pagination
+   const [currentPage, setCurrentPage] = useState(1);
+   const maisonsParPage = 6;
+   // pagination
+const indexOfLastMaison = currentPage * maisonsParPage;
+const indexOfFirstMaison = indexOfLastMaison - maisonsParPage;
+const currentMaisons = filteredMaisons.slice(indexOfFirstMaison, indexOfLastMaison);
+
+const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
+
   
  
 
@@ -247,6 +271,8 @@ export default function GestionMaison({id}) {
                   placeholder="Rechercher un utilisateur"
                   aria-label="user"
                   aria-describedby="addon-wrapping"
+                  value={searchValue}
+                  onChange={handleSearchChange}
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -296,7 +322,7 @@ export default function GestionMaison({id}) {
             </tr>
           </thead>
           <tbody>
-            {maisons && maisons.map((maison) => {
+            {currentMaisons && currentMaisons.map((maison) => {
                 return (
                 <tr key={maison.id}>
                   {maison.image && (
@@ -364,6 +390,12 @@ export default function GestionMaison({id}) {
               )})}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPaginationPages={totalPaginationPages}
+          setCurrentPage={setCurrentPage}
+          
+          />
       </div>
 
       {/* modal debut  ajouter maison*/}

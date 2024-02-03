@@ -3,7 +3,7 @@ import React from 'react'
 export default function DashboardUser() {
   return (
     <div>
-      <h>User Dashboard</h>
+      <h1>User Dashboard</h1>
     </div>
   )
 }

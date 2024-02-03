@@ -3,17 +3,29 @@ import "./GestionUtilisateurs"
 import { Button, Form, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import profileuser from '../../fichiers/profile.png'
 import axios from 'axios';
 
 
 export default function GestionUtilisateurs() {
 
   const [userLists, setUserLists] = useState([]);
+  const [blockedUsers, setBlockedUsers] = useState([]);
+  const [showBlockedUsers, setShowBlockedUsers] = useState(false);
+  // l'etat pour le button bloquer reste desactivier
+  const [disabledButtons, setDisabledButtons] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
 
-  // useEffect(() =>
-  
-  // )[];
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredServices = userLists.filter((service) =>
+    service.prenom.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayUsers = searchValue === '' ? userLists : filteredServices;
+
+
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -32,24 +44,69 @@ export default function GestionUtilisateurs() {
     };
     fetchUsers();
   }, []);
+
+
+  // functin pour bloquer un utilisateur
+  useEffect(() => {
+    // Charger la liste des utilisateurs bloqués depuis le stockage local
+    const storedBlockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
+    setBlockedUsers(storedBlockedUsers);
+  }, []);
+
+  const saveBlockedUsersToStorage = () => {
+    // Enregistrer la liste des utilisateurs bloqués dans le stockage local
+    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+  };
+
+
+  const handleBloquer = async (userId) => {
+  try {
+    const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
+      isBlocked: !userLists.find((user) => user.id === userId).bloque,
+    });
+
+    if (response.status === 200) {
+      setUserLists((prevUsers) =>
+        prevUsers.filter((user) => user.id !== userId)
+      );
+
+      if (!userLists.find((user) => user.id === userId).bloque) {
+        setBlockedUsers((prevBlockedUsers) => [
+          ...prevBlockedUsers,
+          userLists.find((user) => user.id === userId),
+        ]);
+        setDisabledButtons((prevDisabledButtons) => [...prevDisabledButtons, userId]);
+      } else {
+        setBlockedUsers((prevBlockedUsers) =>
+          prevBlockedUsers.filter((user) => user.id !== userId)
+        );
+      }
+
+      saveBlockedUsersToStorage();
+    } else {
+      console.error('Erreur lors de la mise à jour du statut de blocage');
+    }
+  } catch (error) {
+    console.error('Erreur réseau', error);
+  }
+};
+
+  const toggleBlockedUsers = () => {
+    setShowBlockedUsers(!showBlockedUsers);
+  };
   
-
-
-
-
-
-
-
-
-
-
-
-
+  
+  
 
   return (
     <div className='container'>
         <div className='d-flex justify-content-between mt-5'>
-          <div><Button className='ms-4'style={{backgroundColor:'#d46f4d', border :'none'}}>Voir liste utilisateur bloqués</Button></div>
+          <div><Button className='ms-4'style={{backgroundColor:'#d46f4d', border :'none'}} onClick={toggleBlockedUsers} > 
+          
+          {showBlockedUsers ? 'Voir liste utilisateurs non bloqués' : 'Voir liste utilisateurs bloqués'}
+
+          </Button>
+          </div>
           <div className='flex-grow-1 d-flex justify-content-end '>
             <div className="champsRecherche mt-2 mb-3 w-50">
               <Form>
@@ -63,6 +120,8 @@ export default function GestionUtilisateurs() {
                     placeholder="Rechercher un utilisateur"
                     aria-label="user"
                     aria-describedby="addon-wrapping"
+                    value={searchValue}
+                    onChange={handleSearchChange}
                   />
                   <span
                     className="input-group-text text-white me-4"
@@ -75,7 +134,60 @@ export default function GestionUtilisateurs() {
             </div>
           </div>
         </div>
+
+
+       {/* liste des utilisateur bloquees */}
+       {showBlockedUsers ? (
+       <div className="mt-4 ms-3  me-3 ">
+        <h4>Liste des utilisateurs bloqués</h4>
+        <table className="table border  border-2 ">
+          {/* ... en-tête de tableau existant ... */}
+          <thead className="" id='hearder-color' style={{backgroundColor:'#d46f4d'}}>
+             <tr >
+                <th className='header-color' style={{backgroundColor:'#d46f4d' ,color:'#fff'}} >Profile</th>
+                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Prenom</th>
+                <th style={{backgroundColor:'#d46f4d', color:'#fff' }}>Nom</th>
+                <th style={{backgroundColor:'#d46f4d', color:'#fff' }}>Email</th>
+                <th style={{backgroundColor:'#d46f4d', color:'#fff' }}>Téléphone</th>
+                <th style={{backgroundColor:'#d46f4d', color:'#fff' }}>Action</th>
+              </tr>
+            </thead>
+          <tbody>
+            {blockedUsers &&
+              blockedUsers.map((blockedUser) => (
+                <tr key={blockedUser.id}>
+                 <td>
+                <Image src={blockedUser.image} className="img-profile-tab-user" id='img-profile-tab-user' 
+                  style={{height: "30px", width: "30px", borderRadius:"50%"}} />
+                </td>
+                <td>{blockedUser.nom}</td>
+                <td>{blockedUser.prenom}</td>
+                <td>{blockedUser.email}</td>
+                <td>{blockedUser.telephone}</td>
+                
+                  <td>
+                    <Button
+                      onClick={() => handleBloquer(blockedUser.id)}
+                      // disabled={!blockedUser.bloque}
+                      style={{
+                        backgroundColor: '#fff',
+                        border: '1px solid #d46f4d',
+                        color: '#d46f4d',
+                      }}
+                    >
+                      Débloquer
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+       ) : (
+
+      <div>
         <div className='mt-4 ms-3  me-3 '>
+        <h4>Liste des utilisateurs </h4>
           <table className="table border  border-2 ">
             <thead className="" id='hearder-color' style={{backgroundColor:'#d46f4d'}}>
              <tr >
@@ -88,8 +200,8 @@ export default function GestionUtilisateurs() {
               </tr>
             </thead>
             <tbody>
-            {userLists &&
-              userLists.map((userlist) => (
+            {displayUsers &&
+              displayUsers.map((userlist) => (
               <tr key={userlist.id}>
                 <td>
                 <Image src={userlist.image} className="img-profile-tab-user" id='img-profile-tab-user' 
@@ -100,7 +212,10 @@ export default function GestionUtilisateurs() {
                 <td>{userlist.eamil}</td>
                 <td>{userlist.telephone}</td>
                 <td>
-                  <Button style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
+                  <Button 
+                 onClick={() => handleBloquer(userlist.id)}
+                 disabled={userlist.bloque}
+                  style={{backgroundColor:'#fff' , border:'1px solid #d46f4d', color:'#d46f4d'}}>
                     <FontAwesomeIcon icon={faUserLock} />
                   </Button>
                 </td>
@@ -109,6 +224,133 @@ export default function GestionUtilisateurs() {
             </tbody>
           </table>
         </div>
+      </div>
+      )}
+       
+
+
+
     </div>
   )
 }
+
+
+
+// export default function GestionUtilisateurs() {
+//   const handleBloquer = async (userId) => {
+//     try {
+//       const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
+//         isBlocked: !userLists.find((user) => user.id === userId).bloque,
+//       });
+
+//       if (response.status === 200) {
+//         // Mise à jour locale de l'état de blocage
+//         setUserLists((prevUsers) =>
+//           prevUsers.map((user) =>
+//             user.id === userId ? { ...user, bloque: !user.bloque } : user
+//           )
+//         );
+
+//         // Mise à jour de la liste des utilisateurs bloqués
+//         if (!userLists.find((user) => user.id === userId).bloque) {
+//           setBlockedUsers((prevBlockedUsers) => [
+//             ...prevBlockedUsers,
+//             userLists.find((user) => user.id === userId),
+//           ]);
+//         } else {
+//           setBlockedUsers((prevBlockedUsers) =>
+//             prevBlockedUsers.filter((user) => user.id !== userId)
+//           );
+//         }
+//       } else {
+//         console.error('Erreur lors de la mise à jour du statut de blocage');
+//       }
+//     } catch (error) {
+//       console.error('Erreur réseau', error);
+//     }
+//   };
+
+//   const toggleBlockedUsers = () => {
+//     setShowBlockedUsers(!showBlockedUsers);
+//   };
+
+//   return (
+//     <div className="container">
+//       <div className="d-flex justify-content-between mt-5">
+//         <div>
+//           <Button
+//             className="ms-4"
+//             style={{ backgroundColor: '#d46f4d', border: 'none' }}
+//             onClick={toggleBlockedUsers}
+//           >
+//             {showBlockedUsers ? 'Voir liste utilisateurs non bloqués' : 'Voir liste utilisateurs bloqués'}
+//           </Button>
+//         </div>
+//         <div className="flex-grow-1 d-flex justify-content-end">
+//           {/* ... votre barre de recherche existante ... */}
+//         </div>
+//       </div>
+
+//       {showBlockedUsers ? (
+//         // Section pour la liste des utilisateurs bloqués
+//         <div className="mt-4 ms-3 me-3">
+//           <h4>Liste des utilisateurs bloqués</h4>
+//           <table className="table border  border-2 ">
+//             {/* ... en-tête de tableau existant ... */}
+//             <tbody>
+//               {blockedUsers &&
+//                 blockedUsers.map((blockedUser) => (
+//                   <tr key={blockedUser.id}>
+//                     {/* ... autres colonnes ... */}
+//                     <td>
+//                       <Button
+//                         onClick={() => handleBloquer(blockedUser.id)}
+//                         disabled={!blockedUser.bloque}
+//                         style={{
+//                           backgroundColor: '#fff',
+//                           border: '1px solid #d46f4d',
+//                           color: '#d46f4d',
+//                         }}
+//                       >
+//                         Débloquer
+//                       </Button>
+//                     </td>
+//                   </tr>
+//                 ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       ) : (
+//         // Section pour la liste des utilisateurs non bloqués
+//         <div className="mt-4 ms-3 me-3">
+//           <h4>Liste des utilisateurs non bloqués</h4>
+//           <table className="table border  border-2 ">
+//             {/* ... en-tête de tableau existant ... */}
+//             <tbody>
+//               {userLists &&
+//                 userLists.map((userlist) => (
+//                   <tr key={userlist.id}>
+//                     {/* ... autres colonnes ... */}
+//                     <td>
+//                       <Button
+//                         onClick={() => handleBloquer(userlist.id)}
+//                         disabled={userlist.bloque}
+//                         style={{
+//                           backgroundColor: '#fff',
+//                           border: '1px solid #d46f4d',
+//                           color: '#d46f4d',
+//                         }}
+//                       >
+//                         <FontAwesomeIcon icon={faUserLock} />
+//                       </Button>
+//                     </td>
+//                   </tr>
+//                 ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+

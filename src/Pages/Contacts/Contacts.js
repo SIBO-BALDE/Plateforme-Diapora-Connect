@@ -75,7 +75,7 @@ export default function Contacts() {
                           <Form.Control as="textarea" rows={3} />
                       </Form.Group>
                         <div className='btn-content-position-contact'>
-                            <Button type='submit'  className='btn-colour-contact'>Envoyer</Button>
+                            <Button type='submit'  className='btn-colour-contact w-100 '>Envoyer</Button>
                         </div>
                     </Form>
                   </div>

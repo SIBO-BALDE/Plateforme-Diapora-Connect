@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import profileService from "../../fichiers/S1 (1).png";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Pagination from "../../Components/Pagination/Pagination";
 
 export default function GestionServices({ id }) {
   const [showServices, setShowServices] = useState(false);
@@ -23,6 +24,8 @@ export default function GestionServices({ id }) {
 
   // tableau ou stocker la liste des services
   const [services, setServices] = useState([]);
+  // recherche champ input
+  const [searchValue, setSearchValue] = useState('');
 
   const [serviceData, setServiceData] = useState({
     titre: "",
@@ -158,6 +161,31 @@ export default function GestionServices({ id }) {
     } catch (error) {}
   };
 
+
+  // recherche
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredServices = services.filter((service) =>
+  service.titre && service.titre.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayServices = searchValue === '' ? services : filteredServices;
+
+
+
+   // pour la pagination
+   const [currentPage, setCurrentPage] = useState(1);
+   const servicesParPage = 6;
+   
+  // pagination
+const indexOfLastService = currentPage * servicesParPage;
+const indexOfFirstService = indexOfLastService - servicesParPage;
+const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastService);
+
+const totalPaginationPages = Math.ceil(services.length / servicesParPage);
+
+
   return (
     <div className="container">
       <div className="d-flex justify-content-between mt-5">
@@ -185,6 +213,8 @@ export default function GestionServices({ id }) {
                   placeholder="Rechercher un utilisateur"
                   aria-label="user"
                   aria-describedby="addon-wrapping"
+                  value={searchValue}
+                  onChange={handleSearchChange}
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -225,8 +255,8 @@ export default function GestionServices({ id }) {
             </tr>
           </thead>
           <tbody>
-            {services &&
-              services.map((service) => (
+            {currentServices &&
+              currentServices.map((service) => (
                 <tr key={service.id} className="">
                   <td>
                     <Image
@@ -284,6 +314,12 @@ export default function GestionServices({ id }) {
               ))}
           </tbody>
         </table>
+        <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
       </div>
 
       {/* modal debut  ajouter service*/}

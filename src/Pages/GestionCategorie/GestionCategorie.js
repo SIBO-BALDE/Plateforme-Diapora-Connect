@@ -8,6 +8,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Pagination from "../../Components/Pagination/Pagination";
 
 export default function GestionCategorie() {
   const [showCategories, setShowCategories] = useState(false);
@@ -26,6 +27,9 @@ export default function GestionCategorie() {
     });
     setShowEditModalCategories(true);
   };
+
+  // recherche champ input
+  const [searchValue, setSearchValue] = useState('');
 
   // etat pour ajout categorie
   const [categoryData, setCategoryData] = useState({
@@ -146,7 +150,28 @@ export default function GestionCategorie() {
     } catch (error) {}
   };
 
-  // Function pour supprimer une catégorie
+
+// recherche
+const handleSearchChange = (event) => {
+  setSearchValue(event.target.value);
+};
+
+const filteredCategories = categories.filter((categorie) =>
+  categorie.titre.toLowerCase().includes(searchValue.toLowerCase())
+);
+const displayCategories = searchValue === '' ? categories : filteredCategories;
+
+
+// pour la pagination
+const [currentPage, setCurrentPage] = useState(1);
+const categoriesParPage = 6;
+
+// pagination
+const indexOfLastCategorie = currentPage * categoriesParPage;
+const indexOfFirstCategorie = indexOfLastCategorie - categoriesParPage;
+const currentCategories = filteredCategories.slice(indexOfFirstCategorie, indexOfLastCategorie);
+
+const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
 
   return (
     <div className="container">
@@ -175,6 +200,8 @@ export default function GestionCategorie() {
                   placeholder="Rechercher un utilisateur"
                   aria-label="user"
                   aria-describedby="addon-wrapping"
+                  value={searchValue}
+                  onChange={handleSearchChange}
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -215,7 +242,7 @@ export default function GestionCategorie() {
             </tr>
           </thead>
           <tbody>
-            {categories.map((categorie) => (
+            {currentCategories.map((categorie) => (
               <tr key={categorie.id}>
                 <td style={{ color: "black" }}>{categorie.titre}</td>
                 <td style={{ color: "black" }}>{categorie.description}</td>
@@ -247,6 +274,12 @@ export default function GestionCategorie() {
             ))}
           </tbody>
         </table>
+        <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
       </div>
 
       {/* modal debut  ajouter maison*/}

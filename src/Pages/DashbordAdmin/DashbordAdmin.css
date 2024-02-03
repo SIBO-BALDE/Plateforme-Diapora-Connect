@@ -28,7 +28,7 @@
   }
   .contentsidebar{
     height: 100%;
-    border: 1px solid #000;
+    /* border: 1px solid #000; */
     background-color: var(--seconde);
 
   }
@@ -101,6 +101,7 @@
       #sidebar-content{
         display: flex !important;
         flex-direction: column !important;
+      
       }
 
   }

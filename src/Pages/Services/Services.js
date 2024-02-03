@@ -11,13 +11,32 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
 
-export default function Services() {
+export default function Services({id}) {
 
   const [serviceLists, setServiceLists] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
 
-  // useEffect(() =>
-  
-  // )[];
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
+
+  const filteredServices = serviceLists.filter((service) =>
+    service.titre.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayServices = searchValue === '' ? serviceLists : filteredServices;
+
+   // pour la pagination
+   const [currentPage, setCurrentPage] = useState(1);
+   const servicesParPage = 6;
+   
+  // pagination
+const indexOfLastService = currentPage * servicesParPage;
+const indexOfFirstService = indexOfLastService - servicesParPage;
+const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastService);
+
+const totalPaginationPages = Math.ceil(serviceLists.length / servicesParPage);
+
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -26,11 +45,11 @@ export default function Services() {
         );
         // setCategories(response.categories);
         setServiceLists(response.data.services);
-        console.log(response, 'reponse')
+        // console.log(response, 'reponse')
   
         console.log(response , 'servicesList');
       } catch (error) {
-        console.error("Erreur lors de la récupération des maison:", error);
+        // console.error("Erreur lors de la récupération des maison:", error);
 
       }
     };
@@ -49,12 +68,15 @@ export default function Services() {
         <ButtonWatshapp />
         <div className="section_header">
           <div className="btn-section">
-            <p className="btn btn"><span className='contentnombremaison'>04</span><span className='contentnombremaison2'>Services</span></p>
+            <p className="btn btn"><span className='contentnombremaison'>{serviceLists ? serviceLists.length : 0}</span><span className='contentnombremaison2'>Services</span></p>
       
           </div>
           <div className="section_search">
             <Form action="" className='d-flex section-search-form'>
-              <Form.Control  type="text" placeholder="Cherchez une offre"  id='input-searchcontent-maison'/>
+              <Form.Control  type="text" placeholder="Cherchez une offre"  id='input-searchcontent-maison'
+              value={searchValue}
+              onChange={handleSearchChange}
+              />
               <Button type='submit' id='btn-searchmaison'>Rechercher</Button>
             </Form>
           </div>
@@ -62,16 +84,16 @@ export default function Services() {
         
         <div className='content-main-service'>
 
-        {serviceLists &&
-              serviceLists.map((serviceList) => (
+        {currentServices  &&
+              currentServices .map((serviceList) => (
           <div className='content-main-service-card'>
             <div className='content-main-service-content'>
               <Image src={serviceList.image} id='content-main-service-contentimg' />
             </div>
             <div className='content-bottom-card'>
-            <div><h6 className='text-center mt-3 '>Contruction de maison</h6></div>
+            <div><h6 className='text-center mt-3 '>{serviceList.titre}</h6></div>
             <div className='btn-content-service'>
-            <Button className='btn-service' ><Link to={'/detailservices'} id='detail-content-service'>Voir détail</Link></Button>
+            <Button className='btn-service' ><Link to={`/detailservices/${serviceList.id} || '' `} id='detail-content-service'>Voir détail</Link></Button>
             </div>
             </div>
 
@@ -79,7 +101,12 @@ export default function Services() {
            ))}
             
         </div>
-         <Pagination />
+         <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
       </div>
       
       <Footer />

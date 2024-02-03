@@ -7,6 +7,10 @@ import { Button, Image } from 'react-bootstrap'
 import './DetailServicesAdmin.css';
 import { Link, useParams } from 'react-router-dom'
 import axios from 'axios'
+import SideBars from '../../Components/SideBars/SideBars'
+import NavbarAdmin from '../../Components/Navbars/NavbarAdmin/NavbarAdmin'
+import Tableaux from '../Tableaux/Tableaux'
+
 
 export default function DetailServicesAdmin() {
 
@@ -24,7 +28,7 @@ export default function DetailServicesAdmin() {
 
         if (response.data.service) {
           setServiceDetails(response.data.service);
-          console.log(response.data, "ici la reponse de detail");
+          console.log(response.data, "ici la reponse de detail service");
         } else {
           console.error("La réponse de détail est undefined ou null.");
         }
@@ -47,29 +51,59 @@ export default function DetailServicesAdmin() {
   return (
     <div>
     
-     <div id='content-main-detail-maison-content'>
-      
-      <div className='d-flex content-main-detailmaison-services container'>
-        <div className='one-img-left-services' >
-          <div className='img-main-detail-services'>
-            <Image  src={serviceDetails.image} className='content-img-detail-services1' />
+    
+
+     <div className="">
+        <div className="maincontent-dashbord-static">
+          <div className="contentsidebar">
+            <SideBars />
           </div>
-          
-        </div>
-        <div className='second-img-right-services'>
-        <div className='second-img-right1-services'>
-          <h1>{serviceDetails.titre} </h1>
-          <p>{serviceDetails.description}</p>
-             <div className='d-flex justify-content-center mt-5'>
+          <div className="secondecontent">
+            <div className="">
+              <NavbarAdmin />
+            </div>
+            <Tableaux />
+            <div
+              id="content-main-detail-maison-content-admin"
+              className="mt-2 container "
+            >
+              <div className="d-flex content-main-detailmaison container ">
+                <div className="one-img-left">
+                  <div className="img-main-detail-maison">
+                    <Image
+                      src={serviceDetails.image}
+                      className="content-img-detail-maison1"
+                    />
+                   
+                  </div>
+                </div>
+                <div className="second-img-right">
+                  <div className="second-img-right1">
+                    <h1>Service</h1>
+                    <h6> {serviceDetails.titre} </h6>
+                    <div className="">
+                      <div>
+                        <div>
+                         
+                          <span>{serviceDetails.description}</span>
+                        </div>
+                        
+                      </div>
+                      <div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='d-flex justify-content-center mt-5'>
               <Button id='btn-btn-ajouter-panier-services' className='me-2'>Demander service</Button>
               <Button id='btn-btn-ajouter-panier-services'><a href="https://wa.me/774935677" style={{textDecoration:'none', color:'white'}}>Contactez Nous</a></Button>
              </div>
-          </div>
-          
-        
         </div>
+      
       </div>
-     </div>
     
     </div>
   )

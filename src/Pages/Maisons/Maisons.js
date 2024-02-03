@@ -7,7 +7,7 @@ import image1 from '../../fichiers/m1.png'
 import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil';
 import Footer from '../../Components/Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBed, faCartShopping, faComment, faGlobe, faHouse, faSink, faTag } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe, faHouse, faLayerGroup, faSink, faTag } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '../../Components/Pagination/Pagination';
 import { Link } from 'react-router-dom';
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp';
@@ -15,12 +15,17 @@ import axios from 'axios';
 
 
 export default function Maisons({id}) {
-
+// poue lister les maisons
   const [maisonLists, setMaisonLists] = useState([]);
+  // Pour la recherche de maison par addresse
+  const [searchValue, setSearchValue] = useState('');
 
-  // useEffect(() =>
+  // pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const maisonsParPage = 6;
   
-  // )[];
+
+ 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -39,6 +44,25 @@ export default function Maisons({id}) {
     };
     fetchUsers();
   }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+    setCurrentPage(1); 
+  };
+
+  const filteredMaisons = maisonLists.filter((maison) =>
+  maison.addresse && maison.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayMaisons = searchValue === '' ? maisonLists : filteredMaisons;
+
+// pagination
+const indexOfLastMaison = currentPage * maisonsParPage;
+  const indexOfFirstMaison = indexOfLastMaison - maisonsParPage;
+  const currentMaisons = filteredMaisons.slice(indexOfFirstMaison, indexOfLastMaison);
+
+  const totalPaginationPages = Math.ceil(maisonLists.length / maisonsParPage);
+
+
   return (
     <div>
       {/* navbbar */}
@@ -58,19 +82,22 @@ export default function Maisons({id}) {
             <div className="container_left">
               <div className="section_header">
           <div className="btn-section">
-            <p className="btn btn"><span className='contentnombremaison'>63</span><span className='contentnombremaison2'>Maisons</span></p>
+            <p className="btn btn"><span className='contentnombremaison'>{maisonLists ? maisonLists.length : 0}</span><span className='contentnombremaison2'>Maisons</span></p>
       
           </div>
           <div className="section_search">
             <Form action="" className='d-flex'>
-              <Form.Control  type="text" placeholder="Cherchez une offre"  id='input-searchcontent-maison'/>
+              <Form.Control  type="text" placeholder="Cherchez une offre" 
+              value={searchValue}
+              onChange={handleSearchChange}
+               id='input-searchcontent-maison'/>
               <Button type='submit' id='btn-searchmaison'>Rechercher</Button>
             </Form>
           </div>
               </div>
               <div className="Card_Mentor">
-              {maisonLists &&
-              maisonLists.map((maisonList) => (
+              {currentMaisons &&
+             currentMaisons.map((maisonList) => (
                     <div className="card1">
                     <div className="section_left">
                      <Image src={maisonList.image} alt="" id='section-left'/>
@@ -79,6 +106,13 @@ export default function Maisons({id}) {
                       <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">{maisonList.addresse}</span></p>
                       <p> <span><FontAwesomeIcon icon={faGlobe} id='iccon-sectionright-content' /></span>Superficie: <span id="prop">{maisonList.superficie} m2</span></p>
                       <p> <span><FontAwesomeIcon icon={faTag} id='iccon-sectionright-content' /></span>Prix: <span id="prop">{maisonList.prix} FCFA</span></p>
+                      <p> 
+                        <span><FontAwesomeIcon icon={faLayerGroup} id='iccon-sectionright-content' /></span>Categorie: <span id="prop">
+                        {maisonList.categorie && maisonList.categorie.titre
+                      ? maisonList.categorie.titre
+                      : "Catégorie non définie"}{" "}
+                        </span>
+                        </p>
                      
                     <div className='d-flex btn-content-section-right mt-5 '>
                       <button className='btn1'><Link to={`/detailmaison/${maisonList.id} || '' `}  id='link-detail-maison-content'>Voir détail</Link></button>
@@ -92,7 +126,12 @@ export default function Maisons({id}) {
               </div>
             </div>
           <div className="">
-          <Pagination />
+          <Pagination
+          currentPage={currentPage}
+          totalPaginationPages={totalPaginationPages}
+          setCurrentPage={setCurrentPage}
+          
+          />
         </div>
         </div>
       </div>

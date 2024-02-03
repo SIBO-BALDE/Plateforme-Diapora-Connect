@@ -84,7 +84,7 @@
     transition-duration: 1s;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 360deg;
+    rotate: 10deg;
 }
 #btn2:hover{
     background-color: var(--seconde) !important;
@@ -94,7 +94,7 @@
     transition-duration: 1s;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 360deg;
+    rotate: 10deg;
 }
 #link-contentland1:hover{
     color: var(--seconde) !important;

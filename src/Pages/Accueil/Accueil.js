@@ -22,10 +22,82 @@ import Underline from '../../Components/Underline/Underline'
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
 import Incrementation from '../../Components/Incrementation/Incrementation'
 
+import { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../Authentification/AuthContext';
+
 export default function Accueil() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [email,setEmail]=useState("");
+  const [password,setPassword]=useState("");
+  const [comment, setComment] = useState('');
+  const { isAuthenticated } = useAuth();
+  //  flux asynchrone pour d'abord rediriger vers la page 
+  // de connexion, puis, une fois la connexion réussie, ouvrir le popup de témoignage. 
+  const [redirecting, setRedirecting] = useState(false);
+  
+  const navigate =useNavigate()
  
+ 
+//  const  handleTemoignage = async (e) =>{
+//   e.preventDefault();
+//   const credentials = {
+//     email,
+//     password,
+//   };
+//   try {
+//     const response = await axios.post("http://localhost:8000/api/auth/login", credentials);
+
+//     if (response.status === 200) {
+//       const data = response.data;
+//       console.log(data.access_token[1].role);
+//       console.log(data.access_token, 'access')
+//       setIsAuthenticated(true);
+//       if (data.access_token[1].role === "admin") {
+//         Swal.fire({
+//           icon: 'error',
+//           title: 'Oops!',
+//           text: 'vous nestes pas authoriser à faire une témoignage!',
+//         });
+//        } else {
+//         handleShow();
+//        }
+//     }
+    
+//   } catch (error) {
+    
+//   }
+
+//   }
+//   useEffect(()=>{
+//     handleTemoignage()
+
+//   },[navigate]);
 
 
+const handleTemoignage  = () => {
+  if (!isAuthenticated && !redirecting) {
+    alert('Vous devez vous connecter pour donner un avis.');
+    setRedirecting(true);
+    navigate('/connexion')
+  } else if (isAuthenticated) {
+    setShow(true);
+  }
+
+};
+ useEffect(() => {
+    // Effectuer des actions après la connexion réussie
+    if (isAuthenticated && redirecting) {
+      setShow(true);
+      setRedirecting(false); // Réinitialiser le drapeau de redirection
+    }
+  }, [isAuthenticated, redirecting]);
 
 
   return (
@@ -92,6 +164,7 @@ export default function Accueil() {
                 <p>Nous mettons à votre disposion des experts  qui vont vous aider à faire des investissement rentables.</p>
             </div>
           </div>
+         
           <div className="Section_hand_Right">
      
           </div>
@@ -240,8 +313,14 @@ export default function Accueil() {
             <div className='cardtemoinsociau'><FontAwesomeIcon icon={faLinkedinIn} className='' /></div></div>
         </div>
         </div>
-
       </div>
+        <div className='d-flex justify-content-center  mt-5  btn-temoignage' style={{marginTop:'40px'}}>
+       
+        <Button variant="primary" onClick={handleTemoignage}>
+        Faire un témoignage
+      </Button>
+      </div>
+      
       </div>
       {/* section Temoignage fin */}
 
@@ -321,6 +400,28 @@ export default function Accueil() {
       <Footer/>
      </footer>
      {/* Footer Fin */}
+
+
+
+
+
+
+    
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Woohoo, you are reading this text in a modal!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   )
 }

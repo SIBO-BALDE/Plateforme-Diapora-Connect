@@ -150,7 +150,7 @@
     transition-duration: 1s;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 360deg;
+    rotate: 10deg;
 
   }
   #link-detail-maison-content:hover{
@@ -163,7 +163,7 @@
     transition-duration: 1s;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 360deg;
+    rotate: 10deg;
 
   }
   

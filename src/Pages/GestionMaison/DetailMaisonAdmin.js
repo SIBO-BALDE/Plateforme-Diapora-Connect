@@ -119,7 +119,7 @@ export default function DetailMaisonAdmin() {
                     />
                   </div>
                 </div>
-                <div className="second-img-right h-100 ">
+                <div className="second-img-right">
                   <div className="second-img-right1">
                     <h1>Maison</h1>
                     <p> {maisonDetails && maisonDetails.description} </p>
@@ -132,7 +132,7 @@ export default function DetailMaisonAdmin() {
                               id="icon-details-right"
                             />
                           </span>
-                          <span>Superficie: {maisonDetails.superficie}</span>
+                          <span>Superficie: {maisonDetails.superficie} m2</span>
                         </div>
                         <div>
                           <span>
@@ -141,7 +141,7 @@ export default function DetailMaisonAdmin() {
                               id="icon-details-right"
                             />
                           </span>
-                          <span>Prix: {maisonDetails.prix}</span>
+                          <span>Prix: {maisonDetails.prix} FCFA</span>
                         </div>
                         <div>
                           <span>

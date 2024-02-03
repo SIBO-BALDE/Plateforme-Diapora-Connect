@@ -19,6 +19,7 @@ import DetailServicesAdmin from "./Pages/GestionServices/DetailServicesAdmin";
 import DetailMaisonAdmin from "./Pages/GestionMaison/DetailMaisonAdmin";
 import DashboardUser from "./Pages/DashboardUser/DashboardUser";
 import DetailTerrainAdmin from "./Pages/GestionTerrain/DetailTerrainAdmin";
+import { AuthProvider } from "./Pages/Authentification/AuthContext";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -26,6 +27,7 @@ import DetailTerrainAdmin from "./Pages/GestionTerrain/DetailTerrainAdmin";
 function App() {
   return (
     <div>
+       <AuthProvider>
       <Routes>
         {/* Page utilisateur */}
         <Route path="/" element={<Accueil />}></Route>
@@ -35,24 +37,25 @@ function App() {
         <Route path="dashbordAdmin" element={<DashbordAdmin />}></Route>
         <Route path="dashbordUser" element={<DashboardUser />}></Route>
         <Route path="maisons" element={<Maisons />}></Route>
-        <Route path="detailmaison/:id" element={<DetailMaison />}></Route>
-        <Route path="services" element={<Services />}></Route>
-        <Route path="detailservices" element={<DetailServices />}></Route>
         <Route path="terrains" element={<Terrains />}></Route>
-        <Route path="detailterrain" element={<DetailTerrain />}></Route>
-        
+        <Route path="services" element={<Services />}></Route>
+        {/* details */}
+        <Route path="detailmaison/:id" element={<DetailMaison />}></Route>
+        <Route path="detailservices/:id" element={<DetailServices />}></Route>
+        <Route path="detailterrain/:id" element={<DetailTerrain />}></Route>
         <Route path="/a-propos" element={<Apropos />}></Route>
         {/* <Route path="/panier" element={<Panier />}></Route> */}
         {/* <Route path='/article' element={<Articles />}></Route> */}
         {/* <Route path="/detailarticle" element={<DetailArticles />}></Route> */}
 
         {/* Composant coté admin */}
-        <Route path="detailFavorie" element={<DetailFavorie/>}></Route>
+        <Route path="detailFavorie/:id" element={<DetailFavorie/>}></Route>
         <Route path="detailservicesadmin/:id" element={<DetailServicesAdmin/>}></Route>
         <Route path="detailmaisonadmin/:id" element={<DetailMaisonAdmin/>}></Route>
         <Route path="detailterrainadmin/:id" element={<DetailTerrainAdmin/>}></Route>
         {/* <Route path="detailterrainAdmin" element={<DetailTerrainAdmin/>}></Route> */}
       </Routes>
+      </AuthProvider>
     </div>
   );
 }
