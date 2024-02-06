@@ -137,7 +137,7 @@ export default function GestionTerrain(id) {
 
       if (response.status === 200) {
         const updatedTerrains = terrains.map((terrain) =>
-          terrain.id === editTerrainData.id ? response.data.categorie : terrain
+          terrain.id === editTerrainData.id ? response.data.terrain : terrain
         );
         // console.log(updatedTerrains, "this is the img")
 
@@ -409,15 +409,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   />
                 </Form.Group>
               </div>
-              {/* <div className=''>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Date de mise en vente</Form.Label>
-          <Form.Control type="date" placeholder="" className='w-100'
-          value={terrainData.superficie}
-          onChange={(e) => setTerrainData({ ...terrainData, superficie: e.target.value })} 
-           />
-        </Form.Group>
-        </div> */}
+              
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea1"
@@ -438,10 +430,10 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={ajouterTerrain}>
+            <Button variant="secondary" onClick={ajouterTerrain} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseLand}>
+            <Button variant="primary" onClick={handleCloseLand} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -553,10 +545,10 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modifierTerrain}>
+          <Button variant="secondary" onClick={modifierTerrain} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             ModifierTerrain
           </Button>
-          <Button variant="primary" onClick={handleCloseEditLand}>
+          <Button variant="primary" onClick={handleCloseEditLand} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

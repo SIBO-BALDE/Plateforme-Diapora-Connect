@@ -48,7 +48,7 @@ export default function Connexion() {
         if (data.access_token[1].role === "admin") {
           navigate("/dashbordAdmin");
         } else {
-          navigate("/dashbordUser");
+          navigate("/");
         }
       }
     } catch (error) {

@@ -18,16 +18,30 @@
     position: fixed;
     bottom: 20px; 
     right: 20px;   
-    background-color: #25D366;  
+    background-color: #25D366 !important;  
+    border: none !important;;
     color: #ffffff;          
     border: none;
-    border-radius: 50%;
+    border-radius: 50% !important;
     /* padding: 25px; */
     cursor: pointer;
-    font-size: 30px;
-    padding: 10px 18px;
+    /* font-size: 50px !important; */
+    /* padding: 10px 18px; */
+    height: 60px !important;
+    width: 60px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center !important;
+    place-content: center !important;
   }
   /* button watsapp */
   .whatsapp-button[data-tip]::after {
     background-color: #25D366;  /* Couleur de fond de l'infobulle */
   }
+  .icon-whattsapp{
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-size: 43px !important;
+  }
+ 

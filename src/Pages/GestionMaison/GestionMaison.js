@@ -42,6 +42,7 @@ export default function GestionMaison({id}) {
 
   const filteredMaisons = maisons.filter((maison) =>
   maison.addresse && maison.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  // console.log(maison, 'maison clg')
   );
   const displayMaisons = searchValue === '' ? maisons : filteredMaisons;
 
@@ -187,7 +188,7 @@ export default function GestionMaison({id}) {
 
       if (response.status === 200) {
         const updatedMaisons = maisons.map((maison) =>
-          maison.id === editMaisonData.id ? response.data.categorie : maison
+          maison.id === editMaisonData.id ? response.data.maison : maison
         );
 
         setMaisons(updatedMaisons);
@@ -540,10 +541,10 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={ajouterMaison}>
+            <Button variant="secondary" onClick={ajouterMaison} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseEdit}>
+            <Button variant="primary" onClick={handleCloseEdit} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -702,10 +703,10 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modifierMaison}>
+          <Button variant="secondary" onClick={modifierMaison} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEditMaisons}>
+          <Button variant="primary" onClick={handleCloseEditMaisons} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

@@ -329,10 +329,10 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={ajouterCategory}>
+            <Button variant="secondary" onClick={ajouterCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseCategories}>
+            <Button variant="primary" onClick={handleCloseCategories}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}} >
               Fermer
             </Button>
           </Modal.Footer>
@@ -385,10 +385,10 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modifierCategory}>
+          <Button variant="secondary" onClick={modifierCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEditCategories}>
+          <Button variant="primary" onClick={handleCloseEditCategories}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

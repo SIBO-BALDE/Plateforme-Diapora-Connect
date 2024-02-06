@@ -382,10 +382,10 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={ajouterService}>
+            <Button variant="secondary" onClick={ajouterService} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseServices}>
+            <Button variant="primary" onClick={handleCloseServices} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -451,10 +451,10 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modifierService}>
+          <Button variant="secondary" onClick={modifierService} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEditServices}>
+          <Button variant="primary" onClick={handleCloseEditServices} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

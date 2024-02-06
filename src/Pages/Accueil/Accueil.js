@@ -101,6 +101,7 @@ const handleTemoignage  = () => {
 
 
   return (
+    
     <div>
       {/* Header*/}
       <header className='navbarcontenthome'>
@@ -114,13 +115,9 @@ const handleTemoignage  = () => {
         {/* carrousel */}
         <Image  src={bannier}  alt='' className='bannaccueil'/>
 
-        <div >
-       <ButtonWatshapp />
-      </div>
-
-      {/* <Tooltip id="whatsapp-tooltip" place="left" effect="solid">
-        <span>Envoyer un message à l'admin</span>
-      </Tooltip> */}
+          <div>
+          <ButtonWatshapp />
+          </div>
 
         <div className='position-content-relative-parent'>
           <div className='text-relative-content'>
@@ -128,9 +125,10 @@ const handleTemoignage  = () => {
           <h6 className='text-center'>Vous souhaitez devenir propriétaire ou investisseur au Sénégal ?</h6>
 
           </div>
-        <div className='d-flex justify-content-center  '> <Button id='btncarrousel'> <a href='#' className='btncarrousel'>Decouvrer nos offres</a></Button></div>
+        <div className='d-flex justify-content-center  '> <Button id='btncarrousel'> <a href='#main-redirection' className='btncarrousel'>Decouvrer nos offres</a></Button></div>
        </div>
-
+       
+     <div id='main-redirection'>
       <div className='maincontenthome' id='maincontenthome'>
         {/* Diamond icon */}
         <div  id='underline-home-content'>
@@ -314,12 +312,11 @@ const handleTemoignage  = () => {
         </div>
         </div>
       </div>
-        <div className='d-flex justify-content-center  mt-5  btn-temoignage' style={{marginTop:'40px'}}>
-       
+        {/* <div className='d-flex justify-content-center  mt-5  btn-temoignage' style={{marginTop:'40px'}}>
         <Button variant="primary" onClick={handleTemoignage}>
         Faire un témoignage
       </Button>
-      </div>
+      </div> */}
       
       </div>
       {/* section Temoignage fin */}
@@ -391,6 +388,7 @@ const handleTemoignage  = () => {
           </div>
         </div>
      </div>
+     </div>
       {/* section nos  partenaire  fin*/}
         </main>
         {/* Main content Fin */}
@@ -400,6 +398,7 @@ const handleTemoignage  = () => {
       <Footer/>
      </footer>
      {/* Footer Fin */}
+    
 
 
 
@@ -422,6 +421,7 @@ const handleTemoignage  = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      
     </div>
   )
 }

@@ -14,23 +14,85 @@ import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../fichiers/logo.png'
+import ButtonLogin from '../../Buttons/ButtonLogin/ButtonLogin';
+import ButtonLogOut from '../../Buttons/ButtonLogOut/ButtonLogOut';
 
 
 
 
 
 export default function NavbarAccueil() {
-
+  const [isAuthenticated, setIsAuthenticated]=useState(false)
+      
   // État pour suivre le lien actif
   const [linkActive, setLinkActive] = useState('');
+  const [linkButtonActive, setLinkButtonActive] = useState('');
   // Dans cet exemple, useLocation de React Router est utilisé pour obtenir 
   //l'objet de localisation qui contient des informations sur l'URL actuelle
   const location = useLocation();
+  const locationBtn = useLocation();
   useEffect(() => {
     // Mise à jour de l'état lorsque l'emplacement (route) change
     setLinkActive(location.pathname);
   }, [location]);
+  useEffect(() => {
+    // Mise à jour de l'état lorsque l'emplacement (route) change
+    setLinkButtonActive(locationBtn .pathname);
+  }, [locationBtn]);
+  const handleLogin  = async () => {
+    try {
+    
+     setIsAuthenticated(true);
+     navigate("/connexion");
+     
+    } catch (error) {
+     console.log(error.message, 'voici lerreur');
+     
+    }
+    
+ }
+ const handleLogout = async () => {
+    
+  try {
+    // Utilisez votre instance Axios configurée
+    const response = await axios.post("http://localhost:8000/api/auth/logout");
 
+    if (response.status === 200) {
+      // Votre code de déconnexion réussie ici
+
+      Swal.fire({
+        title: "Etes-vous sûr ?",
+        text: "De vouloir se déconnecter!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Oui, bien sûr!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Supprimer le token du localStorage lors de la déconnexion
+          localStorage.removeItem("token");
+
+          Swal.fire({
+            title: "Deconnexion!",
+            text: "Vous êtes déconnecté avec succès.",
+            icon: "success"
+          });
+          setIsAuthenticated(false);
+          navigate("/connexion");
+        }
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Échec de déconnexion!",
+      });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion :", error);
+  }
+};
 
  
 
@@ -75,12 +137,15 @@ export default function NavbarAccueil() {
             
             
           </Nav>
-          <div className="d-flex me-3 " id='btnpabiernav'>
-            <span className='cartcontent'>
+          
+            {/* <span className='cartcontent'>
               <Nav.Link href='/panier' id='paniericon'><FontAwesomeIcon icon={faCartShopping} className='paniericon' /><span className='cartnumber'><small>10</small></span></Nav.Link>
-            </span>
-            <Button className=' btn btn-connection' ><Nav.Link href='/connexion' >Se connecter</Nav.Link></Button>
-          </div>
+            </span> */}
+           {isAuthenticated ? (
+          <ButtonLogOut setIsAuthenticated={handleLogout} />
+        ) : (
+          <ButtonLogin setIsAuthenticated={handleLogin} />
+        )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

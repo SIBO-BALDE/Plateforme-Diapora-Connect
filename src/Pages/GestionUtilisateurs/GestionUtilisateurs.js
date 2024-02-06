@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import "./GestionUtilisateurs"
 import { Button, Form, Image } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faUserLock } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
+import { faMagnifyingGlass, faUnlock, faUserLock } from '@fortawesome/free-solid-svg-icons';
+// import axios from 'axios';
+import axios from "../../Pages/Authentification/AxiosAuthIntercepteur";
 
 
 export default function GestionUtilisateurs() {
@@ -11,54 +12,103 @@ export default function GestionUtilisateurs() {
   const [userLists, setUserLists] = useState([]);
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [showBlockedUsers, setShowBlockedUsers] = useState(false);
+
   // l'etat pour le button bloquer reste desactivier
   const [disabledButtons, setDisabledButtons] = useState([]);
   const [searchValue, setSearchValue] = useState('');
 
+
+
+  // function pour la recherche
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
+  // Pour la pagination
   const filteredServices = userLists.filter((service) =>
     service.prenom.toLowerCase().includes(searchValue.toLowerCase())
   );
   const displayUsers = searchValue === '' ? userLists : filteredServices;
 
 
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/users/liste"
-        );
-        // setCategories(response.categories);
-        setUserLists(response.data.users);
-        console.log(response, 'reponse')
+// pour lister les users avec avec cet effet on recupere l'ensemble des utilisateurs
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         "http://localhost:8000/api/users/liste"
+  //       );
+  //       // setCategories(response.categories);
+  //       setUserLists(response.data.users);
+  //       console.log(response, 'reponse')
   
-        console.log(userLists);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des terrains:", error);
+  //       console.log(userLists);
+  //     } catch (error) {
+  //       console.error("Erreur lors de la récupération des terrains:", error);
 
-      }
-    };
-    fetchUsers();
-  }, []);
+  //     }
+  //   };
+  //   fetchUsers();
+  // }, []);
 
 
-  // functin pour bloquer un utilisateur
-  useEffect(() => {
-    // Charger la liste des utilisateurs bloqués depuis le stockage local
-    const storedBlockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-    setBlockedUsers(storedBlockedUsers);
-  }, []);
-
+  // Enregistrer la liste des utilisateurs bloqués dans le stockage local
   const saveBlockedUsersToStorage = () => {
-    // Enregistrer la liste des utilisateurs bloqués dans le stockage local
     localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
   };
 
 
+
+// il nous permet de resuperer l'ensemble des uutilisateurs bloquer
+  useEffect(() => {
+    const fetchBlockedUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user/listeBloquer"
+        );
+        setBlockedUsers(response.data.users);
+        console.log(response, 'response user bloquees');
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs bloqués:", error);
+      }
+    };
+  
+    fetchBlockedUsers();
+  }, []);
+
+  // il nous permet de resuperer l'ensemble des uutilisateurs nonbloquer
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user/listeNonBloquer"
+        );
+        setUserLists(response.data.users);
+        console.log(response, 'utilisateurs bloquees');
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs:", error);
+      }
+    };
+  
+    fetchUsers();
+  }, []);
+  
+  
+
+
+
+
+
+ 
+  // Charger la liste des utilisateurs bloqués depuis le stockage local
+  useEffect(() => {
+    const storedBlockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
+    setBlockedUsers(storedBlockedUsers);
+  }, []);
+
+  
+
+//  function pour bloquer un user
   const handleBloquer = async (userId) => {
   try {
     const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
@@ -91,6 +141,34 @@ export default function GestionUtilisateurs() {
   }
 };
 
+
+// function pour debloquer un user
+const handleDebloquer = async (userId) => {
+  try {
+    const response = await axios.put(`http://localhost:8000/api/user/debloquer/${userId}`);
+
+    if (response.status === 200) {
+      // Mise à jour locale de l'état de blocage
+      setUserLists((prevUsers) =>
+        prevUsers.map((user) =>
+          user.id === userId ? { ...user, bloque: !user.bloque } : user
+        )
+      );
+
+      // Mise à jour de la liste des utilisateurs bloqués
+      setBlockedUsers((prevBlockedUsers) =>
+        prevBlockedUsers.filter((user) => user.id !== userId)
+      );
+    } else {
+      console.error('Erreur lors de la mise à jour du statut de déblocage');
+    }
+  } catch (error) {
+    console.error('Erreur réseau', error);
+  }
+};
+
+
+// function pour swicher entre liste user bloquer ou non bloquer
   const toggleBlockedUsers = () => {
     setShowBlockedUsers(!showBlockedUsers);
   };
@@ -167,7 +245,7 @@ export default function GestionUtilisateurs() {
                 
                   <td>
                     <Button
-                      onClick={() => handleBloquer(blockedUser.id)}
+                       onClick={() => handleDebloquer(blockedUser.id)}
                       // disabled={!blockedUser.bloque}
                       style={{
                         backgroundColor: '#fff',
@@ -175,7 +253,7 @@ export default function GestionUtilisateurs() {
                         color: '#d46f4d',
                       }}
                     >
-                      Débloquer
+                     <FontAwesomeIcon icon={faUnlock} />
                     </Button>
                   </td>
                 </tr>

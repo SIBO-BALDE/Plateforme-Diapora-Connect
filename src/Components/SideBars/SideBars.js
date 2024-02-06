@@ -63,9 +63,9 @@ const links = [
     icon: faLayerGroup,
   },
   {
-    path: "gestionfavorie",
-    text: "Gestion Favoris",
-    icon: faHeart,
+    // path: "gestionfavorie",
+    // text: "Gestion Favoris",
+    // icon: faHeart,
   },
 ];
 
@@ -73,45 +73,7 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    // const response = await axios.post("http://localhost:8000/api/auth/logout");
-    // console.log(response, 'logout response')
-  //   try {
-  //     const reponse= response
-  //     // console.log(reponse.data, 'response logout')
-  //     if (reponse.status === 200) {
-  //       // const data = response.data;
-  
-  //       Swal.fire({
-  //         title: "Etes vous sure ?",
-  //         text: "De vouloir se deconnecter!",
-  //         icon: "warning",
-  //         showCancelButton: true,
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //         confirmButtonText: "Oui, Biensure!"
-  //       }).then((result) => {
-  //         if (result.isConfirmed) {
-  //           Swal.fire({
-  //             title: "Deconnexion!",
-  //             text: "Vous etes deconnecter avec succée.",
-  //             icon: "success"
-  //           });
-  //         }
-  //       });
-  //     navigate("/connexion");
-  //   }else{
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Oops!",
-  //       text: "echec de deconnexion!",
-  //     });
-
-  //   }
-  //   } catch (error) {
-  //     console.error("Erreur lors de la déconnexion :", error);
-  //   }
-  // };
-
+    
   try {
     // Utilisez votre instance Axios configurée
     const response = await axios.post("http://localhost:8000/api/auth/logout");
