@@ -20,6 +20,9 @@ import DetailMaisonAdmin from "./Pages/GestionMaison/DetailMaisonAdmin";
 import DashboardUser from "./Pages/DashboardUser/DashboardUser";
 import DetailTerrainAdmin from "./Pages/GestionTerrain/DetailTerrainAdmin";
 import { AuthProvider } from "./Pages/Authentification/AuthContext";
+import MentionsLegals from "./Pages/PolitiquesConfidentialités/MentionsLegals";
+import PolitiqueDeConfidentialites from "./Pages/PolitiquesConfidentialités/PolitiqueDeConfidentialites";
+import ConditionUtilisation from "./Pages/PolitiquesConfidentialités/ConditionUtilisation";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -44,9 +47,9 @@ function App() {
         <Route path="detailservices/:id" element={<DetailServices />}></Route>
         <Route path="detailterrain/:id" element={<DetailTerrain />}></Route>
         <Route path="/a-propos" element={<Apropos />}></Route>
-        {/* <Route path="/panier" element={<Panier />}></Route> */}
-        {/* <Route path='/article' element={<Articles />}></Route> */}
-        {/* <Route path="/detailarticle" element={<DetailArticles />}></Route> */}
+        <Route path="/mentionlegal" element={<MentionsLegals/>}></Route>
+        <Route path='/confidentialite' element={<PolitiqueDeConfidentialites />}></Route>
+        <Route path="/conditionutiliation" element={<ConditionUtilisation />}></Route>
 
         {/* Composant coté admin */}
         <Route path="detailFavorie/:id" element={<DetailFavorie/>}></Route>

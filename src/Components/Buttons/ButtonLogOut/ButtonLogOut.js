@@ -2,6 +2,7 @@ import React from 'react'
 import axios from "../../../Pages/Authentification/AxiosAuthIntercepteur";
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { Button, Nav } from 'react-bootstrap';
 
 export default function ButtonLogOut({ setIsAuthenticated }) {
 
@@ -54,7 +55,7 @@ export default function ButtonLogOut({ setIsAuthenticated }) {
     <div>
       <div className="d-flex me-3 " id='btnpabiernav'>
            
-           <Button className=' btn btn-connection' ><Nav.Link href='/connexion' >Deconnexion</Nav.Link></Button>
+           <Button className=' btn btn-connection1' ><Nav.Link href='/connexion' >Deconnexion</Nav.Link></Button>
          </div>
     </div>
   )

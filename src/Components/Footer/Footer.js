@@ -1,14 +1,39 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
+import React, { useState } from 'react';
+import axios from 'axios';
+
 import './Footer.css';
+import { Form } from 'react-bootstrap';
 
 
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+
+  // const handleEmailChange = (e) => {
+  //   setEmail(e.target.value);
+  // };
+
+  // const handleSubscribe = async (e) => {
+  //   e.preventDefault();
+  //   // Envoyer la requête POST vers votre backend avec l'email en utilisant Axios
+  //  await axios.post('http://votre-backend.com/newsletter/create', { email })
+  //     .then(response => {
+  //       // Gérer la réponse du backend (par exemple, afficher un message de succès)
+  //       console.log('Réponse du backend:', response.data);
+  //     })
+  //     .catch(error => {
+  //       console.error('Erreur lors de l\'envoi de la newsletter:', error);
+  //     });
+  // };
+
+
+
+
   return (
 <div>
 <footer className='mt-5'>
@@ -23,8 +48,17 @@ export default function Footer() {
             nouvelles Actualités !</p>
         </div>
         <div className="Section_Footer_Newsletters_Input">
-          <input type="e-mail" placeholder="Saisissez Votre e-mail" id="email" />
-          <button id="incription1">S'inscrire</button>
+          <Form>
+            <Form.Group>
+            <Form.Control
+             type="e-mail" placeholder="Saisissez Votre e-mail" id="email" 
+            //  value={email}
+            //  onChange={handleEmailChange}
+            
+            />
+            </Form.Group>
+          <button  id="incription1">S'inscrire</button>
+          </Form>
         </div>
       </div>
     </div>
@@ -54,9 +88,9 @@ export default function Footer() {
       </div>
       <div>
         <h3>Autre</h3>
-        <p>Mention Légale</p>
-        <p>Confidentialité</p>
-        <p>Condition d'utilisation</p>
+        <p><Link to={'/mentionlegal'}>Mention Légale</Link></p>
+        <p><Link to={'/confidentialite'}>Confidentialité</Link></p>
+        <p><Link to={'conditionutiliation'}>Condition d'utilisation</Link></p>
       </div>
     </div>
     <br />  <br />

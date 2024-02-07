@@ -1,21 +1,36 @@
 // AuthContext.js
-import React, { createContext, useContext, useState } from 'react';
+import axios from "axios";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
-  const login = () => {
+  useEffect(() => {
+    const token = localStorage.getItem("tokencle");
+    const role = localStorage.getItem("rolecle");
+
+    if (!token || !role) {
+      setIsAuthenticated(false);
+    }
     setIsAuthenticated(true);
+    setUserRole(role);
+  }, []);
+
+  const login = (role) => {
+    setIsAuthenticated(true);
+    setUserRole(role);
   };
 
   const logout = () => {
     setIsAuthenticated(false);
+    setUserRole(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

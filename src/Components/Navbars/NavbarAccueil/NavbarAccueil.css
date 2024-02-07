@@ -134,6 +134,12 @@
     background-color: var(--principal) !important;
     border: var(--principal) !important;
   }
+  .btn-connection1{
+    color: var(--principal) !important;
+    background-color: var(--seconde) !important;
+    border: 1px solid  var(--principal) !important;
+
+  }
   .reference{
     width: 80%; 
     margin: auto

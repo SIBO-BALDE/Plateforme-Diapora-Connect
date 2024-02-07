@@ -124,7 +124,7 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
             {" "}
             <Image src={profile} alt="" id="image-contenu" />
           </div>
-          <p className="text-center">Moussa Basse</p>
+          <p className="text-center"><Link to={'/'} style={{textDecoration:'none', color:'black'}}>Moussa Basse</Link></p>
           <hr />
         </div>
         <div id="content-try-content">

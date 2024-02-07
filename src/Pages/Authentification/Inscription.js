@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react'
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import photo from '../../fichiers/profile.png'
 import { Button, Form, Image } from 'react-bootstrap';
@@ -11,6 +9,8 @@ import axios from 'axios';
 import './Auth.css'; 
 
 export default function Inscription() {
+  // cration des varaibles d'etat pour stocker les information du formulaires avec des function setter pour mettre à jour
+  // les valeurs
   const [nom,setNom]=useState("");
   const [prenom,setPrenom]=useState("");
   const [email,setEmail]=useState("");
@@ -18,11 +18,12 @@ export default function Inscription() {
   const [telephone,setTelephone]=useState("");
   const [passwordConf,setPasswordConf]=useState("");
   const [image,setImage]=useState('');
+
   // state pour la validation des erreur de formulaire
   const [emailErr, setEmailErr] = useState(false);
   const [pwdError, setPwdError] = useState(false);
   
-  // declarer la variable pour permetre la redirection d'ans un autre composant
+  // declarer la variable pour permetre la redirection dans un autre composant
   const navigate = useNavigate(); 
   
 
@@ -36,6 +37,9 @@ export default function Inscription() {
             text: "Vueillez remplir tous les champs",
           });
           return
+          // la fonction return est utilisée pour sortir 
+          // prématurément de la fonction handleSubmit afin d'éviter l'exécution des étapes suivantes du traitement du
+          //  formulaire.
     
           } else if (!emailPattern.test(email) ) {
             setEmailErr(true); 
@@ -85,68 +89,84 @@ export default function Inscription() {
      } catch (error) {   
      }
       }
-  //  const handleCancel = async (e) => {
-  //   Swal.fire({
-  //       icon: "success",
-  //       title: "Bravoo!!",
-  //       text: "Vous avez annuler avec succees",
-  //     });
-  //  }
+      const handleCancel =async (e) => {
+        e.preventDefault();
+        Swal.fire({
+          title: "Vous etes sur?",
+          text: "De vouvoiloir annuler votre inscription!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#D46F4D",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Oui, annuler!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: "Annulé!",
+              text: "La requete à été annulé.",
+              icon: "success"
+            });
+          }
+        });
+        setEmail("");
+          setPassword("");
+    
+      }
 
       
         
 
   return (
 <div className='container  content-flex-signin'>
-  <div className='img-content-form'>
+  <div className='img-content-form1'>
     <Image src={photo} alt='' />
   </div>
   <div className='content-left-form'>
-    <Form onSubmit={ handleSubmit}>
+    <Form >
     <h3 className='text-center mt-3 mb-3'> INSCRIPTION</h3>
     <div className='d-flex justify-content-around '>
 
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Nom</Form.Label>
+            <Form.Label>Nom</Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="text" onChange={(e)=>setNom(e.target.value)}  />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-            <Form.Label>Prenom</Form.Label>
+            <Form.Label>Prenom</Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="text"  onChange={(e)=>setPrenom(e.target.value)} />
         </Form.Group>
     </div>
     <div className='d-flex justify-content-around '>
 
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email</Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="text" onChange={(e)=>setEmail(e.target.value)}   />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
-            <Form.Label>Mot de pass</Form.Label>
+            <Form.Label>Mot de passe</Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="password" onChange={(e)=>setPassword(e.target.value)}  />
         </Form.Group>
     </div>
     <div className='d-flex justify-content-around '>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput5">
-            <Form.Label> Confirmation  mot de pass </Form.Label>
+            <Form.Label> Confirmation  mot de passe </Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="password" onChange={(e)=>setPasswordConf(e.target.value)}  />
         </Form.Group>
         <Form.Group className="mb-3" controlId="exampleForm.ControlInput6">
-            <Form.Label> Télephone </Form.Label>
+            <Form.Label> Télephone </Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="tel"  onChange={(e)=>setTelephone(e.target.value)}/>
         </Form.Group>
     </div>
 
         <Form.Group className="mb-3  " controlId="exampleForm.ControlInput7">
-            <Form.Label> Profile </Form.Label>
+            <Form.Label> Profile </Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control type="text"  onChange={(e)=>setImage(e.target.value) } className='d-flex  justify-content-around'/>
         </Form.Group>
         <div className='btn-content-position'>
-        <Button type='submit'  className='btn-colour'>S'inscrire</Button>
-        <Button type='submit'  className='btn-colour1' id='btn-colour1' style={{marginLeft:'10px'}} >Annuler</Button>
+        <Button  onClick={ handleSubmit} type='submit'  className='btn-colour'>S'inscrire</Button>
+        <Button type='submit' onClick={handleCancel}  className='btn-colour1' id='btn-colour1' style={{marginLeft:'10px'}} >Annuler</Button>
         {/* onClick={handleCancel} */}
         </div>
-        <Link to={'/connexion'} className='content-link'>Vous avez dejas un? connectez vous</Link>
+        <Link to={'/connexion'} className='content-link' style={{color:'#D46F4D'}}>Vous avez dejas un? connectez vous</Link>
     </Form>
   </div>
 </div>

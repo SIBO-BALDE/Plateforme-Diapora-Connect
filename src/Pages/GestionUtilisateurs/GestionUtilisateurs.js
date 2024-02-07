@@ -52,67 +52,13 @@ export default function GestionUtilisateurs() {
   // }, []);
 
 
-  // Enregistrer la liste des utilisateurs bloqués dans le stockage local
-  const saveBlockedUsersToStorage = () => {
-    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
-  };
-
-
-
-// il nous permet de resuperer l'ensemble des uutilisateurs bloquer
-  useEffect(() => {
-    const fetchBlockedUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/user/listeBloquer"
-        );
-        setBlockedUsers(response.data.users);
-        console.log(response, 'response user bloquees');
-      } catch (error) {
-        console.error("Erreur lors de la récupération des utilisateurs bloqués:", error);
-      }
-    };
-  
-    fetchBlockedUsers();
-  }, []);
-
-  // il nous permet de resuperer l'ensemble des uutilisateurs nonbloquer
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8000/api/user/listeNonBloquer"
-        );
-        setUserLists(response.data.users);
-        console.log(response, 'utilisateurs bloquees');
-      } catch (error) {
-        console.error("Erreur lors de la récupération des utilisateurs:", error);
-      }
-    };
-  
-    fetchUsers();
-  }, []);
-  
-  
-
-
-
-
-
- 
-  // Charger la liste des utilisateurs bloqués depuis le stockage local
-  useEffect(() => {
-    const storedBlockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
-    setBlockedUsers(storedBlockedUsers);
-  }, []);
-
-  
-
 //  function pour bloquer un user
   const handleBloquer = async (userId) => {
   try {
     const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
       isBlocked: !userLists.find((user) => user.id === userId).bloque,
+      // const userToBlock = userLists.find((user) => user.id === userId);
+      // const isBlocked = !userToBlock.bloque;
     });
 
     if (response.status === 200) {
@@ -140,12 +86,46 @@ export default function GestionUtilisateurs() {
     console.error('Erreur réseau', error);
   }
 };
+// const handleBloquer = async (userId) => {
+//   try {
+//     const userToBlock = userLists.find((user) => user.id === userId);
+//     const isBlocked = !userToBlock.bloque;
+
+//     const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
+//       isBlocked,
+//     });
+
+//     if (response.status === 200) {
+//       setUserLists((prevUsers) =>
+//         prevUsers.filter((user) => user.id !== userId)
+//       );
+
+//       if (!isBlocked) {
+//         setBlockedUsers((prevBlockedUsers) => [...prevBlockedUsers, userToBlock]);
+//         setDisabledButtons((prevDisabledButtons) => [...prevDisabledButtons, userId]);
+//       } else {
+//         setBlockedUsers((prevBlockedUsers) =>
+//           prevBlockedUsers.filter((user) => user.id !== userId)
+//         );
+//       }
+
+//       saveBlockedUsersToStorage();
+//     } else {
+//       console.error('Erreur lors de la mise à jour du statut de blocage');
+//     }
+//   } catch (error) {
+//     console.error('Erreur réseau', error);
+//   }
+// };
+
 
 
 // function pour debloquer un user
 const handleDebloquer = async (userId) => {
   try {
-    const response = await axios.put(`http://localhost:8000/api/user/debloquer/${userId}`);
+    const response = await axios.put(`http://localhost:8000/api/user/debloquer/${userId}`
+    
+    );
 
     if (response.status === 200) {
       // Mise à jour locale de l'état de blocage
@@ -172,6 +152,64 @@ const handleDebloquer = async (userId) => {
   const toggleBlockedUsers = () => {
     setShowBlockedUsers(!showBlockedUsers);
   };
+
+
+  // il nous permet de resuperer l'ensemble des uutilisateurs bloquer
+  useEffect(() => {
+    const fetchBlockedUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user/listeBloquer"
+        );
+        setBlockedUsers(response.data.users);
+        console.log(response, 'response user bloquees');
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs bloqués:", error);
+      }
+    
+    
+    };
+    
+    handleDebloquer();
+    fetchBlockedUsers();
+   
+  }, []);
+
+
+
+  // il nous permet de recuperer l'ensemble des uutilisateurs nonbloquer
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8000/api/user/listeNonBloquer"
+        );
+        setUserLists(response.data.users);
+        console.log(response, 'utilisateurs bloquees');
+      } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs:", error);
+      }
+    };
+  
+    fetchUsers();
+    handleBloquer();
+  }, []);
+
+  
+  // Enregistrer la liste des utilisateurs bloqués dans le stockage local
+  const saveBlockedUsersToStorage = () => {
+    localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+  };
+
+  
+  // Charger la liste des utilisateurs bloqués depuis le stockage local
+  useEffect(() => {
+    const storedBlockedUsers = JSON.parse(localStorage.getItem('blockedUsers')) || [];
+    setBlockedUsers(storedBlockedUsers);
+  }, []);
+
+
+
   
   
   

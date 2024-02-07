@@ -27,7 +27,7 @@ export default function ButtonLogin({ setIsAuthenticated }) {
     <div>
         <div className="d-flex me-3 " id='btnpabiernav'>
            
-            <Button className=' btn btn-connection' ><Nav.Link href='/connexion' >Se connecter</Nav.Link></Button>
+            <Button className=' btn btn-connection' ><Nav.Link href='/connexion' >Connexion</Nav.Link></Button>
           </div>
     </div>
   )

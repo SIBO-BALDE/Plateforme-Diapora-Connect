@@ -18,6 +18,9 @@ import GestionServices from "../GestionServices/GestionServices";
 import GestionFavorie from "../GestionFavorie/GestionFavorie";
 import GestionCategorie from "../GestionCategorie/GestionCategorie";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Authentification/AuthContext";
+import Swal from "sweetalert2";
 
 function KPI() {
   const [userLists, setUserLists] = useState([]);
@@ -30,12 +33,11 @@ function KPI() {
         );
         // setCategories(response.categories);
         setUserLists(response.data.users);
-        console.log(response, 'reponse')
-  
+        console.log(response, "reponse");
+
         console.log(userLists);
       } catch (error) {
         console.error("Erreur lors de la récupération des terrains:", error);
-
       }
     };
     fetchUsers();
@@ -47,36 +49,48 @@ function KPI() {
           <table className="table mb-5">
             <thead className="table-light" id="hearder-color">
               <tr>
-                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Profile</th>
-                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Prenom</th>
-                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Nom</th>
-                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Email</th>
-                <th style={{backgroundColor:'#d46f4d' , color:'#fff'}}>Téléphone</th>
+                <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
+                  Profile
+                </th>
+                <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
+                  Prenom
+                </th>
+                <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
+                  Nom
+                </th>
+                <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
+                  Email
+                </th>
+                <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
+                  Téléphone
+                </th>
               </tr>
             </thead>
             <tbody>
-            {userLists &&
-              userLists.map((userlist) => (
-              
-              <tr  key={userlist.id}>
-                <td>
-                  <Image src={userlist.prenom} className="img-profile-tab-admin" />
-                </td>
-                <td>{userlist.prenom}</td>
-                <td>{userlist.nom}</td>
-                <td>{userlist.eamil}</td>
-                <td>{userlist.telephone}</td>
-              </tr>
-              ))}
+              {userLists &&
+                userLists.map((userlist) => (
+                  <tr key={userlist.id}>
+                    <td>
+                      <Image
+                        src={userlist.prenom}
+                        className="img-profile-tab-admin"
+                      />
+                    </td>
+                    <td>{userlist.prenom}</td>
+                    <td>{userlist.nom}</td>
+                    <td>{userlist.eamil}</td>
+                    <td>{userlist.telephone}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
           <div className="conten-admin-2">
             <div className="title-progressbar-admin px-4 ">
-              <p>Liste des utilisateurs total par rapport au utilisateurs bloqués</p>
+              <p>
+                Liste des utilisateurs total par rapport au utilisateurs bloqués
+              </p>
             </div>
-            <span>
-              Pourcentage des utilisateurs total
-            </span>
+            <span>Pourcentage des utilisateurs total</span>
             <div
               className="progress mt-4"
               role="progressbar"
@@ -93,9 +107,7 @@ function KPI() {
                 100%
               </div>
             </div>
-            <span>
-            Pourcentage des utilisateurs total bloqué
-            </span>
+            <span>Pourcentage des utilisateurs total bloqué</span>
             <div
               className="progress"
               role="progressbar"
@@ -164,6 +176,22 @@ export default function DashbordAdmin() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+  const navigate = useNavigate();
+  const { userRole } = useAuth();
+
+  useEffect(() => {
+    // Redirigez l'utilisateur si son rôle n'est pas admin
+    if (userRole !== "admin") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Acces interdit, connecter vous en tant qu'admin pour avoire accée au dashboard!",
+      });
+      navigate("/"); // Remplacez '/accueil' par l'URL de votre page d'accueil ou autre page
+    }
+  }, [userRole, navigate]);
+
+  
 
   function handleChangePath(path) {
     setName(path);
@@ -181,7 +209,7 @@ export default function DashbordAdmin() {
             isOpen={isSidebarOpen}
             name={name}
             handleChangePath={handleChangePath}
-            id='sidebar-content'
+            id="sidebar-content"
           />
         </div>
         <div className="secondecontent">

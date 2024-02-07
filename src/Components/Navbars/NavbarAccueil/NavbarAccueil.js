@@ -16,13 +16,16 @@ import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../../fichiers/logo.png'
 import ButtonLogin from '../../Buttons/ButtonLogin/ButtonLogin';
 import ButtonLogOut from '../../Buttons/ButtonLogOut/ButtonLogOut';
+import { useAuth } from '../../../Pages/Authentification/AuthContext';
+
 
 
 
 
 
 export default function NavbarAccueil() {
-  const [isAuthenticated, setIsAuthenticated]=useState(false)
+  // const [isAuthenticated, setIsAuthenticated]=useState(false)
+  const { isAuthenticated, login, logout } = useAuth();
       
   // État pour suivre le lien actif
   const [linkActive, setLinkActive] = useState('');
@@ -31,19 +34,24 @@ export default function NavbarAccueil() {
   //l'objet de localisation qui contient des informations sur l'URL actuelle
   const location = useLocation();
   const locationBtn = useLocation();
+
   useEffect(() => {
     // Mise à jour de l'état lorsque l'emplacement (route) change
     setLinkActive(location.pathname);
   }, [location]);
+
+
   useEffect(() => {
     // Mise à jour de l'état lorsque l'emplacement (route) change
     setLinkButtonActive(locationBtn .pathname);
   }, [locationBtn]);
+
+
   const handleLogin  = async () => {
     try {
     
-     setIsAuthenticated(true);
-     navigate("/connexion");
+     login();
+    //  navigate("/connexion");
      
     } catch (error) {
      console.log(error.message, 'voici lerreur');
@@ -78,7 +86,7 @@ export default function NavbarAccueil() {
             text: "Vous êtes déconnecté avec succès.",
             icon: "success"
           });
-          setIsAuthenticated(false);
+        //  logout();
           navigate("/connexion");
         }
       });
@@ -92,7 +100,11 @@ export default function NavbarAccueil() {
   } catch (error) {
     console.error("Erreur lors de la déconnexion :", error);
   }
+  logout();
 };
+// useEffect(()=>{
+
+// }
 
  
 
@@ -141,9 +153,9 @@ export default function NavbarAccueil() {
             {/* <span className='cartcontent'>
               <Nav.Link href='/panier' id='paniericon'><FontAwesomeIcon icon={faCartShopping} className='paniericon' /><span className='cartnumber'><small>10</small></span></Nav.Link>
             </span> */}
-           {isAuthenticated ? (
+            {isAuthenticated ? (
           <ButtonLogOut setIsAuthenticated={handleLogout} />
-        ) : (
+          ) : (
           <ButtonLogin setIsAuthenticated={handleLogin} />
         )}
         </Navbar.Collapse>

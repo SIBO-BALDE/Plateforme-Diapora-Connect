@@ -13,8 +13,8 @@ export default function ButtonWatshapp() {
       const response = await axios.post('https://localhost:8000/api/users/whatsapp');
       console.log(response.data);
       
-      // Assurez-vous que la réponse contient l'URL WhatsApp
-      if (response.data && response.data.urlWhatsApp) {
+      
+      if (response.data === 200) {
         // Redirigez l'utilisateur vers le lien WhatsApp
         window.location.href = response.data.urlWhatsApp;
       } else {
