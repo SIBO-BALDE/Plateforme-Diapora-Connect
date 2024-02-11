@@ -20,8 +20,10 @@ export default function GestionTerrain(id) {
   const handleCloseLand = () => setShowLand(false);
   const handleShowLand = () => setShowLand(true);
   const handleCloseEditLand = () => setshowEditModalLand(false);
+
   // en retrait
   const handleShowEditLand = () => setshowEditModalLand(true);
+
 
   // etat pour ajout terrain initialiser à vide
   const [terrainData, setTerrainData] = useState({
@@ -29,12 +31,13 @@ export default function GestionTerrain(id) {
     superficie: "",
     prix: "",
     image: "",
-    annee_construction: "",
+    // annee_construction: "",
     description: "",
   });
 
   const [terrains, setTerrains] = useState([]);
 
+  
   // pour la recherche  
   const [searchValue, setSearchValue] = useState('');
   const handleSearchChange = (event) => {
@@ -50,9 +53,25 @@ export default function GestionTerrain(id) {
   // function pour ajouter une categorie
   const ajouterTerrain = async () => {
     try {
+
+      const formData = new FormData();
+      formData.append('addresse', terrainData.addresse);
+      formData.append('superficie', terrainData.superficie);
+      formData.append('prix', terrainData.prix);
+      // formData.append('categories_id', terrainData.categories_id);
+      formData.append('image', terrainData.image);
+      // formData.append('annee_construction', terrainData.annee_construction);
+      formData.append('description', terrainData.description);
+      console.log(formData, 'formData maison')
       const response = await axios.post(
         "http://localhost:8000/api/terrain/create",
-        terrainData
+        formData,
+
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
       // Vérifiez si la requête a réussi
@@ -61,7 +80,10 @@ export default function GestionTerrain(id) {
         setTerrains([...terrains, response.data]);
         // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
         setTerrainData({
-          titre: "",
+          addresse: "",
+          superficie: "",
+          prix: "",
+          image: "",
           description: "",
         });
         Swal.fire({
@@ -271,7 +293,8 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                 <tr key={terrain.id}>
                   <td>
                     <Image
-                      src={terrain.image}
+                      // src={image}
+                      src={`http://localhost:8000/storage/${terrain.image}`} 
                       className="img-profile-tab-maison"
                       id="img-profile-tab-maison"
                       style={{
@@ -399,12 +422,15 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                 >
                   <Form.Label>Image</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="file"
                     placeholder=""
                     className="w-100"
-                    value={terrainData.image}
+                    // value={terrainData.image}
+                    // onChange={(e) =>
+                    //   setTerrainData({ ...terrainData, image: e.target.value })
+                    // }
                     onChange={(e) =>
-                      setTerrainData({ ...terrainData, image: e.target.value })
+                      setTerrainData({ ...terrainData, image: e.target.files[0] })
                     }
                   />
                 </Form.Group>

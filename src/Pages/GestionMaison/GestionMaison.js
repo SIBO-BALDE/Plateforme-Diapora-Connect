@@ -66,7 +66,7 @@ export default function GestionMaison({id}) {
     superficie: "",
     prix: "",
     categories_id: "",
-    image: "",
+    image: null,
     annee_construction: "",
     description: "",
   });
@@ -91,20 +91,72 @@ export default function GestionMaison({id}) {
 
 
   // function pour ajouter une maison
+  // const ajouterMaison = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8000/api/maison/create",
+  //       maisonData
+  //     );
+
+  //     // Vérifiez si la requête a réussi
+  //     if (response.status === 200) {
+  //       // Ajoutez la nouvelle maison à la liste existante
+  //       setMaisons([...maisons, response.data]);
+
+  //       // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+  //       setMaisonData({
+  //         addresse: "",
+  //         superficie: "",
+  //         prix: "",
+  //         categories_id: "",
+  //         image: "",
+  //         annee_construction: "",
+  //         description: "",
+  //       });
+
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Succès!",
+  //         text: "Maison ajouté avec succès!",
+  //       });
+  //       // fetchMaison();
+  //       // Fermez le modal ou effectuez d'autres actions nécessaires après l'ajout réussi
+  //       handleCloseEdit();
+  //       fetchMaison();
+  //     } else {
+  //       // Gestion d'erreurs ou affichage de messages d'erreur
+  //       console.error("Erreur dans lajout de maison");
+  //     }
+  //   } catch (error) {
+  //     // Gestion des erreurs Axios
+  //     console.error("Erreur Axios:", error);
+  //   }
+  // };
   const ajouterMaison = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append('addresse', maisonData.addresse);
+      formData.append('superficie', maisonData.superficie);
+      formData.append('prix', maisonData.prix);
+      formData.append('categories_id', maisonData.categories_id);
+      formData.append('image', maisonData.image);
+      formData.append('annee_construction', maisonData.annee_construction);
+      formData.append('description', maisonData.description);
+    console.log(formData, 'formData maison')
       const response = await axios.post(
         "http://localhost:8000/api/maison/create",
-        maisonData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
-
-      // Vérifiez si la requête a réussi
+  
       if (response.status === 200) {
-        // Ajoutez la nouvelle maison à la liste existante
         setMaisons([...maisons, response.data]);
-
-        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
         setMaisonData({
           addresse: "",
           superficie: "",
@@ -114,25 +166,23 @@ export default function GestionMaison({id}) {
           annee_construction: "",
           description: "",
         });
-
+  
         Swal.fire({
           icon: "success",
           title: "Succès!",
-          text: "Maison ajouté avec succès!",
+          text: "Maison ajoutée avec succès!",
         });
-        // fetchMaison();
-        // Fermez le modal ou effectuez d'autres actions nécessaires après l'ajout réussi
+  
         handleCloseEdit();
         fetchMaison();
       } else {
-        // Gestion d'erreurs ou affichage de messages d'erreur
-        console.error("Erreur dans lajout de maison");
+        console.error("Erreur dans l'ajout de la maison");
       }
     } catch (error) {
-      // Gestion des erreurs Axios
       console.error("Erreur Axios:", error);
     }
   };
+  
 
   // function pour lister les maison
   const fetchMaison = async () => {
@@ -174,38 +224,94 @@ export default function GestionMaison({id}) {
 
 
   // Modifier maison
-  const modifierMaison = async (id) => {
-    try {
-      if (!editMaisonData.image) {
-        // Gérer le cas où l'image n'est pas définie
-        console.error("L'image n'est pas définie.");
-        return;
+  // const modifierMaison = async (id) => {
+  //   try {
+  //     if (!editMaisonData.image) {
+  //       // Gérer le cas où l'image n'est pas définie
+  //       console.error("L'image n'est pas définie.");
+  //       return;
+  //     }
+  //     const response = await axios.put(
+  //       `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
+  //       editMaisonData
+  //     );
+
+  //     if (response.status === 200) {
+  //       const updatedMaisons = maisons.map((maison) =>
+  //         maison.id === editMaisonData.id ? response.data.maison : maison
+  //       );
+
+  //       setMaisons(updatedMaisons);
+  //       handleCloseEditMaisons();
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Succès!",
+  //         text: "Catégorie mise à jour avec succès!",
+  //       });
+  //       // handleShowEditMaisons();
+  //     } else {
+  //       console.error("erreur lors de la modification de la catégorie");
+  //     }
+  //   } catch (error) {
+  //     console.error("une erreur  Axios:", error);
+  //   }
+  // };
+  // Modifier maison
+const modifierMaison = async (id) => {
+  console.log(editMaisonData.image, 'valeur de l\'image avant la requête');
+  try {
+    // Créez un objet FormData pour l'envoi de la requête
+    const formData = new FormData();
+    formData.append('id', editMaisonData.id);
+    formData.append('addresse', editMaisonData.addresse);
+    formData.append('superficie', editMaisonData.superficie);
+    formData.append('prix', editMaisonData.prix);
+    formData.append('categories_id', editMaisonData.categories_id);
+    // formData.append('image', editMaisonData.image);
+    formData.append('image', editMaisonData.image);
+    formData.append('annee_construction', editMaisonData.annee_construction);
+    formData.append('description', editMaisonData.description);
+    // console.log(addresse, 'address')
+
+    const response = await axios.put(
+      `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
-      const response = await axios.put(
-        `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
-        editMaisonData
+    );
+
+    if (response.status === 200) {
+      const updatedMaisons = maisons.map((maison) =>
+        maison.id === editMaisonData.id ? response.data.maison : maison
       );
 
-      if (response.status === 200) {
-        const updatedMaisons = maisons.map((maison) =>
-          maison.id === editMaisonData.id ? response.data.maison : maison
-        );
-
-        setMaisons(updatedMaisons);
-        handleCloseEditMaisons();
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Catégorie mise à jour avec succès!",
-        });
-        // handleShowEditMaisons();
-      } else {
-        console.error("erreur lors de la modification de la catégorie");
-      }
-    } catch (error) {
-      console.error("une erreur  Axios:", error);
+      setMaisons(updatedMaisons);
+      handleCloseEditMaisons();
+      Swal.fire({
+        icon: "success",
+        title: "Succès!",
+        text: "Maison mise à jour avec succès!",
+      });
+    } else {
+      console.error("Erreur lors de la modification de la maison");
     }
-  };
+  } catch (error) {
+    console.error("Erreur Axios:", error);
+  }
+};
+const handleImageChange = (e) => {
+  const file = e.target.files[0];
+  // console.log(file, 'contenue image')
+  console.log(file, 'contenu de l\'image');
+  setEditMaisonData({
+    ...editMaisonData,
+    image: file,
+  });
+};
+
 
   // Function Supprimer maison
   const supprimerMaison =  async (id) =>{
@@ -329,7 +435,8 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                   {maison.image && (
                   <td>
                     <Image
-                      src={maison.image}
+                      // src={maison.image}
+                      src={`http://localhost:8000/storage/${maison.image}`} 
                       alt=""
                       className="img-profile-tab-maison"
                       id="img-profile-tab-maison"
@@ -343,7 +450,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                   )}
                   
                   
-                  <td>{maison.addresse}</td>
+                  {maison && <td>{maison.addresse || 'N/A'}</td>}
                   <td>{maison.superficie}m2 </td>
                   <td>{maison.prix}FCFA </td>
                   <td>
@@ -493,12 +600,15 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                 >
                   <Form.Label>Image</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="file"
                     placeholder=""
                     className="w-100"
-                    value={maisonData.image}
+                    // value={maisonData.image}
+                    // onChange={(e) =>
+                    //   setMaisonData({ ...maisonData, image: e.target.value })
+                    // }
                     onChange={(e) =>
-                      setMaisonData({ ...maisonData, image: e.target.value })
+                      setMaisonData({ ...maisonData, image: e.target.files[0] })
                     }
                   />
                 </Form.Group>
@@ -562,6 +672,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
           <Modal.Title>Modifier maison</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        {editMaisonData && editMaisonData.addresse && (
           <Form>
             <div className="d-flex justify-content-around ">
               <Form.Group
@@ -640,8 +751,8 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                     <option key={index} value={cat.id}>
                           {cat.titre}
                         </option>
-      );
-    })}
+                       );
+                      })}
                 </Form.Select>
               </Form.Group>
             </div>
@@ -652,16 +763,17 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
               >
                 <Form.Label>Image</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="file"
                   placeholder=""
                   className="w-100"
-                  value={editMaisonData?.image || ""}
-                  onChange={(e) =>
-                    setEditMaisonData({
-                      ...editMaisonData,
-                      image: e.target.value,
-                    })
-                  }
+                  // value={editMaisonData?.image || ""}
+                  // onChange={(e) =>
+                  //   setEditMaisonData({
+                  //     ...editMaisonData,
+                  //     image: e.target.value,
+                  //   })
+                  // }
+                  onChange={(e) => handleImageChange(e)}
                 />
               </Form.Group>
               <Form.Group
@@ -701,6 +813,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
               />
             </Form.Group>
           </Form>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={modifierMaison} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>

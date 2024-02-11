@@ -17,7 +17,7 @@ export default function Inscription() {
   const [password,setPassword]=useState("");
   const [telephone,setTelephone]=useState("");
   const [passwordConf,setPasswordConf]=useState("");
-  const [image,setImage]=useState('');
+  const [image,setImage]=useState(null);
 
   // state pour la validation des erreur de formulaire
   const [emailErr, setEmailErr] = useState(false);
@@ -58,15 +58,25 @@ export default function Inscription() {
                 });
                 return  
                 }else{
+                  // console.log(image, 'avant formData');
+                  const formData = new FormData();
+                    formData.append('nom', nom);
+                    formData.append('prenom', prenom);
+                    formData.append('email', email);
+                    formData.append('password', password);
+                    formData.append('telephone', telephone);
+                    // formData.append('image', image);
+                    formData.append('image', image, image.name);
+
+                    // console.log(formData, 'formData inscription')
                     // creer un obect dans la base de donnée
-                    const response = await axios.post('http://localhost:8000/api/register', {
-                      nom,
-                      prenom,
-                      email,
-                      password,
-                      telephone,
-                      image,
+                    const response = await axios.post('http://localhost:8000/api/register', formData, {
+                      headers: {
+                        'Content-Type': 'multipart/form-data',
+                      },
                     });
+                    // console.log(response.data.status, 'response inscription')
+                    // console.log(formData, 'formData inscription')
                     if (response.status === 200) {
                       // Succès - L'utilisateur a été enregistré
                       Swal.fire({
@@ -81,6 +91,7 @@ export default function Inscription() {
                       setPassword('');
                       setPasswordConf('');
                       setTelephone('');
+                      setImage('');
                       navigate('/connexion');
                     }
                      
@@ -159,11 +170,25 @@ export default function Inscription() {
 
         <Form.Group className="mb-3  " controlId="exampleForm.ControlInput7">
             <Form.Label> Profile </Form.Label><span style={{color:'red'}}>*</span>
-            <Form.Control type="text"  onChange={(e)=>setImage(e.target.value) } className='d-flex  justify-content-around'/>
+            <Form.Control type='file'  
+            // onChange={(e) => setImage(e.target.files[0];
+
+            //   console.log(selectedImage, 'selected  image');
+            //   setImage(selectedImage);
+            //   )
+            
+            // }
+            onChange={(e) => {
+              const selectedImage = e.target.files[0];
+              console.log(selectedImage, 'selected image');
+              setImage(selectedImage);
+            }}
+            
+             className='d-flex  justify-content-around'/>
         </Form.Group>
         <div className='btn-content-position'>
         <Button  onClick={ handleSubmit} type='submit'  className='btn-colour'>S'inscrire</Button>
-        <Button type='submit' onClick={handleCancel}  className='btn-colour1' id='btn-colour1' style={{marginLeft:'10px'}} >Annuler</Button>
+        <Button type='' onClick={handleCancel}  className='btn-colour1' id='btn-colour1' style={{marginLeft:'10px'}} >Annuler</Button>
         {/* onClick={handleCancel} */}
         </div>
         <Link to={'/connexion'} className='content-link' style={{color:'#D46F4D'}}>Vous avez dejas un? connectez vous</Link>

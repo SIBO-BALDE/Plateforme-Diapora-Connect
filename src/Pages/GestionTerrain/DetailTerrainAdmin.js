@@ -65,7 +65,8 @@ export default function DetailTerrainAdmin() {
                 <div className="one-img-left">
                   <div className="img-main-detail-maison">
                     <Image
-                      src={terrainDetails.image}
+                      // src={terrainDetails.image}
+                      src={`http://localhost:8000/storage/${terrainDetails.image}`} 
                       className="content-img-detail-maison1"
                     />
                   </div>

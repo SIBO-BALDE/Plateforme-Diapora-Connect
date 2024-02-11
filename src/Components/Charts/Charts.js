@@ -67,34 +67,7 @@ export default function Chart() {
 }
 
 
-// import React from 'react';
-// import { Pie } from 'react-chartjs-2';
 
-// import { Doughnut } from "react-chartjs-2";
-
-
-  
-// export default function Chart() {
-//     const data = {
-//         labels: ['Élément 1', 'Élément 2'],
-//         datasets: [
-//           {
-//             data: [50, 50], // Pourcentage de chaque élément
-//             backgroundColor: ['#FF6384', '#36A2EB'], // Couleurs pour chaque élément
-//             hoverBackgroundColor: ['#FF6384', '#36A2EB'],
-//           },
-//         ],
-//       };
-      
-//       const options = {
-//         // Ajoutez des options de configuration si nécessaire
-//       };
-//   return (
-//     <div><h2>Diagramme Circulaire</h2>
-//     {/* <Doughnut data={data} options={options} /> */}
-//     </div>
-//   )
-// }
 
 
 

@@ -114,7 +114,8 @@ export default function DetailMaisonAdmin() {
                 <div className="one-img-left">
                   <div className="img-main-detail-maison">
                     <Image
-                      src={maisonDetails.image}
+                      // src={maisonDetails.image}
+                      src={`http://localhost:8000/storage/${maisonDetails.image}`} 
                       className="content-img-detail-maison1"
                     />
                   </div>

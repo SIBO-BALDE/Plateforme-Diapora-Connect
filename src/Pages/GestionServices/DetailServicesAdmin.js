@@ -71,7 +71,8 @@ export default function DetailServicesAdmin() {
                 <div className="one-img-left">
                   <div className="img-main-detail-maison">
                     <Image
-                      src={serviceDetails.image}
+                      // src={serviceDetails.image}
+                      src={`http://localhost:8000/storage/${serviceDetails.image}`} 
                       className="content-img-detail-maison1"
                     />
                    
@@ -87,7 +88,10 @@ export default function DetailServicesAdmin() {
                          
                           <span>{serviceDetails.description}</span>
                         </div>
-                        
+                        <div className='d-flex justify-content-center mt-5'>
+              <Button id='btn-btn-ajouter-panier-services' className='me-2'>Demander service</Button>
+              <Button id='btn-btn-ajouter-panier-services'><a href="https://wa.me/774935677" style={{textDecoration:'none', color:'white'}}>Contactez Nous</a></Button>
+             </div>
                       </div>
                       <div>
                       </div>
@@ -97,10 +101,7 @@ export default function DetailServicesAdmin() {
               </div>
             </div>
           </div>
-          <div className='d-flex justify-content-center mt-5'>
-              <Button id='btn-btn-ajouter-panier-services' className='me-2'>Demander service</Button>
-              <Button id='btn-btn-ajouter-panier-services'><a href="https://wa.me/774935677" style={{textDecoration:'none', color:'white'}}>Contactez Nous</a></Button>
-             </div>
+         
         </div>
       
       </div>

@@ -72,7 +72,8 @@ function KPI() {
                   <tr key={userlist.id}>
                     <td>
                       <Image
-                        src={userlist.prenom}
+                        // src={userlist.prenom}
+                        src={`http://localhost:8000/storage/${userlist.image}`}
                         className="img-profile-tab-admin"
                       />
                     </td>

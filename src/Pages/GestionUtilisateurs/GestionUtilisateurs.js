@@ -320,7 +320,7 @@ const handleDebloquer = async (userId) => {
               displayUsers.map((userlist) => (
               <tr key={userlist.id}>
                 <td>
-                <Image src={userlist.image} className="img-profile-tab-user" id='img-profile-tab-user' 
+                <Image src={`http://localhost:8000/storage/${userlist.image}`} className="img-profile-tab-user" id='img-profile-tab-user' 
                   style={{height: "30px", width: "30px", borderRadius:"50%"}} />
                 </td>
                 <td>{userlist.nom}</td>

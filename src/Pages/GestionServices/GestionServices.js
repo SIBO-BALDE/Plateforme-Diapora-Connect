@@ -8,12 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Image, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import profileService from "../../fichiers/S1 (1).png";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Pagination from "../../Components/Pagination/Pagination";
 
+
 export default function GestionServices({ id }) {
+
+  
   const [showServices, setShowServices] = useState(false);
   const [showEditModalServices, setShowEditModalServices] = useState(false);
 
@@ -22,30 +24,50 @@ export default function GestionServices({ id }) {
   const handleCloseEditServices = () => setShowEditModalServices(false);
   // const  handleShowEditServices= () => setShowEditModalServices(true);
 
+  const handleFileChange = (file) => {
+    setNewFile(file);
+  };
+  
+
+
+  const [newFile, setNewFile] = useState('');
   // tableau ou stocker la liste des services
   const [services, setServices] = useState([]);
+
+
   // recherche champ input
   const [searchValue, setSearchValue] = useState('');
 
   const [serviceData, setServiceData] = useState({
     titre: "",
     description: "",
-    image: "",
+    image: '',
   });
 
   // function pour ajouter une service
   const ajouterService = async () => {
     try {
+      const formData = new FormData();
+      formData.append('titre', serviceData.titre);
+      formData.append('image', serviceData.image);
+      formData.append('description', serviceData.description);
+      console.log(serviceData.image, 'image')
       const response = await axios.post(
         "http://localhost:8000/api/service/create",
-        serviceData
+        formData,
+
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
       // Vérifiez si la requête a réussi
       if (response.status === 200) {
         // Ajoutez la nouvelle maison à la liste existante
         setServices([...services, response.data]);
-        console.log(response.data, "cc les amis");
+        // console.log(response.data, "cc les amis");
         // Réinitialisez les valeurs du formulaire après avoir ajouté le service
         setServiceData({
           titre: "",
@@ -76,20 +98,32 @@ export default function GestionServices({ id }) {
   const [editServiceData, setEditServiceData] = useState({
     id: null,
     titre: "",
+    image: '',
     description: "",
-    image: "",
   });
+
+ 
+
+
+  
 
   // Gestionnaire de clic pour le bouton de modification
   const handleShowEditServices = (service) => {
     setEditServiceData({
       id: service.id,
       titre: service.titre,
-      image: service.image,
+      image: service.image, 
       description: service.description,
     });
     setShowEditModalServices(true);
+    // console.log(service.image, 'service.image')
+    console.log(service.image, 'service.image');
+    console.log(service.titre, 'service.titre');
+    console.log(service.description, 'service.description');
   };
+ 
+  
+  
 
   //  Lister les services
   const fetchService = async () => {
@@ -100,7 +134,7 @@ export default function GestionServices({ id }) {
       // setservices(response.services);
       setServices(response.data.services);
 
-      console.log(response.data.services, "service");
+      // console.log(response.data.services, "service");
     } catch (error) {
       console.error("Erreur lors de la récupération des catégories:", error);
     }
@@ -109,20 +143,52 @@ export default function GestionServices({ id }) {
   // appeler la function fetch chaque recharge de la page
   useEffect(() => {
     fetchService();
-  }, []);
+    // console.log('messageuseeffect', editServiceData)
+  }, [showEditModalServices]);
 
   // Function pour modifier services
   const modifierService = async () => {
+    const formData = new FormData();
+    formData.append('id', editServiceData.id)
+      formData.append('titre',editServiceData.titre);
+
+      if (newFile instanceof File) {
+        formData.append('image', newFile);
+      }else{
+        formData.append('image', editServiceData.image);
+
+      }
+      console.log('Données avant la requête:', formData);
+
+      // formData.append('image',editServiceData.image);
+      formData.append('description',editServiceData.description);
+      console.log(editServiceData.id, 'editServiceData.id')
+      console.log(editServiceData.titre, 'editServiceData.titre')
+      console.log(editServiceData.image, 'editServiceData.image')
+      console.log(editServiceData.description, 'editServiceData.description')
+    
     try {
-      const response = await axios.put(
+      console.log("Avant envoi de la requête :", formData);
+      console.log("Valeur de editServiceData.image :", editServiceData.image);
+
+      const response = await axios.post(
         `http://localhost:8000/api/service/edit/${editServiceData.id}`,
-        editServiceData
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
 
-      if (response.status === 200) {
-        const updatedServices = services.map((service) =>
-          service.id === editServiceData.id ? response.data.service : service
-        );
+      // if (response.status === 200) {
+      //   const updatedServices = services.map((service) =>
+      //     service.id === editServiceData.id ? response.data.service : service
+      //   );
+        if (response.status === 200) {
+          const updatedServices = services.map((service) =>
+            service.id === editServiceData.id ? response.data.service : service
+          );
 
         setServices(updatedServices);
         handleCloseEditServices();
@@ -132,12 +198,25 @@ export default function GestionServices({ id }) {
           text: "Service mise à jour avec succès!",
         });
       } else {
-        console.error("erreur lors de la modification de la service");
+        console.log('Apres réponse de la requête:', response);
+        // console.error("erreur lors de la modification de la service");
       }
     } catch (error) {
       console.error("une erreur  Axios:", error);
     }
   };
+
+  // change image
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setEditServiceData({
+  //     ...editServiceData,
+  //     image: file,
+  //   });
+  // };
+  
+
+  
 
   // funtion pour supprimer les services
   const supprimerService = async (id) => {
@@ -168,8 +247,9 @@ export default function GestionServices({ id }) {
   };
 
   const filteredServices = services.filter((service) =>
-  service.titre && service.titre.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  service && service.titre && service.titre.toLowerCase().includes(searchValue.toLowerCase())
+);
+
   const displayServices = searchValue === '' ? services : filteredServices;
 
 
@@ -259,8 +339,11 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
               currentServices.map((service) => (
                 <tr key={service.id} className="">
                   <td>
+                
                     <Image
-                      src={service.image}
+                      // src={service.image}
+                      
+                      src={`http://localhost:8000/storage/${service.image}`}
                       className="img-profile-tab-maison"
                       id="img-profile-tab-maison"
                       style={{
@@ -269,6 +352,7 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
                         borderRadius: "50%",
                       }}
                     />
+                    
                   </td>
                   <td>{service.titre}</td>
                   <td className="d-flex justify-content-evenly">
@@ -354,11 +438,10 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
               >
                 <Form.Label>Image</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="file"
                   placeholder=""
-                  value={serviceData.image}
                   onChange={(e) =>
-                    setServiceData({ ...serviceData, image: e.target.value })
+                    setServiceData({ ...serviceData, image: e.target.files[0] })
                   }
                 />
               </Form.Group>
@@ -393,6 +476,10 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
       </>
       {/* modal fin ajouter maison */}
 
+
+
+
+
       {/* modal debut modifier maison */}
       <Modal
         show={showEditModalServices}
@@ -418,19 +505,23 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
                 // onInput={handleChange}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Image</Form.Label>
-              <Form.Control
-                type="text"
-                value={editServiceData.image}
-                onChange={(e) =>
-                  setEditServiceData({
-                    ...editServiceData,
-                    image: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
+            
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <div><Form.Label htmlFor="inputimage">Image</Form.Label></div>
+  
+                     {newFile ? (
+                      // Si newFile existe, afficher la nouvelle image
+                      <Image src={URL.createObjectURL(newFile)} width={200} height={50} />
+                      ) : (
+                        // Sinon, afficher l'image existante
+                        <Image src={`http://localhost:8000/storage/${editServiceData.image}`} width={200} height={50} />
+                      )}
+
+                      {/* <Form.Control type="file" onChange={(e) => setNewFile(e.target.files[0])} id='inputimage' /> */}
+                      <Form.Control type="file" onChange={(e) => handleFileChange(e.target.files[0])} id='inputimage' />
+
+              </Form.Group>
+
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
