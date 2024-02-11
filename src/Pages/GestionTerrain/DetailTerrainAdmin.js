@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NavbarAdmin from "../../Components/Navbars/NavbarAdmin/NavbarAdmin";
 import Tableaux from "../Tableaux/Tableaux";
 import SideBars from "../../Components/SideBars/SideBars";
@@ -48,15 +48,21 @@ export default function DetailTerrainAdmin() {
     
       
       <div className="">
-        <div className="maincontent-dashbord-static">
+        <div className="">
           <div className="contentsidebar">
-            <SideBars />
+            {/* <SideBars /> */}
           </div>
-          <div className="secondecontent">
-            <div className="">
+          <div className="">
+            {/* <div className="">
               <NavbarAdmin />
+            </div> */}
+            <div className="container">
+              {/* <NavbarAdmin /> */}
+              <Link to={'/dashbordAdmin'} 
+              style={{color:'#D46F4D', textDecoration:'none', fontWeight:'bold', marginTop:'20px'}}>
+                <FontAwesomeIcon  icon={faHouse}/> DASHBOARD ADMIN</Link>
             </div>
-            <Tableaux />
+            {/* <Tableaux /> */}
             <div
               id="content-main-detail-maison-content-admin"
               className="mt-2 container "

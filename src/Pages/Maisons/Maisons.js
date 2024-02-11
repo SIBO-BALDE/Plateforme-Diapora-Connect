@@ -100,7 +100,7 @@ const indexOfLastMaison = currentPage * maisonsParPage;
              currentMaisons.map((maisonList) => (
                     <div className="card1">
                     <div className="section_left">
-                     <Image src={maisonList.image} alt="" id='section-left'/>
+                     <Image src={`http://localhost:8000/storage/${maisonList.image}`} alt="" id='section-left'/>
                     </div>
                     <div className="section_right">
                       <p> <span><FontAwesomeIcon icon={faHouse}  id='iccon-sectionright-content'/> </span>Adress: <span id="prop">{maisonList.addresse}</span></p>

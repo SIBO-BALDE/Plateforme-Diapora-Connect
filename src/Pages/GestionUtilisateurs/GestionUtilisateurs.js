@@ -273,7 +273,11 @@ const handleDebloquer = async (userId) => {
               blockedUsers.map((blockedUser) => (
                 <tr key={blockedUser.id}>
                  <td>
-                <Image src={blockedUser.image} className="img-profile-tab-user" id='img-profile-tab-user' 
+                <Image 
+                    // src={blockedUser.image} 
+                    src={`http://localhost:8000/storage/${blockedUser.image}`} 
+                
+                  className="img-profile-tab-user" id='img-profile-tab-user' 
                   style={{height: "30px", width: "30px", borderRadius:"50%"}} />
                 </td>
                 <td>{blockedUser.nom}</td>

@@ -79,7 +79,7 @@ function KPI() {
                     </td>
                     <td>{userlist.prenom}</td>
                     <td>{userlist.nom}</td>
-                    <td>{userlist.eamil}</td>
+                    <td>{userlist.email}</td>
                     <td>{userlist.telephone}</td>
                   </tr>
                 ))}

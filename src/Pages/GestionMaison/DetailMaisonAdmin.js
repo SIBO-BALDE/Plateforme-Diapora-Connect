@@ -15,7 +15,7 @@ import NavbarAdmin from "../../Components/Navbars/NavbarAdmin/NavbarAdmin";
 import Tableaux from "../Tableaux/Tableaux";
 import profilemaison from "../../fichiers/bann accueil.jpeg";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function DetailMaisonAdmin() {
@@ -97,20 +97,24 @@ export default function DetailMaisonAdmin() {
   return (
     <div>
       <div className="">
-        <div className="maincontent-dashbord-static">
-          <div className="contentsidebar">
+        <div className="">
+          {/* <div className="contentsidebar">
             <SideBars />
-          </div>
-          <div className="secondecontent">
-            <div className="">
-              <NavbarAdmin />
+          </div> */}
+          <div className="">
+            <div className=" container">
+              {/* <NavbarAdmin /> */}
+              <Link to={'/dashbordAdmin'} 
+              style={{color:'#D46F4D', textDecoration:'none', fontWeight:'bold', marginTop:'20px'}}>
+                <FontAwesomeIcon  icon={faHouse}/> DASHBOARD ADMIN</Link>
+              {/* <Link to={'/gestionmaison'}> </Link> */}
             </div>
-            <Tableaux />
+            {/* <Tableaux /> */}
             <div
               id="content-main-detail-maison-content-admin"
               className="mt-2 container "
             >
-              <div className="d-flex content-main-detailmaison container ">
+              <div className="d-flex content-main-detailmaison container" style={{alignItems:'center', placeContent:'center'}}>
                 <div className="one-img-left">
                   <div className="img-main-detail-maison">
                     <Image

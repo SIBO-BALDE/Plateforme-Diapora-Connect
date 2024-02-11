@@ -70,7 +70,7 @@ export default function DetailTerrain() {
       <div className='d-flex content-main-detailmaison-services container'>
         <div className='one-img-left-services' style={{height:'360px'}} >
           <div className='img-main-detail-services'>
-            <Image  src={serviceLists && serviceLists.image} className='content-img-detail-services1' />
+            <Image   src={`http://localhost:8000/storage/${serviceLists && serviceLists.image}`} className='content-img-detail-services1' />
           </div>
           
         </div>

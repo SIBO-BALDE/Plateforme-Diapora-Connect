@@ -80,7 +80,8 @@ export default function DétailMaison() {
           <div className="one-img-left">
             <div className="img-main-detail-maison">
               <Image
-                src={maisonDetails && maisonDetails.image}
+                // src={maisonDetails && maisonDetails.image}
+                src={`http://localhost:8000/storage/${maisonDetails && maisonDetails.image}`}
                 className="content-img-detail-maison1"
               />
             </div>

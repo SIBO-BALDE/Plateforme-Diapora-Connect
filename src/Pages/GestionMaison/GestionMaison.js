@@ -30,18 +30,21 @@ export default function GestionMaison({id}) {
    // tableau ou stocker la liste des maison
    const [maisons, setMaisons] = useState([]);
 
+   const [newFile, setNewFile] = useState('');
 
   //  state pour liste les categorie 
   const [categories, setCategories] = useState([]);
 
   //  pour le champ recherche
   const [searchValue, setSearchValue] = useState('');
+
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
   const filteredMaisons = maisons.filter((maison) =>
-  maison.addresse && maison.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  maison && maison.addresse && maison.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  // service && service.titre && service.titre
   // console.log(maison, 'maison clg')
   );
   const displayMaisons = searchValue === '' ? maisons : filteredMaisons;
@@ -71,23 +74,50 @@ export default function GestionMaison({id}) {
     description: "",
   });
 
+  const handleFileChange = (file) => {
+    setNewFile(file);
+  };
+  
+
   // etat pour detail maison
   // const [detailMaison, setDetailMaison] = useState({})
 
   // Gestionnaire de clic pour le bouton de modification
+  // const handleShowEditMaisons = (maison) => {
+  //   setEditMaisonData({
+  //     id: maison.id,
+  //     addresse: maison.addresse,
+  //     superficie: maison.superficie,
+  //     prix: maison.prix,
+  //     categories_id: maison.categories_id,
+  //     image: maison.image,
+  //     annee_construction: maison.annee_construction,
+  //     description: maison.description,
+  //   });
+  //   setShowEditModalMaisons(true);
+  // };
   const handleShowEditMaisons = (maison) => {
-    setEditMaisonData({
-      id: maison.id,
-      addresse: maison.addresse,
-      superficie: maison.superficie,
-      prix: maison.prix,
-      categories_id: maison.categories_id,
-      image: maison.image,
-      annee_construction: maison.annee_construction,
-      description: maison.description,
-    });
-    setShowEditModalMaisons(true);
+    // console.log("categories_id:", maison.categories_id);
+    if  (maison && maison.categories_id) {
+      setEditMaisonData({
+        id: maison.id,
+        addresse: maison.addresse,
+        superficie: maison.superficie,
+        prix: maison.prix,
+        categories_id: maison.categories_id,
+        image: maison.image,
+        annee_construction: maison.annee_construction,
+        description: maison.description,
+      });
+      setShowEditModalMaisons(true);
+      // console.log(maison.categories_id, 'maison.categories_id onclick')
+    } else {
+      console.error("Catégorie non définie pour la maison à modifier.");
+      // Autres actions nécessaires en cas d'erreur...
+    }
+    
   };
+  
 
 
   // function pour ajouter une maison
@@ -144,7 +174,7 @@ export default function GestionMaison({id}) {
       formData.append('image', maisonData.image);
       formData.append('annee_construction', maisonData.annee_construction);
       formData.append('description', maisonData.description);
-    console.log(formData, 'formData maison')
+    // console.log(formData, 'formData maison')
       const response = await axios.post(
         "http://localhost:8000/api/maison/create",
         formData,
@@ -190,7 +220,7 @@ export default function GestionMaison({id}) {
       const response = await axios.get(
         "http://localhost:8000/api/maison/liste"
       );
-      console.log(response, "response");
+      // console.log(response, "response");
       setMaisons(response.data.maison);
 
       // console.log(maison, "liste maison");
@@ -258,7 +288,8 @@ export default function GestionMaison({id}) {
   // };
   // Modifier maison
 const modifierMaison = async (id) => {
-  console.log(editMaisonData.image, 'valeur de l\'image avant la requête');
+  // console.log(editMaisonData.image, 'valeur de l\'image avant la requête');
+  // console.log('Valeur de categories_id avant la requête:', editMaisonData.categories_id);
   try {
     // Créez un objet FormData pour l'envoi de la requête
     const formData = new FormData();
@@ -267,13 +298,20 @@ const modifierMaison = async (id) => {
     formData.append('superficie', editMaisonData.superficie);
     formData.append('prix', editMaisonData.prix);
     formData.append('categories_id', editMaisonData.categories_id);
-    // formData.append('image', editMaisonData.image);
-    formData.append('image', editMaisonData.image);
+    console.log(' avant categories_id', editMaisonData.categories_id)
+    if (newFile instanceof File) {
+      formData.append('image', newFile);
+    }else{
+      formData.append('image', editMaisonData.image);
+
+    }
+    // console.log('Données avant la requête:', formData);
+
     formData.append('annee_construction', editMaisonData.annee_construction);
     formData.append('description', editMaisonData.description);
     // console.log(addresse, 'address')
 
-    const response = await axios.put(
+    const response = await axios.post(
       `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
       formData,
       {
@@ -282,38 +320,50 @@ const modifierMaison = async (id) => {
         },
       }
     );
+    // console.log('Réponse du serveur après mise à jour :', response.data);
+    // console.log('Valeur de categories_id après la requête (côté client) :', response.data.maison.categories_id);
+
 
     if (response.status === 200) {
       const updatedMaisons = maisons.map((maison) =>
         maison.id === editMaisonData.id ? response.data.maison : maison
       );
+      // console.log('updatedMaisons:', updatedMaisons);
 
       setMaisons(updatedMaisons);
+      setEditMaisonData(response.data.maison);
       handleCloseEditMaisons();
       Swal.fire({
         icon: "success",
         title: "Succès!",
         text: "Maison mise à jour avec succès!",
       });
+      // console.log('Valeur de categories_id après la requête:', editMaisonData.categories_id);
     } else {
       console.error("Erreur lors de la modification de la maison");
     }
+
+    
   } catch (error) {
     console.error("Erreur Axios:", error);
   }
+  
 };
-const handleImageChange = (e) => {
-  const file = e.target.files[0];
-  // console.log(file, 'contenue image')
-  console.log(file, 'contenu de l\'image');
-  setEditMaisonData({
-    ...editMaisonData,
-    image: file,
-  });
-};
+
+
+// const handleImageChange = (e) => {
+//   const file = e.target.files[0];
+//   // console.log(file, 'contenue image')
+//   console.log(file, 'contenu de l\'image');
+//   setEditMaisonData({
+//     ...editMaisonData,
+//     image: file,
+//   });
+// };
 
 
   // Function Supprimer maison
+ 
   const supprimerMaison =  async (id) =>{
     try {
       const response = await axios.delete(`http://localhost:8000/api/maison/supprimer/${id}`);
@@ -458,6 +508,23 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                       ? maison.categorie.titre
                       : "Catégorie non définie"}{" "}
                   </td>
+                  {/* <td>
+                    {maison.categorie ? (
+    <>
+      {maison.categorie.titre && (
+        <span>{maison.categorie.titre}</span>
+      )}
+      {!maison.categorie.titre && (
+        <span>Catégorie non définie</span>
+      )}
+    </>
+                    ) : (
+                      <span>Catégorie non définie</span>
+                    )}
+                    {console.log("maison.categorie balise:", maison.categorie)}
+                    {console.log("maison.categorie.titre balise:", maison.categorie.titre)}
+                  </td> */}
+
                   <td className=" d-flex justify-content-evenly">
                     <Button
                       variant="primary"
@@ -593,7 +660,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                   </Form.Select>
                 </Form.Group>
               </div>
-              <div className="d-flex justify-content-around">
+              {/* <div className="d-flex justify-content-around"> */}
                 <Form.Group
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"
@@ -630,7 +697,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                     }
                   />
                 </Form.Group>
-              </div>
+              {/* </div> */}
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlTextarea1"
@@ -735,7 +802,8 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                 <Form.Label>Categorie</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
-                  value={editMaisonData.categories_id}
+                  // value={editMaisonData.categories_id}
+                  value={editMaisonData.categories_id || ""}
                   onChange={(e) =>
                     setEditMaisonData({
                       ...editMaisonData,
@@ -750,31 +818,28 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                       return (
                     <option key={index} value={cat.id}>
                           {cat.titre}
-                        </option>
+                    </option>
                        );
                       })}
+                     
                 </Form.Select>
               </Form.Group>
             </div>
-            <div className="d-flex justify-content-around">
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Image</Form.Label>
-                <Form.Control
-                  type="file"
-                  placeholder=""
-                  className="w-100"
-                  // value={editMaisonData?.image || ""}
-                  // onChange={(e) =>
-                  //   setEditMaisonData({
-                  //     ...editMaisonData,
-                  //     image: e.target.value,
-                  //   })
-                  // }
-                  onChange={(e) => handleImageChange(e)}
-                />
+            {/* <div className="d-flex justify-content-around"> */}
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <div><Form.Label htmlFor="inputimage">Image</Form.Label></div>
+  
+                     {newFile ? (
+                      // Si newFile existe, afficher la nouvelle image
+                      <Image src={URL.createObjectURL(newFile)} width={200} height={50} />
+                      ) : (
+                        // Sinon, afficher l'image existante
+                        <Image src={`http://localhost:8000/storage/${editMaisonData.image}`} width={200} height={50} />
+                      )}
+
+                      {/* <Form.Control type="file" onChange={(e) => setNewFile(e.target.files[0])} id='inputimage' /> */}
+                      <Form.Control type="file" onChange={(e) => handleFileChange(e.target.files[0])} id='inputimage' />
+
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -794,7 +859,7 @@ const totalPaginationPages = Math.ceil(maisons.length / maisonsParPage);
                   }
                 />
               </Form.Group>
-            </div>
+            {/* </div> */}
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"

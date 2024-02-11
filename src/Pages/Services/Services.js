@@ -88,7 +88,7 @@ const totalPaginationPages = Math.ceil(serviceLists.length / servicesParPage);
               currentServices .map((serviceList) => (
           <div className='content-main-service-card'>
             <div className='content-main-service-content'>
-              <Image src={serviceList.image} id='content-main-service-contentimg' />
+              <Image  src={`http://localhost:8000/storage/${serviceList.image}`}  id='content-main-service-contentimg' />
             </div>
             <div className='content-bottom-card'>
             <div><h6 className='text-center mt-3 '>{serviceList.titre}</h6></div>

@@ -148,6 +148,7 @@ export default function GestionServices({ id }) {
 
   // Function pour modifier services
   const modifierService = async () => {
+
     const formData = new FormData();
     formData.append('id', editServiceData.id)
       formData.append('titre',editServiceData.titre);
@@ -180,6 +181,7 @@ export default function GestionServices({ id }) {
           },
         }
       );
+     
 
       // if (response.status === 200) {
       //   const updatedServices = services.map((service) =>

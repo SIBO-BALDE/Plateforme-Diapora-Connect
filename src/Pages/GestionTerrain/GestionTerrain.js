@@ -36,16 +36,19 @@ export default function GestionTerrain(id) {
   });
 
   const [terrains, setTerrains] = useState([]);
+  const [newFile, setNewFile] = useState('');
 
   
   // pour la recherche  
   const [searchValue, setSearchValue] = useState('');
+
   const handleSearchChange = (event) => {
     setSearchValue(event.target.value);
   };
 
   const filteredTerrains = terrains.filter((terrain) =>
-  terrain.addresse && terrain.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  terrain && terrain.addresse && terrain.addresse.toLowerCase().includes(searchValue.toLowerCase())
+  // service && service.titre && service.titre
   );
   const displayTerrains = searchValue === '' ? terrains : filteredTerrains;
 
@@ -120,11 +123,20 @@ export default function GestionTerrain(id) {
   //  Lister les terrains
   useEffect(() => {
     fetchTerrains();
-  }, []);
+  }, [showEditModalLand]);
 
   // modification des terrains
   // Gestionnaire de clic pour le bouton de modification
   const handleShowEditTerrains = (terrain) => {
+    // setEditTerrainData({
+    //   id: terrain.id,
+    //   addresse: terrain.addresse,
+    //   superficie: terrain.superficie,
+    //   prix: terrain.prix,
+    //   image: terrain.image,
+    //   description: terrain.description,
+    // });
+    
     setEditTerrainData({
       id: terrain.id,
       addresse: terrain.addresse,
@@ -134,6 +146,8 @@ export default function GestionTerrain(id) {
       description: terrain.description,
     });
     setshowEditModalLand(true);
+    console.log(editTerrainData, "editTerrainData recuperation")
+    console.log('Prix after adding to  mis a jour handleShowEditTerrains:', terrain.prix);
   };
 
 
@@ -147,23 +161,59 @@ export default function GestionTerrain(id) {
     description: "",
   });
 
+  const handleFileChange = (file) => {
+    setNewFile(file);
+  };
+
 
   // Fonction pour mettre à jour une terrain
   const modifierTerrain = async () => {
+    const formData = new FormData();
+
+    console.log('Prix before adding to formData:', editTerrainData.prix);
+    formData.append('id', editTerrainData.id)
+      formData.append('addresse',editTerrainData.addresse);
+      formData.append('superficie',editTerrainData.superficie);
+      formData.append('prix:',editTerrainData.prix);
+      console.log('Prix after adding to formData:', editTerrainData.prix);
+      formData.append('description',editTerrainData.description);
+
+      if (newFile instanceof File) {
+        formData.append('image', newFile);
+      }else{
+        formData.append('image', editTerrainData.image);
+
+      }
+      console.log('editTerrainData terrain avant axios',editTerrainData)
+      // console.log(formData, 'formData avant ')
+      // console.log(typeof(editTerrainData.prix), 'typeof ')
     try {
-      const response = await axios.put(
+      const response = await axios.post(
         `http://localhost:8000/api/terrain/edit/${editTerrainData.id}`,
-        editTerrainData
-      );
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+        );
+        console.log('formData terrain',formData)
+        console.log('editTerrainData terrain apres axios',editTerrainData)
+        console.log('Prix after adding to formData mis a jour:', editTerrainData.prix);
+      // console.log(editTerrainData, 'pres ')
+      // console.log(formData, ' formData pres ')
       // console.log(editTerrainData, "this is the terrain edit");
 
-      if (response.status === 200) {
-        const updatedTerrains = terrains.map((terrain) =>
-          terrain.id === editTerrainData.id ? response.data.terrain : terrain
-        );
-        // console.log(updatedTerrains, "this is the img")
+        if (response.status === 200) {
+          const updatedTerrains = terrains.map((terrain) =>
+            terrain.id === editTerrainData.id ? response.data.terrains : terrain
+          );
+          console.log(updatedTerrains, 'updatedTerrains')
+          console.log(response.data, 'response.data')
+          console.log(response.data.terrains, 'response.data.terrains')
 
         setTerrains(updatedTerrains);
+        // console.log(updatedTerrains, 'updatedTerrains1')
         handleCloseEditLand();
         Swal.fire({
           icon: "success",
@@ -401,7 +451,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   />
                 </Form.Group>
               </div>
-              <div className="d-flex justify-content-around">
+              {/* <div className="d-flex justify-content-around"> */}
                 <Form.Group
                   className="mb-3"
                   controlId="exampleForm.ControlInput1"
@@ -434,7 +484,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     }
                   />
                 </Form.Group>
-              </div>
+              
               
               <Form.Group
                 className="mb-3"
@@ -514,7 +564,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                 />
               </Form.Group>
             </div>
-            <div className="d-flex justify-content-around">
+            {/* <div className="d-flex justify-content-around"> */}
               <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
@@ -532,7 +582,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   }
                 />
               </Form.Group>
-              <Form.Group
+              {/* <Form.Group
                 className="mb-3"
                 controlId="exampleForm.ControlInput1"
               >
@@ -549,8 +599,26 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     })
                   }
                 />
+              </Form.Group> */}
+
+
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <div><Form.Label htmlFor="inputimage">Image</Form.Label></div>
+  
+                     {newFile ? (
+                      // Si newFile existe, afficher la nouvelle image
+                      <Image src={URL.createObjectURL(newFile)} width={200} height={50} />
+                      ) : (
+                        // Sinon, afficher l'image existante
+                        <Image src={`http://localhost:8000/storage/${editTerrainData.image}`} width={200} height={50} />
+                      )}
+
+                      {/* <Form.Control type="file" onChange={(e) => setNewFile(e.target.files[0])} id='inputimage' /> */}
+                      <Form.Control type="file" onChange={(e) => handleFileChange(e.target.files[0])} id='inputimage' />
+
               </Form.Group>
-            </div>
+
+            {/* </div> */}
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"

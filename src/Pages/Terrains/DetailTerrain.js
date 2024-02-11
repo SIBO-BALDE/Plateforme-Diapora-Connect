@@ -59,7 +59,8 @@ export default function DetailTerrain() {
           <div className="one-img-left-terrain" style={{height:'360px'}}>
             <div className="img-main-detail-terrain" >
               <Image
-                src={terrainDetails && terrainDetails.image}
+                // src={terrainDetails && terrainDetails.image}
+                src={`http://localhost:8000/storage/${terrainDetails && terrainDetails.image}`}
                 className="content-img-detail-terrain1"
               />
             </div>

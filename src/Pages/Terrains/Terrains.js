@@ -93,7 +93,7 @@ const indexOfLastTerrain = currentPage * terrainsParPage;
         {currentTerrains &&
               currentTerrains.map((terrainList) => (
           <div className='card-land-band'>
-            <div className='card-land-imgcontent'><Image src={terrainList.image} className='card-land-img' /> </div>
+            <div className='card-land-imgcontent'><Image src={`http://localhost:8000/storage/${terrainList.image}`} className='card-land-img' /> </div>
           
           <div className='pricelandcontent d-flex '>
             <h6>{terrainList.prix} FCFA</h6>

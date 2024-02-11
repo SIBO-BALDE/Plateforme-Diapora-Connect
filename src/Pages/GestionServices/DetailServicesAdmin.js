@@ -10,6 +10,8 @@ import axios from 'axios'
 import SideBars from '../../Components/SideBars/SideBars'
 import NavbarAdmin from '../../Components/Navbars/NavbarAdmin/NavbarAdmin'
 import Tableaux from '../Tableaux/Tableaux'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHouse } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function DetailServicesAdmin() {
@@ -54,15 +56,18 @@ export default function DetailServicesAdmin() {
     
 
      <div className="">
-        <div className="maincontent-dashbord-static">
-          <div className="contentsidebar">
+        <div className="">
+          {/* <div className="contentsidebar">
             <SideBars />
-          </div>
-          <div className="secondecontent">
-            <div className="">
-              <NavbarAdmin />
+          </div> */}
+          <div className="">
+            <div className="container">
+              {/* <NavbarAdmin /> */}
+              <Link to={'/dashbordAdmin'} 
+              style={{color:'#D46F4D', textDecoration:'none', fontWeight:'bold', marginTop:'20px'}}>
+                <FontAwesomeIcon  icon={faHouse}/> DASHBOARD ADMIN</Link>
             </div>
-            <Tableaux />
+            {/* <Tableaux /> */}
             <div
               id="content-main-detail-maison-content-admin"
               className="mt-2 container "
