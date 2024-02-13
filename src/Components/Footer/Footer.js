@@ -7,12 +7,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 import './Footer.css';
-import { Form } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 
 
 export default function Footer() {
-  const [email, setEmail] = useState('');
+  
+
+  const [emailData, setEmailData] = useState({
+    email: "",
+    
+  });
+  const [emailVal, setEmailVal] = useState([]);
 
   // const handleEmailChange = (e) => {
   //   setEmail(e.target.value);
@@ -30,6 +37,36 @@ export default function Footer() {
   //       console.error('Erreur lors de l\'envoi de la newsletter:', error);
   //     });
   // };
+  const handleSubscribe = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/newsletter/create",
+        emailData
+      );
+
+      // Vérifiez si la requête a réussi
+      if (response.status === 200) {
+        // Ajoutez la nouvelle maison à la liste existante
+        setEmailVal([...emailVal, response.data]);
+        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+        setEmailData({
+          email: "",
+          
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Succès!",
+          text: "subscription de newsletter a reussi !",
+        });
+       
+      } else {
+        console.error("Erreur dans lajout de maison");
+      }
+    } catch (error) {
+      // Gestion des erreurs Axios
+      console.error("Erreur Axios:", error);
+    }
+  };
 
 
 
@@ -50,14 +87,26 @@ export default function Footer() {
         <div className="Section_Footer_Newsletters_Input">
           <Form>
             <Form.Group>
-            <Form.Control
+            <div className='d-flex'>
+            <div><Form.Control
              type="e-mail" placeholder="Saisissez Votre e-mail" id="email" 
             //  value={email}
             //  onChange={handleEmailChange}
+             value={emailData.titre}
+             onChange={(e) =>
+              setEmailData({ ...emailData, email: e.target.value })
+             }
             
-            />
+            /></div>
+          <div>
+            <Button  id="incription1"
+            onClick={ handleSubscribe}
+            
+
+            >S'inscrire</Button>
+          </div>
+            </div>
             </Form.Group>
-          <button  id="incription1">S'inscrire</button>
           </Form>
         </div>
       </div>

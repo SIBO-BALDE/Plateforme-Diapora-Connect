@@ -32,6 +32,7 @@
     background-color: var(--principal) !important;
     color: var(--seconde) !important;
 }
+
 #page-link:hover{
     background-color: var(--seconde) !important;
     color:var(--principal) !important;
@@ -62,4 +63,18 @@
 }
 #iconpagination{
     color: var(--principal) !important;
+}
+/* .page-item{
+    background-color: var(--principal) !important;
+    color: var(--seconde);
+} */
+.active>.page-link{
+    background-color: var(--principal) !important;
+    color: var(--seconde) !important;
+    border: none !important;
+
+}
+.page-link {
+    color: var(--principal) !important;
+
 }

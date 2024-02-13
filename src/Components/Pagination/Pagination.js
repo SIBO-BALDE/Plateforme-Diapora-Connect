@@ -10,7 +10,7 @@ export default function Pagination({ currentPage, totalPaginationPages, setCurre
     for (let i = 1; i <= totalPaginationPages; i++) {
       items.push(
         <li className={`page-item ${currentPage === i ? 'active' : ''}`} key={i}>
-          <a className="page-link" onClick={() => setCurrentPage(i)} href="#">
+          <a className="page-link " onClick={() => setCurrentPage(i)} href="#" >
             {i}
           </a>
         </li>
@@ -21,28 +21,17 @@ export default function Pagination({ currentPage, totalPaginationPages, setCurre
   return (
     <div>
      <nav aria-label="Page navigation example" id='navigation'>
-        <ul className="pagination">
-            <li className="page-item" id='page-item'>
-              <a className="page-link"  onClick={() => setCurrentPage(currentPage - 1)} href="#" aria-label="Previous" id='page-link1' >
+        <ul className="pagination" >
+              <a className="page-link"  onClick={() => setCurrentPage(currentPage - 1)} 
+                   href="#" aria-label="Previous" id='page-link1' >
                 <FontAwesomeIcon icon={faChevronLeft} id='iconpagination' /> 
               </a>
-              </li>
-             
-            {/* <li className="page-item" id='page-item1'>
-              <a className="page-link" id='page-link' href="#">1</a>
-              </li>
-            <li className="page-item" id='page-item'>
-              <a className="page-link" href="#">2</a>
-            </li>
-            <li className="page-item" id='page-item'>
-              <a className="page-link" href="#">3</a>
-              </li> */}
+              
               {renderPaginationItems()}
-            <li className="page-item" id='page-item'>
-              <a className="page-link" id='page-link1' href="#" onClick={() => setCurrentPage(currentPage + 1)}  aria-label="Next">
+              <a className="page-link" id='page-link1' href="#" 
+                 onClick={() => setCurrentPage(currentPage + 1)}  aria-label="Next">
                 <FontAwesomeIcon icon={faChevronRight} id='iconpagination'/>
                 </a>
-              </li>
         </ul>
     </nav>
     </div>

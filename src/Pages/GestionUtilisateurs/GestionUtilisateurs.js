@@ -53,7 +53,8 @@ export default function GestionUtilisateurs() {
 
 
 //  function pour bloquer un user
-  const handleBloquer = async (userId) => {
+ 
+const handleBloquer = async (userId) => {
   try {
     const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
       isBlocked: !userLists.find((user) => user.id === userId).bloque,

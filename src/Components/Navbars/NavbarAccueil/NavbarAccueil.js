@@ -153,11 +153,11 @@ export default function NavbarAccueil() {
             {/* <span className='cartcontent'>
               <Nav.Link href='/panier' id='paniericon'><FontAwesomeIcon icon={faCartShopping} className='paniericon' /><span className='cartnumber'><small>10</small></span></Nav.Link>
             </span> */}
-            {isAuthenticated ? (
+            {/* {isAuthenticated ? (
           <ButtonLogOut setIsAuthenticated={handleLogout} />
-          ) : (
+          ) : ( */}
           <ButtonLogin setIsAuthenticated={handleLogin} />
-        )}
+        {/* )} */}
         </Navbar.Collapse>
       </Container>
     </Navbar>

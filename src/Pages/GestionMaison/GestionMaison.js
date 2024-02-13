@@ -232,7 +232,7 @@ export default function GestionMaison({id}) {
   // recuperer la liste des maisons
   useEffect(() => {
     fetchMaison();
-  }, []);
+  }, [handleShowEditMaisons]);
 
 
   // recuperer les categorie

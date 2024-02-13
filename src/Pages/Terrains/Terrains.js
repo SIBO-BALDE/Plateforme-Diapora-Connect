@@ -4,6 +4,7 @@ import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil'
 import Footer from '../../Components/Footer/Footer';
 import { Button, Form, Image } from 'react-bootstrap';
 import banland from '../../fichiers/ban terrain.png'
+import banland1 from "../../fichiers/Automotive Banner.png";
 import land1 from '../../fichiers/land1.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faComment, faGlobe, faHouse, faLocation, faLocationDot } from '@fortawesome/free-solid-svg-icons';
@@ -68,7 +69,7 @@ const indexOfLastTerrain = currentPage * terrainsParPage;
       <div className='contentmainland'>
         {/* banner */}
         <div>
-          <Image src={banland}  id='imgbanland'/>
+          <Image src={banland1}  id='imgbanland'/>
         </div>
         <Underline text='Nos offre de terrains' />
         <ButtonWatshapp />

@@ -21,6 +21,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentification/AuthContext";
 import Swal from "sweetalert2";
+import GestionNewsLetter from "../GestionNewsletter/GestionNewsLetter";
 
 function KPI() {
   const [userLists, setUserLists] = useState([]);
@@ -161,8 +162,8 @@ function RenderContent(name) {
       return <GestionFavorie />;
     case "gestioncategorie":
       return <GestionCategorie />;
-    // case "gestionpayment":
-    //   return <GestionPayment />;
+    case "gestionnewletter":
+      return <GestionNewsLetter />;
     default:
       return <KPI />;
   }

@@ -9,6 +9,7 @@ import { Button, Form, Image, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import profileterrain from "../../fichiers/land1.png";
+
 import axios from "axios";
 import Swal from "sweetalert2";
 import Pagination from "../../Components/Pagination/Pagination";
@@ -174,7 +175,7 @@ export default function GestionTerrain(id) {
     formData.append('id', editTerrainData.id)
       formData.append('addresse',editTerrainData.addresse);
       formData.append('superficie',editTerrainData.superficie);
-      formData.append('prix:',editTerrainData.prix);
+      formData.append('prix',editTerrainData.prix);
       console.log('Prix after adding to formData:', editTerrainData.prix);
       formData.append('description',editTerrainData.description);
 
@@ -198,6 +199,7 @@ export default function GestionTerrain(id) {
         }
         );
         console.log('formData terrain',formData)
+        console.log(response, 'response response mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
         console.log('editTerrainData terrain apres axios',editTerrainData)
         console.log('Prix after adding to formData mis a jour:', editTerrainData.prix);
       // console.log(editTerrainData, 'pres ')
@@ -206,11 +208,12 @@ export default function GestionTerrain(id) {
 
         if (response.status === 200) {
           const updatedTerrains = terrains.map((terrain) =>
-            terrain.id === editTerrainData.id ? response.data.terrains : terrain
+            terrain.id === editTerrainData.id ? response.data.terrain : terrain
           );
+          console.log(response.data.status, 'response status mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
           console.log(updatedTerrains, 'updatedTerrains')
           console.log(response.data, 'response.data')
-          console.log(response.data.terrains, 'response.data.terrains')
+          console.log(response.data.terrain, 'response.data.terrains')
 
         setTerrains(updatedTerrains);
         // console.log(updatedTerrains, 'updatedTerrains1')

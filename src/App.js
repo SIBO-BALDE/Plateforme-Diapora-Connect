@@ -23,6 +23,7 @@ import { AuthProvider } from "./Pages/Authentification/AuthContext";
 import MentionsLegals from "./Pages/PolitiquesConfidentialités/MentionsLegals";
 import PolitiqueDeConfidentialites from "./Pages/PolitiquesConfidentialités/PolitiqueDeConfidentialites";
 import ConditionUtilisation from "./Pages/PolitiquesConfidentialités/ConditionUtilisation";
+import GestionNewsLetter from "./Pages/GestionNewsletter/GestionNewsLetter";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -56,7 +57,7 @@ function App() {
         <Route path="detailservicesadmin/:id" element={<DetailServicesAdmin/>}></Route>
         <Route path="detailmaisonadmin/:id" element={<DetailMaisonAdmin/>}></Route>
         <Route path="detailterrainadmin/:id" element={<DetailTerrainAdmin/>}></Route>
-        {/* <Route path="detailterrainAdmin" element={<DetailTerrainAdmin/>}></Route> */}
+        <Route path="gestionnewletter" element={<GestionNewsLetter/>}></Route>
       </Routes>
       </AuthProvider>
     </div>

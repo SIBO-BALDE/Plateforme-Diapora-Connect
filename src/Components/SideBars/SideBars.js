@@ -15,6 +15,7 @@ import {
   faGauge,
   faLayerGroup,
   faHeart,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "../../Pages/Authentification/AxiosAuthIntercepteur";
 import Swal from "sweetalert2";
@@ -62,10 +63,15 @@ const links = [
     text: "Gestion Catégories",
     icon: faLayerGroup,
   },
+  // {
+  //   // path: "gestionfavorie",
+  //   // text: "Gestion Favoris",
+  //   // icon: faHeart,
+  // },
   {
-    // path: "gestionfavorie",
-    // text: "Gestion Favoris",
-    // icon: faHeart,
+    path: "gestionnewletter",
+    text: "Gestion New Letter",
+    icon: faEnvelope,
   },
 ];
 
