@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Authentification/AuthContext";
 import Swal from "sweetalert2";
 import GestionNewsLetter from "../GestionNewsletter/GestionNewsLetter";
+import Pagination from "../../Components/Pagination/Pagination";
 
 function KPI() {
   const [userLists, setUserLists] = useState([]);
@@ -43,10 +44,25 @@ function KPI() {
     };
     fetchUsers();
   }, []);
+
+  // pour la pagination
+const [currentPage, setCurrentPage] = useState(1);
+const userListsParPage = 2;
+
+// pagination
+const indexOfLastUserLists = currentPage * userListsParPage;
+const indexOfFirstUserLists = indexOfLastUserLists - userListsParPage;
+const currentUserLists = userLists.slice(indexOfFirstUserLists, indexOfLastUserLists);
+
+const totalPaginationPages = Math.ceil(userLists.length / userListsParPage);
+
+
+
   return (
     <div className="contenueprincipal container ">
       <div className="dashbord-content-main-one container" id="vv">
         <div className="content-left-admin-dashbord">
+          <h3 className="mb-2">Liste des utilisateurs</h3>
           <table className="table mb-5">
             <thead className="table-light" id="hearder-color">
               <tr>
@@ -68,8 +84,8 @@ function KPI() {
               </tr>
             </thead>
             <tbody>
-              {userLists &&
-                userLists.map((userlist) => (
+              {currentUserLists &&
+                currentUserLists.map((userlist) => (
                   <tr key={userlist.id}>
                     <td>
                       <Image
@@ -86,6 +102,14 @@ function KPI() {
                 ))}
             </tbody>
           </table>
+          <div>
+          <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
+          </div>
           <div className="conten-admin-2">
             <div className="title-progressbar-admin px-4 ">
               <p>

@@ -8,13 +8,19 @@ import "./Auth.css";
 import axios from "axios";
 
 import { useAuth } from "../Authentification/AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -150,10 +156,25 @@ export default function Connexion() {
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
             <Form.Label>Mot de pass</Form.Label><span style={{color:'red'}}>*</span>
+            <div style={{  position: 'relative'}}>
             <Form.Control
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               onChange={(e) => setPassword(e.target.value)}
+              style={{ paddingRight: '30px' }}
             />
+            <span
+          onClick={togglePasswordVisibility}
+          style={{
+            position: 'absolute',
+            right: '5px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            cursor: 'pointer',
+          }}
+        >
+          <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+        </span>
+        </div>
           </Form.Group>
 
           <div className="btn-content-position">

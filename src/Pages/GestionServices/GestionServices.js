@@ -267,6 +267,107 @@ const currentServices = filteredServices.slice(indexOfFirstService, indexOfLastS
 
 const totalPaginationPages = Math.ceil(services.length / servicesParPage);
 
+// etat pour faire la validation des champs
+const [errors, setErrors] = useState({
+  titre: "",
+  image: "",
+  description: "",
+});
+
+const [successeds, setSuccesseds] = useState({
+  titre: "",
+  image: "",
+  description: "",
+});
+
+const [validationStatus, setValidationStatus] = useState(false);
+
+// funtion pour verifier si les champs sont valides ou pas
+const validateField = (name, value) => {
+  // Ajoutez vos conditions de validation pour chaque champ
+  let errorMessage = "";
+  let successMessage = "";
+
+  if (name === "titre") {
+    if (!value.trim()) {
+      errorMessage = "Le titre ne peut pas être vide";
+    } else if (value.trim().length < 2) {
+      errorMessage = "Le titre doit contenir au moins deux lettres";
+    } else {
+      successMessage = "L'adresse est valide";
+    }
+  }    
+  else if (name === "image") {
+    if (!value) {
+      errorMessage = "L'image doit être definie";
+    } else {
+      successMessage = "L'image a été definie";
+    }
+  } 
+
+  // Mettez à jour le state en utilisant le nom du champ actuel
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [name]: errorMessage,
+  }));
+  setSuccesseds((prevSuccess) => ({
+    ...prevSuccess,
+    [name]: successMessage,
+  }));
+
+  const isValid = Object.values(errors).every((error) => !error);
+  setValidationStatus(isValid);
+};
+
+ // femer annuler la modificacion
+ const handleCancleEdit = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseEditServices();
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
+ // annuler l'ajout
+ const handleCancleAdd = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseServices();
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
+
 
   return (
     <div className="container">
@@ -311,6 +412,7 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
         </div>
       </div>
       <div className="mt-4 ms-3  me-3">
+      <h3>Liste des services</h3>
         <table className="table border  border-1">
           <thead
             className=""
@@ -429,10 +531,18 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
                   type="text"
                   placeholder=""
                   value={serviceData.titre}
-                  onChange={(e) =>
+                  onChange={(e) =>{
                     setServiceData({ ...serviceData, titre: e.target.value })
+                    validateField("titre", e.target.value);
+                  }
                   }
                 />
+                 {errors.titre && (
+                    <p className="error-message">{errors.titre}</p>
+                  )}
+                  {successeds.titre && (
+                    <p className="success-message">{successeds.titre}</p>
+                  )}
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -443,9 +553,19 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
                   type="file"
                   placeholder=""
                   onChange={(e) =>
-                    setServiceData({ ...serviceData, image: e.target.files[0] })
+                    {
+
+                      setServiceData({ ...serviceData, image: e.target.files[0] })
+                      validateField("image", e.target.files[0] );
+                    }
                   }
                 />
+                 {errors.image && (
+                    <p className="error-message">{errors.image}</p>
+                  )}
+                  {successeds.image && (
+                    <p className="success-message">{successeds.image}</p>
+                  )}
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -470,7 +590,7 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
             <Button variant="secondary" onClick={ajouterService} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseServices} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+            <Button variant="primary" onClick={handleCancleAdd} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -499,13 +619,21 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
                 type="text"
                 value={editServiceData.titre}
                 onChange={(e) =>
-                  setEditServiceData({
-                    ...editServiceData,
-                    titre: e.target.value,
-                  })
+                  {
+                    setEditServiceData({
+                      ...editServiceData,
+                      titre: e.target.value,
+                    })
+                    validateField("titre", e.target.value);
+                  }
                 }
-                // onInput={handleChange}
               />
+                  {errors.titre && (
+                    <p className="error-message">{errors.titre}</p>
+                  )}
+                  {successeds.titre && (
+                    <p className="success-message">{successeds.titre}</p>
+                  )}
             </Form.Group>
             
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -547,7 +675,7 @@ const totalPaginationPages = Math.ceil(services.length / servicesParPage);
           <Button variant="secondary" onClick={modifierService} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEditServices} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+          <Button variant="primary" onClick={handleCancleEdit} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

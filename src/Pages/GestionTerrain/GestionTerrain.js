@@ -66,6 +66,7 @@ export default function GestionTerrain(id) {
       formData.append('image', terrainData.image);
       // formData.append('annee_construction', terrainData.annee_construction);
       formData.append('description', terrainData.description);
+      console.log( terrainData.image, 'image terrain verif')
       console.log(formData, 'formData maison')
       const response = await axios.post(
         "http://localhost:8000/api/terrain/create",
@@ -126,18 +127,9 @@ export default function GestionTerrain(id) {
     fetchTerrains();
   }, [showEditModalLand]);
 
-  // modification des terrains
+  
   // Gestionnaire de clic pour le bouton de modification
   const handleShowEditTerrains = (terrain) => {
-    // setEditTerrainData({
-    //   id: terrain.id,
-    //   addresse: terrain.addresse,
-    //   superficie: terrain.superficie,
-    //   prix: terrain.prix,
-    //   image: terrain.image,
-    //   description: terrain.description,
-    // });
-    
     setEditTerrainData({
       id: terrain.id,
       addresse: terrain.addresse,
@@ -161,6 +153,7 @@ export default function GestionTerrain(id) {
     image: "",
     description: "",
   });
+
 
   const handleFileChange = (file) => {
     setNewFile(file);
@@ -256,15 +249,143 @@ export default function GestionTerrain(id) {
 
     // pour la pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const terrainsParPage = 6;
+    const terrainsParPage = 4;
 
 
    // pagination
-const indexOfLastTerrain = currentPage * terrainsParPage;
-const indexOfFirstTerrain = indexOfLastTerrain - terrainsParPage;
-const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
+    const indexOfLastTerrain = currentPage * terrainsParPage;
+    const indexOfFirstTerrain = indexOfLastTerrain - terrainsParPage;
+    const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
 
 const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
+
+// etat pour faire la validation des champs
+const [errors, setErrors] = useState({
+  addresse: "",
+  superficie: "",
+  prix: "",
+  categories_id: "",
+  image: "",
+  annee_construction: "",
+  description: "",
+});
+
+const [successeds, setSuccesseds] = useState({
+  addresse: "",
+  superficie: "",
+  prix: "",
+  categories_id: "",
+  image: "",
+  annee_construction: "",
+  description: "",
+});
+
+const [validationStatus, setValidationStatus] = useState(false);
+
+// funtion pour verifier si les champs sont valides ou pas
+const validateField = (name, value) => {
+  // Ajoutez vos conditions de validation pour chaque champ
+  let errorMessage = "";
+  let successMessage = "";
+
+  if (name === "addresse") {
+    if (!value.trim()) {
+      errorMessage = "L'adresse ne peut pas être vide";
+    } else if (value.trim().length < 2) {
+      errorMessage = "L'adresse doit contenir au moins deux lettres";
+    } else {
+      successMessage = "L'adresse est valide";
+    }
+  } else if (name === "superficie") {
+    if (!value.trim()) {
+      errorMessage = "La superficie ne peut pas être vide";
+    } else if (value.trim().length < 3) {
+      errorMessage = "La superficie doit contenir au moins trois chiffres";
+    } else if (!/^\d+$/.test(value.trim())) {
+      errorMessage = "La superficie doit contenir uniquement des chiffres";
+    } else {
+      successMessage = "La superficie est valide";
+    }
+  } else if (name === "prix") {
+    if (!value.trim()) {
+      errorMessage = "La prix ne peut pas être vide";
+    } else if (value.trim().length < 7) {
+      errorMessage = "La prix doit contenir au moins sept chiffres";
+    } else if (!/^\d+$/.test(value.trim())) {
+      errorMessage = "Le prix doit contenir uniquement des chiffres";
+    } else {
+      successMessage = "Le prix est valide";
+    }
+  }  else if (name === "image") {
+    if (!value) {
+      errorMessage = "L'image doit être definie";
+    } else {
+      successMessage = "L'image a été definie";
+    }
+  } 
+
+  // Mettez à jour le state en utilisant le nom du champ actuel
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [name]: errorMessage,
+  }));
+  setSuccesseds((prevSuccess) => ({
+    ...prevSuccess,
+    [name]: successMessage,
+  }));
+
+  const isValid = Object.values(errors).every((error) => !error);
+  setValidationStatus(isValid);
+};
+
+ // femer annuler la modificacion
+ const handleCancleEdit = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseEditLand();
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
+ // annuler l'ajout
+ const handleCancleAdd = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseLand();
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
 
   return (
     <div className="container">
@@ -309,6 +430,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
         </div>
       </div>
       <div className="mt-4 ms-3  me-3">
+      <h3>Liste des terrains</h3>
         <table className="table border  border-1">
           <thead
             className=""
@@ -429,12 +551,21 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     placeholder=""
                     value={terrainData.addresse}
                     onChange={(e) =>
-                      setTerrainData({
-                        ...terrainData,
-                        addresse: e.target.value,
-                      })
+                      {
+                        setTerrainData({
+                          ...terrainData,
+                          addresse: e.target.value,
+                        })
+                        validateField("addresse", e.target.value);
+                      }
                     }
                   />
+                   {errors.addresse && (
+                    <p className="error-message">{errors.addresse}</p>
+                  )}
+                  {successeds.addresse && (
+                    <p className="success-message">{successeds.addresse}</p>
+                  )}
                 </Form.Group>
                 <Form.Group
                   className="mb-3"
@@ -446,12 +577,22 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     placeholder=""
                     value={terrainData.superficie}
                     onChange={(e) =>
-                      setTerrainData({
-                        ...terrainData,
-                        superficie: e.target.value,
-                      })
+                      {
+
+                        setTerrainData({
+                          ...terrainData,
+                          superficie: e.target.value,
+                        })
+                        validateField("superficie", e.target.value);
+                      }
                     }
                   />
+                  {errors.superficie && (
+                    <p className="error-message">{errors.superficie}</p>
+                  )}
+                  {successeds.superficie && (
+                    <p className="success-message">{successeds.superficie}</p>
+                  )}
                 </Form.Group>
               </div>
               {/* <div className="d-flex justify-content-around"> */}
@@ -464,10 +605,20 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     type="text"
                     placeholder=""
                     value={terrainData.prix}
-                    onChange={(e) =>
+                    onChange={(e) =>{
+
                       setTerrainData({ ...terrainData, prix: e.target.value })
+                      validateField("prix", e.target.value);
+                    }
+
                     }
                   />
+                  {errors.prix && (
+                    <p className="error-message">{errors.prix}</p>
+                  )}
+                  {successeds.prix && (
+                    <p className="success-message">{successeds.prix}</p>
+                  )}
                 </Form.Group>
                 <Form.Group
                   className="mb-3"
@@ -482,10 +633,18 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                     // onChange={(e) =>
                     //   setTerrainData({ ...terrainData, image: e.target.value })
                     // }
-                    onChange={(e) =>
+                    onChange={(e) =>{
                       setTerrainData({ ...terrainData, image: e.target.files[0] })
+                      validateField("image", e.target.value);
+                    }
                     }
                   />
+                   {errors.image && (
+                    <p className="error-message">{errors.image}</p>
+                  )}
+                  {successeds.image && (
+                    <p className="success-message">{successeds.image}</p>
+                  )}
                 </Form.Group>
               
               
@@ -512,7 +671,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
             <Button variant="secondary" onClick={ajouterTerrain} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseLand} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+            <Button variant="primary" onClick={handleCancleAdd} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
               Fermer
             </Button>
           </Modal.Footer>
@@ -541,13 +700,22 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   type="text"
                   placeholder=""
                   value={editTerrainData.addresse}
-                  onChange={(e) =>
+                  onChange={(e) =>{
+
                     setEditTerrainData({
                       ...editTerrainData,
                       addresse: e.target.value,
                     })
+                    validateField("addresse", e.target.value);
+                  }
                   }
                 />
+                {errors.addresse && (
+                    <p className="error-message">{errors.addresse}</p>
+                  )}
+                  {successeds.addresse && (
+                    <p className="success-message">{successeds.addresse}</p>
+                  )}
               </Form.Group>
               <Form.Group
                 className="mb-3"
@@ -559,12 +727,21 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   placeholder=""
                   value={editTerrainData.superficie}
                   onChange={(e) =>
-                    setEditTerrainData({
-                      ...editTerrainData,
-                      superficie: e.target.value,
-                    })
+                    {
+                      setEditTerrainData({
+                        ...editTerrainData,
+                        superficie: e.target.value,
+                      })
+                      validateField("superficie", e.target.value);
+                    }
                   }
                 />
+                 {errors.superficie && (
+                    <p className="error-message">{errors.superficie}</p>
+                  )}
+                  {successeds.superficie && (
+                    <p className="success-message">{successeds.superficie}</p>
+                  )}
               </Form.Group>
             </div>
             {/* <div className="d-flex justify-content-around"> */}
@@ -578,33 +755,24 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
                   placeholder=""
                   value={editTerrainData.prix}
                   onChange={(e) =>
-                    setEditTerrainData({
-                      ...editTerrainData,
-                      prix: e.target.value,
-                    })
+                    {
+
+                      setEditTerrainData({
+                        ...editTerrainData,
+                        prix: e.target.value,
+                      })
+                      validateField("prix", e.target.value);
+                    }
                   }
                 />
+                {errors.prix && (
+                    <p className="error-message">{errors.prix}</p>
+                  )}
+                  {successeds.prix && (
+                    <p className="success-message">{successeds.prix}</p>
+                  )}
               </Form.Group>
-              {/* <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label>Image</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder=""
-                  className="w-100"
-                  value={editTerrainData.image}
-                  onChange={(e) =>
-                    setEditTerrainData({
-                      ...editTerrainData,
-                      image: e.target.value,
-                    })
-                  }
-                />
-              </Form.Group> */}
-
-
+            
               <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                 <div><Form.Label htmlFor="inputimage">Image</Form.Label></div>
   
@@ -645,7 +813,7 @@ const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
           <Button variant="secondary" onClick={modifierTerrain} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             ModifierTerrain
           </Button>
-          <Button variant="primary" onClick={handleCloseEditLand} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+          <Button variant="primary" onClick={handleCancleEdit} style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

@@ -157,7 +157,7 @@ const handleSearchChange = (event) => {
 };
 
 const filteredCategories = categories.filter((categorie) =>
-  categorie.titre.toLowerCase().includes(searchValue.toLowerCase())
+categorie.titre && categorie.titre.toLowerCase().includes(searchValue.toLowerCase())
 );
 const displayCategories = searchValue === '' ? categories : filteredCategories;
 
@@ -172,6 +172,97 @@ const indexOfFirstCategorie = indexOfLastCategorie - categoriesParPage;
 const currentCategories = filteredCategories.slice(indexOfFirstCategorie, indexOfLastCategorie);
 
 const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
+
+// etat pour faire la validation des champs
+const [errors, setErrors] = useState({
+  titre: "",
+  description: "",
+});
+
+const [successeds, setSuccesseds] = useState({
+  titre: "",
+  description: "",
+});
+
+const [validationStatus, setValidationStatus] = useState(false);
+
+// funtion pour verifier si les champs sont valides ou pas
+const validateField = (name, value) => {
+  // Ajoutez vos conditions de validation pour chaque champ
+  let errorMessage = "";
+  let successMessage = "";
+
+  if (name === "titre") {
+    if (!value.trim()) {
+      errorMessage = "Le titre ne peut pas être vide";
+    } else if (value.trim().length < 2) {
+      errorMessage = "Le titre doit contenir au moins deux lettres";
+    } else {
+      successMessage = "L'adresse est valide";
+    }
+  }  
+  // Mettez à jour le state en utilisant le nom du champ actuel
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [name]: errorMessage,
+  }));
+  setSuccesseds((prevSuccess) => ({
+    ...prevSuccess,
+    [name]: successMessage,
+  }));
+
+  const isValid = Object.values(errors).every((error) => !error);
+  setValidationStatus(isValid);
+};
+
+ // femer annuler la modificacion
+ const handleCancleEdit = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseEditCategories();
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
+ // annuler l'ajout
+ const handleCancleAdd = () => {
+  Swal.fire({
+    title: "Vous etes sur?",
+    text: "De vouloir annuler!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#D46F4D",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Oui, je veux annuler!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Annulé!",
+        text: "Votre requete a été annulée avec succée.",
+        icon: "success",
+      });
+    }
+  });
+  handleCloseCategories()
+  setErrors({});
+  setSuccesseds({});
+  setValidationStatus(false);
+};
 
   return (
     <div className="container">
@@ -216,6 +307,7 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
         </div>
       </div>
       <div className="mt-4 ms-3  me-3">
+      <h3>Liste des categories</h3>
         <table className="table border  border-1">
           <thead
             className=""
@@ -302,11 +394,21 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
                 <Form.Control
                   value={categoryData.titre}
                   onChange={(e) =>
-                    setCategoryData({ ...categoryData, titre: e.target.value })
+                    {
+
+                      setCategoryData({ ...categoryData, titre: e.target.value })
+                      validateField("titre", e.target.value);
+                    }
                   }
                   type="text"
                   placeholder=""
                 />
+                 {errors.titre && (
+                    <p className="error-message">{errors.titre}</p>
+                  )}
+                  {successeds.titre && (
+                    <p className="success-message">{successeds.titre}</p>
+                  )}
               </Form.Group>
 
               <Form.Group
@@ -332,7 +434,7 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
             <Button variant="secondary" onClick={ajouterCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCloseCategories}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}} >
+            <Button variant="primary" onClick={handleCancleAdd}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}} >
               Fermer
             </Button>
           </Modal.Footer>
@@ -388,7 +490,7 @@ const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
           <Button variant="secondary" onClick={modifierCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCloseEditCategories}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+          <Button variant="primary" onClick={handleCancleEdit}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
             Fermer
           </Button>
         </Modal.Footer>

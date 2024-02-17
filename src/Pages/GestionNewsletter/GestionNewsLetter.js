@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Pagination from '../../Components/Pagination/Pagination';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 export default function GestionNewsLetter() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   
     // Tableau ou stocker la liste des emails
     const [emailValues, setEmailValues] = useState([]);
@@ -68,8 +71,21 @@ export default function GestionNewsLetter() {
 
 
   return (
-    <div>
-         <div className="flex-grow-1 d-flex justify-content-end ">
+    <div className="container">
+         <div className="d-flex justify-content-between mt-5">
+        <div>
+          <Button
+           
+            variant="primary" onClick={handleShow}
+            // onClick={handleshowCategories}
+            className="ms-4"
+            style={{ backgroundColor: "#d46f4d", border: "none" }}
+            id="buttonAjouter"
+          >
+           Partager un newsletter
+          </Button>
+        </div>
+        <div className="flex-grow-1 d-flex justify-content-end ">
           <div className="champsRecherche mt-2 mb-3 w-50">
             <Form>
               <div
@@ -83,7 +99,7 @@ export default function GestionNewsLetter() {
                   aria-label="user"
                   aria-describedby="addon-wrapping"
                   value={searchValue}
-                  onChange={handleSearchChange}
+                  // onChange={handleSearchChange}
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -96,7 +112,9 @@ export default function GestionNewsLetter() {
             </Form>
           </div>
         </div>
-       <div className="mt-4 ms-3  me-3">
+            </div>
+            <div className="mt-4 ms-3  me-3">
+       <h3>Liste des newsletter</h3>
         <table className="table border  border-1">
           <thead
             className=""
@@ -152,7 +170,39 @@ export default function GestionNewsLetter() {
          setCurrentPage={setCurrentPage}
          
          />
-      </div>
+            </div>
+
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Ajouter message à partager</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Form>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Object</Form.Label>
+        <Form.Control type="text" placeholder="" />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Email address</Form.Label>
+        <Form.Control type="email" placeholder="name@example.com" />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+        <Form.Label>Contenu</Form.Label>
+        <Form.Control as="textarea" rows={3} />
+      </Form.Group>
+    </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Fermer
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Partager
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faUnlock, faUserLock } from '@fortawesome/free-solid-svg-icons';
 // import axios from 'axios';
 import axios from "../../Pages/Authentification/AxiosAuthIntercepteur";
+import Pagination from '../../Components/Pagination/Pagination';
 
 
 export default function GestionUtilisateurs() {
@@ -25,10 +26,25 @@ export default function GestionUtilisateurs() {
   };
 
   // Pour la pagination
-  const filteredServices = userLists.filter((service) =>
+  const filteredUsers = userLists.filter((service) =>
     service.prenom.toLowerCase().includes(searchValue.toLowerCase())
   );
-  const displayUsers = searchValue === '' ? userLists : filteredServices;
+  const displayUsers = searchValue === '' ? userLists : filteredUsers;
+
+
+  // pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const userListsParPage = 4;
+  
+  // pagination
+  const indexOfLastUserLists = currentPage *  userListsParPage;
+  const indexOfFirstUserLists = indexOfLastUserLists -  userListsParPage;
+  const currentUserLists =filteredUsers.slice(indexOfFirstUserLists, indexOfLastUserLists);
+  
+  const totalPaginationPages = Math.ceil( userLists.length /userListsParPage);
+
+
+
 
 
 // pour lister les users avec avec cet effet on recupere l'ensemble des utilisateurs
@@ -87,6 +103,7 @@ const handleBloquer = async (userId) => {
     console.error('Erreur réseau', error);
   }
 };
+
 // const handleBloquer = async (userId) => {
 //   try {
 //     const userToBlock = userLists.find((user) => user.id === userId);
@@ -303,6 +320,12 @@ const handleDebloquer = async (userId) => {
               ))}
           </tbody>
         </table>
+        <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
       </div>
        ) : (
 
@@ -344,6 +367,12 @@ const handleDebloquer = async (userId) => {
                ))}
             </tbody>
           </table>
+          <Pagination
+         currentPage={currentPage}
+         totalPaginationPages={totalPaginationPages}
+         setCurrentPage={setCurrentPage}
+         
+         />
         </div>
       </div>
       )}
