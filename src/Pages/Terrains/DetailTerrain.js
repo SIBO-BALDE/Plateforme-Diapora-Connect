@@ -13,6 +13,7 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function DetailTerrain() {
   const { id } = useParams();
@@ -46,9 +47,24 @@ export default function DetailTerrain() {
     fetchterrainDetails();
   }, [id]);
 
-  // console.log("terrainDetails:", terrainDetails);
-
-  // console.log("terrainDetails:", terrainDetails);
+  const handleClickMoreUser = async () =>{
+    let  phoneNumber = 774935677 ; 
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "De vouloir communiquer avec l'admin?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D46F4D',
+      cancelButtonColor: '#f00020',
+      confirmButtonText: "Oui, j'accepte!",
+    }).then((result)=>{
+      console.log(result);
+      if (result.isConfirmed) {
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}`, '_blank');
+       
+      }
+    })
+  }
 
   return (
     <div>
@@ -104,9 +120,9 @@ export default function DetailTerrain() {
                 </div>
               </div>
               <div className="d-flex justify-content-center mt-5">
-                <Button id="btn-btn-ajouter-panier-terrain" className="w-100">
+                <Button id="btn-btn-ajouter-panier-terrain" className="w-100" onClick={handleClickMoreUser}>
                   <Link
-                    to={"/"}
+                    
                     style={{ textDecoration: "none", color: "white" }}
                     id="panier-btn-hover"
                   >

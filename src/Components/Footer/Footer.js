@@ -87,23 +87,20 @@ export default function Footer() {
         <div className="Section_Footer_Newsletters_Input">
           <Form>
             <Form.Group>
-            <div className='d-flex'>
-            <div><Form.Control
-             type="e-mail" placeholder="Saisissez Votre e-mail" id="email" 
-            //  value={email}
-            //  onChange={handleEmailChange}
+            <div className='d-flex' id='input-footer-newsletter'>
+            <div>
+            <Form.Control
+             type="email" placeholder="Saisissez Votre e-mail" id="email" 
              value={emailData.titre}
              onChange={(e) =>
               setEmailData({ ...emailData, email: e.target.value })
              }
             
-            /></div>
-          <div>
+            />
+            </div>
+          <div id='input-footer-newsletter_btn'>
             <Button  id="incription1"
-            onClick={ handleSubscribe}
-            
-
-            >S'inscrire</Button>
+            onClick={ handleSubscribe}>S'inscrire</Button>
           </div>
             </div>
             </Form.Group>

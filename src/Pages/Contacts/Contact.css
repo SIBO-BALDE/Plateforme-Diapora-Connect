@@ -218,3 +218,18 @@
       opacity: 0.3;
     }
   }
+
+  /* medias queries */
+  @media  screen and (max-width:781px){
+    .content-flex-contact{
+      display: grid;
+      grid-template-columns: 100% 0%;
+    }
+    .contain-image-contact-detail{
+      width: 100% !important;
+    }
+    .img-contact-content{
+      width: 100%;
+    }
+
+  }

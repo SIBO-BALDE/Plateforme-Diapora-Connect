@@ -24,6 +24,8 @@ import MentionsLegals from "./Pages/PolitiquesConfidentialités/MentionsLegals";
 import PolitiqueDeConfidentialites from "./Pages/PolitiquesConfidentialités/PolitiqueDeConfidentialites";
 import ConditionUtilisation from "./Pages/PolitiquesConfidentialités/ConditionUtilisation";
 import GestionNewsLetter from "./Pages/GestionNewsletter/GestionNewsLetter";
+import GestionMessage from "./Pages/GestionMessage/GestionMaison";
+import PageError from "./Pages/PageError/PageError";
 // import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
 
 
@@ -58,6 +60,8 @@ function App() {
         <Route path="detailmaisonadmin/:id" element={<DetailMaisonAdmin/>}></Route>
         <Route path="detailterrainadmin/:id" element={<DetailTerrainAdmin/>}></Route>
         <Route path="gestionnewletter" element={<GestionNewsLetter/>}></Route>
+        <Route path="gestionmessage" element={<GestionMessage/>}></Route>
+        <Route path="pageerror" element={<PageError/>}></Route>
       </Routes>
       </AuthProvider>
     </div>

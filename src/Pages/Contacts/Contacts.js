@@ -3,7 +3,7 @@ import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil'
 import Footer from '../../Components/Footer/Footer'
 import Underline from '../../Components/Underline/Underline'
 import Pagination from '../../Components/Pagination/Pagination'
-import banpropos from '../../fichiers/banpropos.png'
+import banpropos from '../../fichiers/bancontact_simple.png'
 import { Button, Form, Image } from 'react-bootstrap'
 import contact from '../../fichiers/contact.png'
 import contactNous from '../../fichiers/contact-nous.png'
@@ -29,17 +29,21 @@ export default function Contacts() {
             <section className=''>
               
               <div className=' conain-main-contact container'>
-                <div className=''> 
+                <div className='contain-image-contact-detail'> 
                   <Image src={contactNous} id='img-contact-content' />
                   <div className='d-flex justify-content-evenly 'id='icon-relative-contact'>
-                    <Link className='icon-contact-content'>
+                    {/* <Link className='icon-contact-content'> */}
+                    <a className='icon-contact-content' href='tel:+221774935677'>
                       <span id='icon-taille-contact'> <FontAwesomeIcon icon={faPhone} /> </span>
-                    <p>+221 78 963 55 54</p>
-                    </Link>
-                    <Link className='icon-contact-content'>
+                    <p>+221 77 493 56 77</p>
+                    {/* </Link> */}
+                    </a>
+                    {/* <Link className='icon-contact-content'> */}
+                    <a className='icon-contact-content' href='mailto:diapcon@gmail.com'>
                     <span id='icon-taille-contact'> <FontAwesomeIcon icon={faEnvelope} /> </span>
                      <p>diapcon@gmail.com</p>
-                    </Link>
+                     </a>
+                    {/* </Link> */}
                   </div>
                 </div>
                 <div className='second-contact-content'>
@@ -54,7 +58,11 @@ export default function Contacts() {
               <h1>DIASPORA CONNECT</h1>
                 <p>Vous souhaitez construire une maison au sénegal en etant à 
                     l’étrangerz visitez nos differents offres de services de construction à des prix battants tout concurenst</p>
-                    <div className='w-100 d-flex  justify-content-center '><Button id='btn-btncontact'> Contactez nous</Button></div>
+                    <div className='w-100 d-flex  justify-content-center '>
+                      <Link to={'/'}>
+                      <Button id='btn-btncontact'> Visitez notre page d'accueille pour  voir nos offres</Button>
+                      </Link>
+                     </div>
             </div>
                 </div>
                 </div>

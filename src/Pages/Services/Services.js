@@ -4,7 +4,7 @@ import Footer from '../../Components/Footer/Footer'
 import Pagination from '../../Components/Pagination/Pagination'
 import Underline from '../../Components/Underline/Underline'
 import { Button, Form, Image } from 'react-bootstrap'
-import banservice from '../../fichiers/banservices1.png'
+import banservice from '../../fichiers/banservices_simple.png'
 import './Services.css';
 import imgservice1 from '../../fichiers/S1 (1).png'
 import { Link } from 'react-router-dom'

@@ -9,9 +9,10 @@ import Footer from '../../Components/Footer/Footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe, faHouse, faLayerGroup, faSink, faTag } from '@fortawesome/free-solid-svg-icons';
 import Pagination from '../../Components/Pagination/Pagination';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 export default function Maisons({id}) {
@@ -61,6 +62,27 @@ const indexOfLastMaison = currentPage * maisonsParPage;
   const currentMaisons = filteredMaisons.slice(indexOfFirstMaison, indexOfLastMaison);
 
   const totalPaginationPages = Math.ceil(maisonLists.length / maisonsParPage);
+
+  
+
+  const handleClickMoreUser = async () =>{
+    let  phoneNumber = 774935677 ; 
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "De vouloir communiquer avec l'admin?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D46F4D',
+      cancelButtonColor: '#f00020',
+      confirmButtonText: "Oui, j'accepte!",
+    }).then((result)=>{
+      console.log(result);
+      if (result.isConfirmed) {
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}`, '_blank');
+       
+      }
+    })
+  }
 
 
   return (
@@ -116,7 +138,7 @@ const indexOfLastMaison = currentPage * maisonsParPage;
                      
                     <div className='d-flex btn-content-section-right mt-5 '>
                       <button className='btn1'><Link to={`/detailmaison/${maisonList.id} || '' `}  id='link-detail-maison-content'>Voir détail</Link></button>
-                      <button className='btn2' >Plus d'info</button>
+                      <button className='btn2' onClick={ handleClickMoreUser}>Plus d'info</button>
                       </div>
                     </div>
                     </div>

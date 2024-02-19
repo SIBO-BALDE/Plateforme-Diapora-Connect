@@ -20,7 +20,7 @@
     ;
 
 }
-.btn-content:hover{
+/* .btn-content:hover{
     border: 1px solid var(--principal) !important;
     color: var(--principal) !important;
     cursor: pointer ;
@@ -29,7 +29,7 @@
     transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
     rotate: 10deg;
 
-}
+} */
 #btn-btn-ajouter-panier:hover{
     background-color: var(--seconde) !important;
     border: 1px solid var(--principal) !important;
@@ -37,8 +37,8 @@
     cursor: pointer ;
     transition-duration: 1s;
     transition-property: all;
-    transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
-    rotate: 10deg;
+    
+   
 }
 #panier-btn-hover:hover{
     color: var(--principal);

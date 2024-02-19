@@ -3,7 +3,7 @@ import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil'
 import Footer from '../../Components/Footer/Footer'
 import Underline from '../../Components/Underline/Underline'
 import { Image } from 'react-bootstrap'
-import banpropos from '../../fichiers/banpropos.png'
+import banpropos from '../../fichiers/bann _about.png'
 import photo1 from '../../fichiers/bann accueil.jpeg'
 
 import './Apropos.css';
@@ -81,7 +81,7 @@ export default function Apropos() {
       <div className='container mt-5 ' id='content-flex' >
         <div className='contain-card'>
         <div className='content-contenimg'>
-          <Image src={banpropos}  id='contenimg-pointview'/>
+          <Image src={photo1}  id='contenimg-pointview'/>
         </div>
         <div className='content-bottom'>
           <h5 className='text-center'>Sibo Balde</h5>

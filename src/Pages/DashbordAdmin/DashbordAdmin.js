@@ -3,18 +3,13 @@ import "./DashbordAdmin.css";
 import NavbarAdmin from "../../Components/Navbars/NavbarAdmin/NavbarAdmin";
 import SideBars from "../../Components/SideBars/SideBars";
 import { Image } from "react-bootstrap";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faUser } from '@fortawesome/free-solid-svg-icons';
 import Tableaux from "../Tableaux/Tableaux";
 import profile from "../../fichiers/profile.png";
 import Chart from "../../Components/Charts/Charts";
 import GestionUtilisateurs from "../GestionUtilisateurs/GestionUtilisateurs";
 import GestionMaison from "../GestionMaison/GestionMaison";
 import GestionTerrain from "../GestionTerrain/GestionTerrain";
-// import GestionCommentaire from "../GestionCommentaire/GestionCommentaire";
 import GestionServices from "../GestionServices/GestionServices";
-// import GestionArticles from "../GestionArticles/GestionArticles";
-// import GestionPayment from "../GestionPayment/GestionPayment";
 import GestionFavorie from "../GestionFavorie/GestionFavorie";
 import GestionCategorie from "../GestionCategorie/GestionCategorie";
 import axios from "axios";
@@ -23,6 +18,8 @@ import { useAuth } from "../Authentification/AuthContext";
 import Swal from "sweetalert2";
 import GestionNewsLetter from "../GestionNewsletter/GestionNewsLetter";
 import Pagination from "../../Components/Pagination/Pagination";
+import GestionMessage from "../../Pages/GestionMessage/GestionMaison";
+
 
 function KPI() {
   const [userLists, setUserLists] = useState([]);
@@ -188,6 +185,8 @@ function RenderContent(name) {
       return <GestionCategorie />;
     case "gestionnewletter":
       return <GestionNewsLetter />;
+    case "gestionmessage":
+      return <GestionMessage />;
     default:
       return <KPI />;
   }

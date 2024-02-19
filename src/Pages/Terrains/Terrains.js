@@ -13,6 +13,7 @@ import Pagination from '../../Components/Pagination/Pagination';
 import Underline from '../../Components/Underline/Underline';
 import axios from 'axios';
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp';
+import Swal from 'sweetalert2';
 
 export default function Terrains({id}) {
 
@@ -62,6 +63,27 @@ const indexOfLastTerrain = currentPage * terrainsParPage;
   const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
 
   const totalPaginationPages = Math.ceil(terrainLists.length / terrainsParPage);
+
+  const handleClickMoreUser = async () =>{
+    let  phoneNumber = 774935677 ; 
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "De vouloir communiquer avec l'admin?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D46F4D',
+      cancelButtonColor: '#f00020',
+      confirmButtonText: "Oui, j'accepte!",
+    }).then((result)=>{
+      console.log(result);
+      if (result.isConfirmed) {
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}`, '_blank');
+       
+      }
+    })
+  }
+
+
   return (
     <div>
       <NavbarAccueil />
@@ -112,7 +134,7 @@ const indexOfLastTerrain = currentPage * terrainsParPage;
           <hr  id='referenceland'/>
           <div className='contentlan-btn'>
             <Button id='btn1'><Link to={`/detailterrain/${terrainList.id} || '' `} id='link-contentland1'>Voir détail</Link></Button>
-            <Button id='btn2'><Link to={'/panier'} id='link-contentland2'>Plus d'informations</Link></Button>
+            <Button id='btn2' onClick={handleClickMoreUser}><Link  id='link-contentland2'>Plus d'infos</Link></Button>
           </div>
           </div>
            ))}

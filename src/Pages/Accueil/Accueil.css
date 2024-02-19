@@ -273,6 +273,9 @@
     
 
   }
+  .Section_partenaire {
+    overflow-x: auto;
+}
   .contentpartner{
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   }
@@ -308,17 +311,32 @@
   }
   
   .partenaire {
+    /* display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px; */
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 20px;
+    overflow-x: auto;
   }
   
   .Section_partenaire p {
     text-align: center;
     font-size: 18px;
     font-weight: bold;
+  }
+  .card_partenaire{
+    width: 300px;
+    height: 170px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 2em;
+    margin-right: 20px;
+
   }
   
   .card_partenaire img {

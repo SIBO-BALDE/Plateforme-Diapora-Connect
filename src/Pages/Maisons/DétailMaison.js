@@ -17,6 +17,7 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function DétailMaison() {
   const { id } = useParams();
@@ -70,6 +71,25 @@ export default function DétailMaison() {
     };
     RecupererCategories();
   }, []);
+
+  const handleClickMoreUser = async () =>{
+    let  phoneNumber = 774935677 ; 
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "De vouloir communiquer avec l'admin?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D46F4D',
+      cancelButtonColor: '#f00020',
+      confirmButtonText: "Oui, j'accepte!",
+    }).then((result)=>{
+      console.log(result);
+      if (result.isConfirmed) {
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}`, '_blank');
+       
+      }
+    })
+  }
 
   return (
     <div>
@@ -160,13 +180,12 @@ export default function DétailMaison() {
                 <Button
                   id="btn-btn-ajouter-panier "
                   className="w-100"
+                  onClick={handleClickMoreUser}
                   style={{ backgroundColor: "#D46F4D", border: "none" }}
                 >
                   <Link
-                    to={"/panier"}
                     style={{ textDecoration: "none", color: "white" }}
-                    id="panier-btn-hover"
-                  >
+                    id="panier-btn-hover">
                     Plus d'infos
                   </Link>
                 </Button>

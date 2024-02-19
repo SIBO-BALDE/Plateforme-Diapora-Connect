@@ -126,6 +126,15 @@
       }
     
   }
+  @media screen and (max-width:561px){
+    #input-footer-newsletter{
+      display: block !important;
+    }
+    #input-footer-newsletter_btn{
+      margin-top: 15px;
+    }
+
+  }
   @media screen and (max-width:407px){
     .Section_Footer {
         display: grid;
@@ -150,5 +159,6 @@
       .incription1{
         width: 100%;
       }
+      
     
   }

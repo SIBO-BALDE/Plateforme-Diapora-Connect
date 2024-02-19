@@ -30,8 +30,8 @@ export default function Tableaux() {
       }
     };
 
-    fetchData(); // Appel de la fonction asynchrone
-  }, []); // Le tableau vide comme deuxième argument signifie que cet effet s'exécutera une seule fois après le montage initial
+    fetchData(); 
+  }, []); 
 
   return (
     <div

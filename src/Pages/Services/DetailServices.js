@@ -5,7 +5,8 @@ import Underline from '../../Components/Underline/Underline'
 import { Button, Image } from 'react-bootstrap'
 import './DetailServices.css';
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
+import Swal from 'sweetalert2'
 
 
 export default function DetailTerrain() {
@@ -61,6 +62,28 @@ export default function DetailTerrain() {
 
     fetchUsers();
   }, [id]);
+
+  const handleClickMoreUser = async () =>{
+    let  phoneNumber = 774935677 ; 
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "De vouloir communiquer avec l'admin?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#D46F4D',
+      cancelButtonColor: '#f00020',
+      confirmButtonText: "Oui, j'accepte!",
+    }).then((result)=>{
+      console.log(result);
+      if (result.isConfirmed) {
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}`, '_blank');
+       
+      }
+    })
+  }
+
+
+
   return (
     <div>
      <NavbarAccueil />
@@ -79,10 +102,17 @@ export default function DetailTerrain() {
         <div className='second-img-right1-services' >
           <h1>{serviceLists && serviceLists.titre}</h1>
           <p>{serviceLists && serviceLists.description} </p>
-             <div className='d-flex justify-content-center mt-5'>
-              <Button id='btn-btn-ajouter-panier-services' className='me-2 w-100 '>Demander service</Button>
-              <Button id='btn-btn-ajouter-panier-services1'  className='me-2 w-100  btn-btn-ajouter-panier-services'><a href="https://wa.me/774935677" style={{textDecoration:'none', color:'#D46F4D'}}>Contactez Nous</a></Button>
-             </div>
+          <div className="d-flex justify-content-center mt-5">
+                <Button id="btn-btn-ajouter-panier-terrain" className="w-100" onClick={handleClickMoreUser}>
+                  <Link
+                    
+                    style={{ textDecoration: "none", color: "white" }}
+                    id="panier-btn-hover"
+                  >
+                   Demander service
+                  </Link>
+                </Button>
+              </div>
           </div>
            
          
