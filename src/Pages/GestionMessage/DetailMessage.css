@@ -60,3 +60,7 @@
     padding: 15px 0;
     color: #424242
 }
+#content-message{
+    position: relative;
+    top: 10px;
+}
