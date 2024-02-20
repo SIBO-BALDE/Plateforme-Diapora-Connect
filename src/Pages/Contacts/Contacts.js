@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavbarAccueil from '../../Components/Navbars/NavbarAccueil/NavbarAccueil'
 import Footer from '../../Components/Footer/Footer'
 import Underline from '../../Components/Underline/Underline'
@@ -12,8 +12,56 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faPhone, faQuestion, faVoicemail } from '@fortawesome/free-solid-svg-icons'
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
+import Swal from 'sweetalert2'
+import axios from 'axios'
 
 export default function Contacts() {
+
+  const [messages, setMessages] = useState([]);
+
+    const [messageData, setMessageData] = useState({
+        email: "",
+        message: "",
+      });
+      
+      const ajouterMessage = async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await axios.post(
+              "http://localhost:8000/api/messages/create",
+    
+              messageData,
+              
+            );
+    
+            // Vérifiez si la requête a réussi
+            if (response.status === 200) {
+              // Ajoutez la nouvelle maison à la liste existante
+              setMessages([...messages, response.data]);
+             
+              setMessageData({
+                email: "",
+                message: "",
+              });
+              Swal.fire({
+                icon: "success",
+                title: "Succès!",
+                text: "Message envoyée avec succée!",
+              });
+             
+             
+            } else {
+              console.error("Erreur dans lajout de maison");
+            }
+          
+        } catch (error) {
+          // Gestion des erreurs Axios
+          console.error("Erreur Axios:", error);
+        }
+      };
+
+
   return (
     <div>
       <div>
@@ -63,7 +111,7 @@ export default function Contacts() {
                       <Button id='btn-btncontact'> Visitez notre page d'accueille pour  voir nos offres</Button>
                       </Link>
                      </div>
-            </div>
+                    </div>
                 </div>
                 </div>
               </div>
@@ -73,17 +121,32 @@ export default function Contacts() {
                 < div className='content-left-form-contact'>
                     <Form >
                       <h3 className='text-center mt-5 '> Contactez nous</h3>
-                      <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
-                        <Form.Label>Email</Form.Label><span className='text-danger'>*</span>
-                        <Form.Control type="text"   />
-                      </Form.Group>
+                     
+                          <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
+  <Form.Label>Email</Form.Label><span className='text-danger'>*</span>
+  <Form.Control
+    type="text"
+    value={messageData.email}  // Ajoutez cette ligne
+    onChange={(e) => setMessageData({ ...messageData, email: e.target.value })}
+  />
+                          </Form.Group>
 
-                      <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
-                          <Form.Label>Sujet</Form.Label><span className='text-danger'>*</span>
-                          <Form.Control as="textarea" rows={3} />
-                      </Form.Group>
+                          <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
+  <Form.Label>Sujet</Form.Label><span className='text-danger'>*</span>
+  <Form.Control
+    as="textarea"
+    rows={3}
+    value={messageData.message}  // Ajoutez cette ligne
+    onChange={(e) => setMessageData({ ...messageData, message: e.target.value })}
+  />
+                          </Form.Group>
+
+
                         <div className='btn-content-position-contact'>
-                            <Button type='submit'  className='btn-colour-contact w-100 '>Envoyer</Button>
+                            <Button type='submit'  className='btn-colour-contact w-100 '
+                            onClick={ajouterMessage}
+                            
+                            >Envoyer</Button>
                         </div>
                     </Form>
                   </div>
@@ -92,7 +155,6 @@ export default function Contacts() {
                   </div>
               </div>
               </div>
-             {/* <div className='container'> <Pagination /></div> */}
             </section>
           </div>
          

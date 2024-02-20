@@ -95,7 +95,7 @@ export default function GestionNewsLetter() {
   };
   const [newLetter, setNewsLetter] = useState([]);
   const [newLetterData, setnewLetterData] = useState({
-    id: 1,
+    id: null,
     titre: "",
     description: "",
     image: "",

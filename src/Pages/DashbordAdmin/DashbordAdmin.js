@@ -18,7 +18,7 @@ import { useAuth } from "../Authentification/AuthContext";
 import Swal from "sweetalert2";
 import GestionNewsLetter from "../GestionNewsletter/GestionNewsLetter";
 import Pagination from "../../Components/Pagination/Pagination";
-import GestionMessage from "../../Pages/GestionMessage/GestionMaison";
+import GestionMessage from "../../Pages/GestionMessage/GestionMessage";
 
 
 function KPI() {

@@ -24,9 +24,10 @@ import MentionsLegals from "./Pages/PolitiquesConfidentialités/MentionsLegals";
 import PolitiqueDeConfidentialites from "./Pages/PolitiquesConfidentialités/PolitiqueDeConfidentialites";
 import ConditionUtilisation from "./Pages/PolitiquesConfidentialités/ConditionUtilisation";
 import GestionNewsLetter from "./Pages/GestionNewsletter/GestionNewsLetter";
-import GestionMessage from "./Pages/GestionMessage/GestionMaison";
+import GestionMessage from "./Pages/GestionMessage/GestionMessage";
 import PageError from "./Pages/PageError/PageError";
-// import DetailTerrainAdmin from "./Pages/GestionMaison/DetailTerrainAdmin";
+import DetailMessageAdmin from "./Pages/GestionMessage/DetailMessageAdmin";
+
 
 
 
@@ -62,6 +63,7 @@ function App() {
         <Route path="gestionnewletter" element={<GestionNewsLetter/>}></Route>
         <Route path="gestionmessage" element={<GestionMessage/>}></Route>
         <Route path="pageerror" element={<PageError/>}></Route>
+        <Route path="detailmessageadmin/:id" element={<DetailMessageAdmin/>}></Route>
       </Routes>
       </AuthProvider>
     </div>
