@@ -23,16 +23,26 @@ export default function DetailServicesAdmin() {
 
    useEffect(() => {
     const fetchTerrDetails = async () => {
+      const role = localStorage.getItem("rolecle");
+      const token = localStorage.getItem('tokencle')
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/service/detail/${id}`
-        );
-
-        if (response.data.service) {
-          setServiceDetails(response.data.service);
-          console.log(response.data, "ici la reponse de detail service");
-        } else {
-          console.error("La réponse de détail est undefined ou null.");
+        if (token || role==="admin"){
+          const response = await axios.get(
+            `http://localhost:8000/api/service/detail/${id}`,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (response.data.service) {
+            setServiceDetails(response.data.service);
+            console.log(response.data, "ici la reponse de detail service");
+          } else {
+            console.error("La réponse de détail est undefined ou null.");
+          }
         }
       } catch (error) {
         console.error(

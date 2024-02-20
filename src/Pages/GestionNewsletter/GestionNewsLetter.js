@@ -9,6 +9,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function GestionNewsLetter() {
   const [show, setShow] = useState(false);
@@ -56,16 +57,27 @@ export default function GestionNewsLetter() {
 
   // pour lister les emails avec avec cet useEffet on recupere l'ensemble des email
   useEffect(() => {
+    const role =localStorage.getItem("rolecle")
+    const token = localStorage.getItem("tokencle")
     const fetchEmail = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/newsletter/liste"
-        );
-
-        setEmailValues(response.data.listeEmails);
-        console.log(response, "reponse");
-
-        console.log(emailValues);
+        if(token || role === 'admin'){
+          const response = await axios.get(
+            "http://localhost:8000/api/newsletter/liste",
+  
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          setEmailValues(response.data.listeEmails);
+          console.log(response, "reponse");
+  
+          console.log(emailValues);
+        }
       } catch (error) {
         console.error("Erreur lors de la récupération des emails:", error);
       }
@@ -81,6 +93,56 @@ export default function GestionNewsLetter() {
 
     return `${year}-${month}-${day}`;
   };
+  const [newLetter, setNewsLetter] = useState([]);
+  const [newLetterData, setnewLetterData] = useState({
+    id: 1,
+    titre: "",
+    description: "",
+    image: "",
+  });
+
+  // Creer un article à difisur
+  const handleAddArticle = async ()=>{
+    const role =localStorage.getItem("rolecle")
+    const token = localStorage.getItem("tokencle")
+    const formData= new FormData();
+    formData.append('id', newLetterData.id)
+    formData.append('titre', newLetterData.titre)
+    formData.append('description', newLetterData.description)
+    formData.append('image', newLetterData.image);
+    if(token || role === 'admin'){
+      const response = await axios.post('http://localhost:8000/api/article/create',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+      )
+      if (response.status === 200) {
+        // Ajoutez la nouvelle maison à la liste existante
+        setNewsLetter([...newLetter, response.data]);
+        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+        setnewLetterData({
+          titre: "",
+          description: "",
+          image: "",
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Succès!",
+          text: "Newsletter envoyé avec succée!",
+        });
+        handleClose();
+        
+      } else {
+        console.error("Erreur dans lajout de maison");
+      }
+      
+      
+    }
+  }
 
   return (
     <div className="container">
@@ -111,7 +173,8 @@ export default function GestionNewsLetter() {
                   aria-label="user"
                   aria-describedby="addon-wrapping"
                   value={searchValue}
-                  // onChange={handleSearchChange}
+        
+                    
                 />
                 <span
                   className="input-group-text text-white me-4"
@@ -191,25 +254,49 @@ export default function GestionNewsLetter() {
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Image logo</Form.Label>
-              <Form.Control type="file" placeholder="" />
+              <Form.Control type="file" placeholder=""
+              onChange={(e) =>
+                setnewLetterData({ ...newLetterData, image: e.target.files[0] })
+            }
+              
+              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
               <Form.Label>Object</Form.Label>
-              <Form.Control type="text" placeholder="" />
+              <Form.Control type="text" placeholder="" 
+                value={newLetterData.titre}
+                onChange={(e) =>
+                setnewLetterData({
+                  ...newLetterData,
+                  titre: e.target.value,
+                })
+              }
+              
+              />
             </Form.Group>
             <Form.Group
               className="mb-3"
               controlId="exampleForm.ControlTextarea1"
             >
               <Form.Label>Contenu</Form.Label>
-              <Form.Control as="textarea" rows={3} />
+              <Form.Control as="textarea" rows={3} 
+              value={newLetterData.description}
+              onChange={(e) =>
+              setnewLetterData({
+                ...newLetterData,
+                description: e.target.value,
+              })
+            }
+              
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button
+          onClick={handleAddArticle}
             variant="secondary"
-            onClick={handleClose}
+            // onClick={}
             style={{
               backgroundColor: "#D46F4D",
               border: "none",

@@ -46,47 +46,53 @@ export default function GestionServices({ id }) {
 
   // function pour ajouter une service
   const ajouterService = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
     try {
       const formData = new FormData();
       formData.append('titre', serviceData.titre);
       formData.append('image', serviceData.image);
       formData.append('description', serviceData.description);
       console.log(serviceData.image, 'image')
-      const response = await axios.post(
-        "http://localhost:8000/api/service/create",
-        formData,
 
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      if (token || role==="admin"){
+        const response = await axios.post(
+          "http://localhost:8000/api/service/create",
+          formData,
+  
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        // Vérifiez si la requête a réussi
+        if (response.status === 200) {
+          // Ajoutez la nouvelle maison à la liste existante
+          setServices([...services, response.data]);
+          // console.log(response.data, "cc les amis");
+          // Réinitialisez les valeurs du formulaire après avoir ajouté le service
+          setServiceData({
+            titre: "",
+            image: "",
+            description: "",
+          });
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "service ajouter avec succée!",
+          });
+  
+          // Fermez le modal
+          handleCloseServices();
+  
+          // appeler la fonction pour en ajoutant le service on affiche en meme temp
+          fetchService();
+        } else {
+          console.error("Erreur dans lajout de maison");
         }
-      );
-
-      // Vérifiez si la requête a réussi
-      if (response.status === 200) {
-        // Ajoutez la nouvelle maison à la liste existante
-        setServices([...services, response.data]);
-        // console.log(response.data, "cc les amis");
-        // Réinitialisez les valeurs du formulaire après avoir ajouté le service
-        setServiceData({
-          titre: "",
-          image: "",
-          description: "",
-        });
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "service ajouter avec succée!",
-        });
-
-        // Fermez le modal
-        handleCloseServices();
-
-        // appeler la fonction pour en ajoutant le service on affiche en meme temp
-        fetchService();
-      } else {
-        console.error("Erreur dans lajout de maison");
       }
     } catch (error) {
       // Gestion des erreurs Axios
@@ -148,6 +154,8 @@ export default function GestionServices({ id }) {
 
   // Function pour modifier services
   const modifierService = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
 
     const formData = new FormData();
     formData.append('id', editServiceData.id)
@@ -171,37 +179,34 @@ export default function GestionServices({ id }) {
     try {
       console.log("Avant envoi de la requête :", formData);
       console.log("Valeur de editServiceData.image :", editServiceData.image);
-
-      const response = await axios.post(
-        `http://localhost:8000/api/service/edit/${editServiceData.id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      if (token || role==="admin"){
+        const response = await axios.post(
+          `http://localhost:8000/api/service/edit/${editServiceData.id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+       
+          if (response.status === 200) {
+            const updatedServices = services.map((service) =>
+              service.id === editServiceData.id ? response.data.service : service
+            );
+  
+          setServices(updatedServices);
+          handleCloseEditServices();
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Service mise à jour avec succès!",
+          });
+        } else {
+          console.log('Apres réponse de la requête:', response);
+          // console.error("erreur lors de la modification de la service");
         }
-      );
-     
-
-      // if (response.status === 200) {
-      //   const updatedServices = services.map((service) =>
-      //     service.id === editServiceData.id ? response.data.service : service
-      //   );
-        if (response.status === 200) {
-          const updatedServices = services.map((service) =>
-            service.id === editServiceData.id ? response.data.service : service
-          );
-
-        setServices(updatedServices);
-        handleCloseEditServices();
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Service mise à jour avec succès!",
-        });
-      } else {
-        console.log('Apres réponse de la requête:', response);
-        // console.error("erreur lors de la modification de la service");
       }
     } catch (error) {
       console.error("une erreur  Axios:", error);
@@ -222,22 +227,33 @@ export default function GestionServices({ id }) {
 
   // funtion pour supprimer les services
   const supprimerService = async (id) => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/service/supprimer/${id}`
-      );
-      if (response.status === 200) {
-        // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
-        const updatedServices = services.filter((service) => service.id !== id);
-
-        setServices(updatedServices);
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Catégorie supprimée avec succès!",
-        });
-      } else {
-        console.error("Erreur lors de la suppression de la catégorie");
+      if (token || role==="admin"){
+        
+        const response = await axios.delete(
+          `http://localhost:8000/api/service/supprimer/${id}`,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+          const updatedServices = services.filter((service) => service.id !== id);
+  
+          setServices(updatedServices);
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Catégorie supprimée avec succès!",
+          });
+        } else {
+          console.error("Erreur lors de la suppression de la catégorie");
+        }
       }
     } catch (error) {}
   };

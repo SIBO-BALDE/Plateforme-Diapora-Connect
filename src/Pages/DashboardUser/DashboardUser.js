@@ -18,7 +18,7 @@ export default function DashboardUser() {
   useEffect(() => {
     // Récupérez le token et le role  du localStorage
        const token = localStorage.getItem('tokencle')
-       const role = localStorage.getItem("rolecle");;
+       const role = localStorage.getItem("rolecle");
 
     // Si le token ou le role  existe, faites une requête à l'API pour récupérer les informations de l'utilisateur 
     if (token || role) {

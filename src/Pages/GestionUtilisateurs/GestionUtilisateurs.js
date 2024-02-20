@@ -71,33 +71,41 @@ export default function GestionUtilisateurs() {
 //  function pour bloquer un user
  
 const handleBloquer = async (userId) => {
+  const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
   try {
-    const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
-      isBlocked: !userLists.find((user) => user.id === userId).bloque,
-      // const userToBlock = userLists.find((user) => user.id === userId);
-      // const isBlocked = !userToBlock.bloque;
-    });
-
-    if (response.status === 200) {
-      setUserLists((prevUsers) =>
-        prevUsers.filter((user) => user.id !== userId)
-      );
-
-      if (!userLists.find((user) => user.id === userId).bloque) {
-        setBlockedUsers((prevBlockedUsers) => [
-          ...prevBlockedUsers,
-          userLists.find((user) => user.id === userId),
-        ]);
-        setDisabledButtons((prevDisabledButtons) => [...prevDisabledButtons, userId]);
-      } else {
-        setBlockedUsers((prevBlockedUsers) =>
-          prevBlockedUsers.filter((user) => user.id !== userId)
-        );
+    if (token || role==="admin"){
+      const response = await axios.put(`http://localhost:8000/api/user/bloquer/${userId}`, {
+        isBlocked: !userLists.find((user) => user.id === userId).bloque,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        
       }
 
-      saveBlockedUsersToStorage();
-    } else {
-      console.error('Erreur lors de la mise à jour du statut de blocage');
+      );
+  
+      if (response.status === 200) {
+        setUserLists((prevUsers) =>
+          prevUsers.filter((user) => user.id !== userId)
+        );
+  
+        if (!userLists.find((user) => user.id === userId).bloque) {
+          setBlockedUsers((prevBlockedUsers) => [
+            ...prevBlockedUsers,
+            userLists.find((user) => user.id === userId),
+          ]);
+          setDisabledButtons((prevDisabledButtons) => [...prevDisabledButtons, userId]);
+        } else {
+          setBlockedUsers((prevBlockedUsers) =>
+            prevBlockedUsers.filter((user) => user.id !== userId)
+          );
+        }
+  
+        saveBlockedUsersToStorage();
+      } else {
+        console.error('Erreur lors de la mise à jour du statut de blocage');
+      }
     }
   } catch (error) {
     console.error('Erreur réseau', error);

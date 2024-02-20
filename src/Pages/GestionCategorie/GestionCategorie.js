@@ -29,7 +29,7 @@ export default function GestionCategorie() {
   };
 
   // recherche champ input
-  const [searchValue, setSearchValue] = useState('');
+  const [searchValue, setSearchValue] = useState("");
 
   // etat pour ajout categorie
   const [categoryData, setCategoryData] = useState({
@@ -49,30 +49,40 @@ export default function GestionCategorie() {
 
   // function pour ajouter une categorie
   const ajouterCategory = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem("tokencle");
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/categorie/create",
-        categoryData
-      );
+      if (token || role === "admin") {
+        const response = await axios.post(
+          "http://localhost:8000/api/categorie/create",
 
-      // Vérifiez si la requête a réussi
-      if (response.status === 200) {
-        // Ajoutez la nouvelle maison à la liste existante
-        setCategories([...categories, response.data]);
-        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
-        setCategoryData({
-          titre: "",
-          description: "",
-        });
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "categorie ajouter avec succée!",
-        });
-        // Fermez le modal
-        handleCloseCategories();
-      } else {
-        console.error("Erreur dans lajout de maison");
+          categoryData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Vérifiez si la requête a réussi
+        if (response.status === 200) {
+          // Ajoutez la nouvelle maison à la liste existante
+          setCategories([...categories, response.data]);
+          // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+          setCategoryData({
+            titre: "",
+            description: "",
+          });
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "categorie ajouter avec succée!",
+          });
+          // Fermez le modal
+          handleCloseCategories();
+        } else {
+          console.error("Erreur dans lajout de maison");
+        }
       }
     } catch (error) {
       // Gestion des erreurs Axios
@@ -82,14 +92,22 @@ export default function GestionCategorie() {
   //  Lister les categories
   useEffect(() => {
     const fetchCategories = async () => {
+      const role = localStorage.getItem("rolecle");
+      const token = localStorage.getItem("tokencle");
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/categorie/liste"
-        );
-        // setCategories(response.categories);
-        setCategories(response.data.categories);
+        if (token || role === "admin") {
+          const response = await axios.get(
+            "http://localhost:8000/api/categorie/liste",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setCategories(response.data.categories);
 
-        console.log(categories);
+          console.log(categories);
+        }
       } catch (error) {
         console.error("Erreur lors de la récupération des catégories:", error);
       }
@@ -99,27 +117,37 @@ export default function GestionCategorie() {
 
   // Fonction pour mettre à jour une catégorie
   const modifierCategory = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem("tokencle");
     try {
-      const response = await axios.put(
-        `http://localhost:8000/api/categorie/edit/${editCategoryData.id}`,
-        editCategoryData
-      );
-
-      if (response.status === 200) {
-        const updatedCategories = categories.map((category) =>
-          category.id === editCategoryData.id
-            ? response.data.categorie
-            : category
+      if (token || role === "admin") {
+          const response = await axios.post(
+          `http://localhost:8000/api/categorie/edit/${editCategoryData.id}`,
+          editCategoryData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        setCategories(updatedCategories);
-        handleCloseEditCategories();
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Catégorie mise à jour avec succès!",
-        });
-      } else {
-        console.error("erreur lors de la modification de la catégorie");
+
+        if (response.status === 200) {
+          const updatedCategories = categories.map((category) =>
+            category.id === editCategoryData.id
+              ? response.data.categorie
+              : category
+          );
+          setCategories(updatedCategories);
+          handleCloseEditCategories();
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Catégorie mise à jour avec succès!",
+          });
+        } else {
+          console.error("erreur lors de la modification de la catégorie");
+        }
       }
     } catch (error) {
       console.error("une erreur  Axios:", error);
@@ -128,141 +156,156 @@ export default function GestionCategorie() {
 
   // Function pour supprimer une catégorie
   const supprimerCategory = async (id) => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem("tokencle");
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/categorie/supprimer/${id}`
-      );
-      if (response.status === 200) {
-        // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
-        const updatedCategories = categories.filter(
-          (category) => category.id !== id
+      if (token || role === "admin"){
+        const response = await axios.delete(
+          `http://localhost:8000/api/categorie/supprimer/${id}`,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-
-        setCategories(updatedCategories);
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Catégorie supprimée avec succès!",
-        });
-      } else {
-        console.error("Erreur lors de la suppression de la catégorie");
+        if (response.status === 200) {
+          // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+          const updatedCategories = categories.filter(
+            (category) => category.id !== id
+          );
+  
+          setCategories(updatedCategories);
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Catégorie supprimée avec succès!",
+          });
+        } else {
+          console.error("Erreur lors de la suppression de la catégorie");
+        }
       }
     } catch (error) {}
   };
 
+  // recherche
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
+  };
 
-// recherche
-const handleSearchChange = (event) => {
-  setSearchValue(event.target.value);
-};
+  const filteredCategories = categories.filter(
+    (categorie) =>
+      categorie &&
+      categorie.titre &&
+      categorie.titre.toLowerCase().includes(searchValue.toLowerCase())
+  );
+  const displayCategories =
+    searchValue === "" ? categories : filteredCategories;
 
-const filteredCategories = categories.filter((categorie) =>
-categorie.titre && categorie.titre.toLowerCase().includes(searchValue.toLowerCase())
-);
-const displayCategories = searchValue === '' ? categories : filteredCategories;
+  // pour la pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const categoriesParPage = 4;
 
+  // pagination
+  const indexOfLastCategorie = currentPage * categoriesParPage;
+  const indexOfFirstCategorie = indexOfLastCategorie - categoriesParPage;
+  const currentCategories = filteredCategories.slice(
+    indexOfFirstCategorie,
+    indexOfLastCategorie
+  );
 
-// pour la pagination
-const [currentPage, setCurrentPage] = useState(1);
-const categoriesParPage = 6;
+  const totalPaginationPages = Math.ceil(categories.length / categoriesParPage);
 
-// pagination
-const indexOfLastCategorie = currentPage * categoriesParPage;
-const indexOfFirstCategorie = indexOfLastCategorie - categoriesParPage;
-const currentCategories = filteredCategories.slice(indexOfFirstCategorie, indexOfLastCategorie);
-
-const totalPaginationPages = Math.ceil(categories.length /categoriesParPage);
-
-// etat pour faire la validation des champs
-const [errors, setErrors] = useState({
-  titre: "",
-  description: "",
-});
-
-const [successeds, setSuccesseds] = useState({
-  titre: "",
-  description: "",
-});
-
-const [validationStatus, setValidationStatus] = useState(false);
-
-// funtion pour verifier si les champs sont valides ou pas
-const validateField = (name, value) => {
-  // Ajoutez vos conditions de validation pour chaque champ
-  let errorMessage = "";
-  let successMessage = "";
-
-  if (name === "titre") {
-    if (!value.trim()) {
-      errorMessage = "Le titre ne peut pas être vide";
-    } else if (value.trim().length < 2) {
-      errorMessage = "Le titre doit contenir au moins deux lettres";
-    } else {
-      successMessage = "L'adresse est valide";
-    }
-  }  
-  // Mettez à jour le state en utilisant le nom du champ actuel
-  setErrors((prevErrors) => ({
-    ...prevErrors,
-    [name]: errorMessage,
-  }));
-  setSuccesseds((prevSuccess) => ({
-    ...prevSuccess,
-    [name]: successMessage,
-  }));
-
-  const isValid = Object.values(errors).every((error) => !error);
-  setValidationStatus(isValid);
-};
-
- // femer annuler la modificacion
- const handleCancleEdit = () => {
-  Swal.fire({
-    title: "Vous etes sur?",
-    text: "De vouloir annuler!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#D46F4D",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Oui, je veux annuler!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        title: "Annulé!",
-        text: "Votre requete a été annulée avec succée.",
-        icon: "success",
-      });
-    }
+  // etat pour faire la validation des champs
+  const [errors, setErrors] = useState({
+    titre: "",
+    description: "",
   });
-  handleCloseEditCategories();
-  setErrors({});
-  setSuccesseds({});
-  setValidationStatus(false);
-};
- // annuler l'ajout
- const handleCancleAdd = () => {
-  Swal.fire({
-    title: "Vous etes sur?",
-    text: "De vouloir annuler!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#D46F4D",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Oui, je veux annuler!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        title: "Annulé!",
-        text: "Votre requete a été annulée avec succée.",
-        icon: "success",
-      });
-    }
+
+  const [successeds, setSuccesseds] = useState({
+    titre: "",
+    description: "",
   });
-  handleCloseCategories()
-  setErrors({});
-  setSuccesseds({});
-  setValidationStatus(false);
-};
+
+  const [validationStatus, setValidationStatus] = useState(false);
+
+  // funtion pour verifier si les champs sont valides ou pas
+  const validateField = (name, value) => {
+    // Ajoutez vos conditions de validation pour chaque champ
+    let errorMessage = "";
+    let successMessage = "";
+
+    if (name === "titre") {
+      if (!value.trim()) {
+        errorMessage = "Le titre ne peut pas être vide";
+      } else if (value.trim().length < 2) {
+        errorMessage = "Le titre doit contenir au moins deux lettres";
+      } else {
+        successMessage = "L'adresse est valide";
+      }
+    }
+    // Mettez à jour le state en utilisant le nom du champ actuel
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: errorMessage,
+    }));
+    setSuccesseds((prevSuccess) => ({
+      ...prevSuccess,
+      [name]: successMessage,
+    }));
+
+    const isValid = Object.values(errors).every((error) => !error);
+    setValidationStatus(isValid);
+  };
+
+  // femer annuler la modificacion
+  const handleCancleEdit = () => {
+    Swal.fire({
+      title: "Vous etes sur?",
+      text: "De vouloir annuler!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#D46F4D",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, je veux annuler!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Annulé!",
+          text: "Votre requete a été annulée avec succée.",
+          icon: "success",
+        });
+      }
+    });
+    handleCloseEditCategories();
+    setErrors({});
+    setSuccesseds({});
+    setValidationStatus(false);
+  };
+  // annuler l'ajout
+  const handleCancleAdd = () => {
+    Swal.fire({
+      title: "Vous etes sur?",
+      text: "De vouloir annuler!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#D46F4D",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Oui, je veux annuler!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Annulé!",
+          text: "Votre requete a été annulée avec succée.",
+          icon: "success",
+        });
+      }
+    });
+    handleCloseCategories();
+    setErrors({});
+    setSuccesseds({});
+    setValidationStatus(false);
+  };
 
   return (
     <div className="container">
@@ -307,7 +350,7 @@ const validateField = (name, value) => {
         </div>
       </div>
       <div className="mt-4 ms-3  me-3">
-      <h3>Liste des categories</h3>
+        <h3>Liste des categories</h3>
         <table className="table border  border-1">
           <thead
             className=""
@@ -367,11 +410,10 @@ const validateField = (name, value) => {
           </tbody>
         </table>
         <Pagination
-         currentPage={currentPage}
-         totalPaginationPages={totalPaginationPages}
-         setCurrentPage={setCurrentPage}
-         
-         />
+          currentPage={currentPage}
+          totalPaginationPages={totalPaginationPages}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
 
       {/* modal debut  ajouter maison*/}
@@ -393,22 +435,19 @@ const validateField = (name, value) => {
                 <Form.Label>Titre</Form.Label>
                 <Form.Control
                   value={categoryData.titre}
-                  onChange={(e) =>
-                    {
-
-                      setCategoryData({ ...categoryData, titre: e.target.value })
-                      validateField("titre", e.target.value);
-                    }
-                  }
+                  onChange={(e) => {
+                    setCategoryData({ ...categoryData, titre: e.target.value });
+                    validateField("titre", e.target.value);
+                  }}
                   type="text"
                   placeholder=""
                 />
-                 {errors.titre && (
-                    <p className="error-message">{errors.titre}</p>
-                  )}
-                  {successeds.titre && (
-                    <p className="success-message">{successeds.titre}</p>
-                  )}
+                {errors.titre && (
+                  <p className="error-message">{errors.titre}</p>
+                )}
+                {successeds.titre && (
+                  <p className="success-message">{successeds.titre}</p>
+                )}
               </Form.Group>
 
               <Form.Group
@@ -431,10 +470,27 @@ const validateField = (name, value) => {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={ajouterCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
+            <Button
+              variant="secondary"
+              onClick={ajouterCategory}
+              style={{
+                backgroundColor: "#D46F4D",
+                border: "none",
+                width: "130px",
+              }}
+            >
               Ajouter
             </Button>
-            <Button variant="primary" onClick={handleCancleAdd}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}} >
+            <Button
+              variant="primary"
+              onClick={handleCancleAdd}
+              style={{
+                backgroundColor: "#fff",
+                border: "1px solid #D46F4D",
+                width: "130px",
+                color: "#D46F4D",
+              }}
+            >
               Fermer
             </Button>
           </Modal.Footer>
@@ -487,10 +543,27 @@ const validateField = (name, value) => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={modifierCategory} style={{backgroundColor:'#D46F4D', border:'none', width:'130px'}}>
+          <Button
+            variant="secondary"
+            onClick={modifierCategory}
+            style={{
+              backgroundColor: "#D46F4D",
+              border: "none",
+              width: "130px",
+            }}
+          >
             Modifier
           </Button>
-          <Button variant="primary" onClick={handleCancleEdit}  style={{backgroundColor:'#fff', border:'1px solid #D46F4D' , width:'130px', color:'#D46F4D'}}>
+          <Button
+            variant="primary"
+            onClick={handleCancleEdit}
+            style={{
+              backgroundColor: "#fff",
+              border: "1px solid #D46F4D",
+              width: "130px",
+              color: "#D46F4D",
+            }}
+          >
             Fermer
           </Button>
         </Modal.Footer>

@@ -99,6 +99,10 @@ export default function GestionMaison({ id }) {
 
   const ajouterMaison = async (e) => {
     e.preventDefault();
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
+    
+
     if (validationStatus) {
       try {
         const formData = new FormData();
@@ -109,48 +113,54 @@ export default function GestionMaison({ id }) {
         formData.append("image", maisonData.image);
         formData.append("annee_construction", maisonData.annee_construction);
         formData.append("description", maisonData.description);
-        // console.log(formData, 'formData maison')
-        const response = await axios.post(
-          "http://localhost:8000/api/maison/create",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+       
+
+        if (token || role==="admin"){
+          const response = await axios.post(
+            "http://localhost:8000/api/maison/create",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (response.status === 200) {
+            setMaisons([...maisons, response.data]);
+            setMaisonData({
+              addresse: "",
+              superficie: "",
+              prix: "",
+              categories_id: "",
+              image: "",
+              annee_construction: "",
+              description: "",
+            });
+  
+            Swal.fire({
+              icon: "success",
+              title: "Succès!",
+              text: "Maison ajoutée avec succès!",
+            });
+  
+            handleCloseEdit();
+            fetchMaison();
+  
+            setErrors({});
+            setSuccesseds({});
+            setValidationStatus(false);
+          } else {
+            console.error("Erreur dans l'ajout de la maison");
           }
-        );
-
-        if (response.status === 200) {
-          setMaisons([...maisons, response.data]);
-          setMaisonData({
-            addresse: "",
-            superficie: "",
-            prix: "",
-            categories_id: "",
-            image: "",
-            annee_construction: "",
-            description: "",
-          });
-
-          Swal.fire({
-            icon: "success",
-            title: "Succès!",
-            text: "Maison ajoutée avec succès!",
-          });
-
-          handleCloseEdit();
-          fetchMaison();
-
-          setErrors({});
-          setSuccesseds({});
-          setValidationStatus(false);
-        } else {
-          console.error("Erreur dans l'ajout de la maison");
         }
+        
       } catch (error) {
         console.error("Erreur Axios:", error);
       }
-    }
+    
+  }
   };
   
   // annuler l'ajout
@@ -181,9 +191,21 @@ export default function GestionMaison({ id }) {
   
   // function pour lister les maison
   const fetchMaison = async () => {
+    const token = localStorage.getItem('tokencle')
+    const role = localStorage.getItem("rolecle");
     try {
+      if (token || role==="admin") {
+
+      }
       const response = await axios.get(
-        "http://localhost:8000/api/maison/liste"
+        "http://localhost:8000/api/maison/liste",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+
+
       );
       // console.log(response, "response");
       setMaisons(response.data.maison);
@@ -218,6 +240,8 @@ export default function GestionMaison({ id }) {
 
   // Modifier maison
   const modifierMaison = async (id) => {
+    const token = localStorage.getItem('tokencle')
+    const role = localStorage.getItem("rolecle");
     if (validationStatus) {
       try {
         {
@@ -243,38 +267,42 @@ export default function GestionMaison({ id }) {
           formData.append("description", editMaisonData.description);
           // console.log(addresse, 'address')
 
-          const response = await axios.post(
-            `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-          // console.log('Réponse du serveur après mise à jour :', response.data);
-          // console.log('Valeur de categories_id après la requête (côté client) :', response.data.maison.categories_id);
+          if (token || role==="admin"){
 
-          if (response.status === 200) {
-            const updatedMaisons = maisons.map((maison) =>
-              maison.id === editMaisonData.id ? response.data.maison : maison
+            const response = await axios.post(
+              `http://localhost:8000/api/maison/edit/${editMaisonData.id}`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  Authorization: `Bearer ${token}`
+                },
+              }
             );
-            // console.log('updatedMaisons:', updatedMaisons);
-
-            setMaisons(updatedMaisons);
-            setEditMaisonData(response.data.maison);
-            handleCloseEditMaisons();
-            Swal.fire({
-              icon: "success",
-              title: "Succès!",
-              text: "Maison mise à jour avec succès!",
-            });
-            setErrors({});
-            setSuccesseds({});
-            setValidationStatus(false);
-            // console.log('Valeur de categories_id après la requête:', editMaisonData.categories_id);
-          } else {
-            console.error("Erreur lors de la modification de la maison");
+            // console.log('Réponse du serveur après mise à jour :', response.data);
+            // console.log('Valeur de categories_id après la requête (côté client) :', response.data.maison.categories_id);
+  
+            if (response.status === 200) {
+              const updatedMaisons = maisons.map((maison) =>
+                maison.id === editMaisonData.id ? response.data.maison : maison
+              );
+              // console.log('updatedMaisons:', updatedMaisons);
+  
+              setMaisons(updatedMaisons);
+              setEditMaisonData(response.data.maison);
+              handleCloseEditMaisons();
+              Swal.fire({
+                icon: "success",
+                title: "Succès!",
+                text: "Maison mise à jour avec succès!",
+              });
+              setErrors({});
+              setSuccesseds({});
+              setValidationStatus(false);
+              // console.log('Valeur de categories_id après la requête:', editMaisonData.categories_id);
+            } else {
+              console.error("Erreur lors de la modification de la maison");
+            }
           }
         }
       } catch (error) {
@@ -309,23 +337,35 @@ export default function GestionMaison({ id }) {
   };
 
   const supprimerMaison = async (id) => {
+    const token = localStorage.getItem('tokencle')
+    const role = localStorage.getItem("rolecle");
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/maison/supprimer/${id}`
-      );
-      if (response.status === 200) {
-        // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
-        const updatedMaisons = maisons.filter((maison) => maison.id !== id);
-
-        setCategories(updatedMaisons);
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Catégorie supprimée avec succès!",
-        });
-        fetchMaison();
-      } else {
-        console.error("Erreur lors de la suppression de la catégorie");
+      if (token || role==="admin"){
+        const response = await axios.delete(
+          `http://localhost:8000/api/maison/supprimer/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+  
+  
+          
+        );
+        if (response.status === 200) {
+          // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+          const updatedMaisons = maisons.filter((maison) => maison.id !== id);
+  
+          setCategories(updatedMaisons);
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Catégorie supprimée avec succès!",
+          });
+          fetchMaison();
+        } else {
+          console.error("Erreur lors de la suppression de la catégorie");
+        }
       }
     } catch (error) {}
   };

@@ -56,6 +56,8 @@ export default function GestionTerrain(id) {
   
   // function pour ajouter une categorie
   const ajouterTerrain = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
     try {
 
       const formData = new FormData();
@@ -68,39 +70,44 @@ export default function GestionTerrain(id) {
       formData.append('description', terrainData.description);
       console.log( terrainData.image, 'image terrain verif')
       console.log(formData, 'formData maison')
-      const response = await axios.post(
-        "http://localhost:8000/api/terrain/create",
-        formData,
 
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      if (token || role==="admin"){
+
+        const response = await axios.post(
+          "http://localhost:8000/api/terrain/create",
+          formData,
+  
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        // Vérifiez si la requête a réussi
+        if (response.status === 200) {
+          // Ajoutez la nouvelle maison à la liste existante
+          setTerrains([...terrains, response.data]);
+          // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
+          setTerrainData({
+            addresse: "",
+            superficie: "",
+            prix: "",
+            image: "",
+            description: "",
+          });
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "categorie ajouter avec succée!",
+          });
+          fetchTerrains();
+          // Fermez le modal
+          handleCloseLand();
+        } else {
+          console.error("Erreur dans lajout de maison");
         }
-      );
-
-      // Vérifiez si la requête a réussi
-      if (response.status === 200) {
-        // Ajoutez la nouvelle maison à la liste existante
-        setTerrains([...terrains, response.data]);
-        // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
-        setTerrainData({
-          addresse: "",
-          superficie: "",
-          prix: "",
-          image: "",
-          description: "",
-        });
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "categorie ajouter avec succée!",
-        });
-        fetchTerrains();
-        // Fermez le modal
-        handleCloseLand();
-      } else {
-        console.error("Erreur dans lajout de maison");
       }
     } catch (error) {
       // Gestion des erreurs Axios
@@ -109,14 +116,21 @@ export default function GestionTerrain(id) {
   };
 
   const fetchTerrains = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/terrain/liste"
-      );
-      // setCategories(response.categories);
-      setTerrains(response.data.terrains);
-
-      console.log(terrains);
+      if (token || role==="admin"){
+        const response = await axios.get(
+          "http://localhost:8000/api/terrain/liste",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+            setTerrains(response.data.terrains);
+            console.log(terrains);
+      }
     } catch (error) {
       console.error("Erreur lors de la récupération des terrains:", error);
     }
@@ -162,8 +176,10 @@ export default function GestionTerrain(id) {
 
   // Fonction pour mettre à jour une terrain
   const modifierTerrain = async () => {
-    const formData = new FormData();
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
 
+    const formData = new FormData();
     console.log('Prix before adding to formData:', editTerrainData.prix);
     formData.append('id', editTerrainData.id)
       formData.append('addresse',editTerrainData.addresse);
@@ -182,42 +198,42 @@ export default function GestionTerrain(id) {
       // console.log(formData, 'formData avant ')
       // console.log(typeof(editTerrainData.prix), 'typeof ')
     try {
-      const response = await axios.post(
-        `http://localhost:8000/api/terrain/edit/${editTerrainData.id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-        );
-        console.log('formData terrain',formData)
-        console.log(response, 'response response mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-        console.log('editTerrainData terrain apres axios',editTerrainData)
-        console.log('Prix after adding to formData mis a jour:', editTerrainData.prix);
-      // console.log(editTerrainData, 'pres ')
-      // console.log(formData, ' formData pres ')
-      // console.log(editTerrainData, "this is the terrain edit");
-
-        if (response.status === 200) {
-          const updatedTerrains = terrains.map((terrain) =>
-            terrain.id === editTerrainData.id ? response.data.terrain : terrain
+      if (token || role==="admin"){
+        const response = await axios.post(
+          `http://localhost:8000/api/terrain/edit/${editTerrainData.id}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
           );
-          console.log(response.data.status, 'response status mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
-          console.log(updatedTerrains, 'updatedTerrains')
-          console.log(response.data, 'response.data')
-          console.log(response.data.terrain, 'response.data.terrains')
-
-        setTerrains(updatedTerrains);
-        // console.log(updatedTerrains, 'updatedTerrains1')
-        handleCloseEditLand();
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Terrain mise à jour avec succès!",
-        });
-      } else {
-        console.error("erreur lors de la modification de la terrain");
+          console.log('formData terrain',formData)
+          console.log(response, 'response response ')
+          console.log('editTerrainData terrain apres axios',editTerrainData)
+          console.log('Prix after adding to formData mis a jour:', editTerrainData.prix);
+  
+          if (response.status === 200) {
+            const updatedTerrains = terrains.map((terrain) =>
+              terrain.id === editTerrainData.id ? response.data.terrain : terrain
+            );
+            console.log(response.data.status, 'response status mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm')
+            console.log(updatedTerrains, 'updatedTerrains')
+            console.log(response.data, 'response.data')
+            console.log(response.data.terrain, 'response.data.terrains')
+  
+          setTerrains(updatedTerrains);
+          // console.log(updatedTerrains, 'updatedTerrains1')
+          handleCloseEditLand();
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Terrain mise à jour avec succès!",
+          });
+        } else {
+          console.error("erreur lors de la modification de la terrain");
+        }
       }
     } catch (error) {
       console.error("une erreur  Axios:", error);
@@ -226,22 +242,31 @@ export default function GestionTerrain(id) {
 
   // Function pour supprimer une terrain
   const supprimerTerrain = async (id) => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/api/terrain/supprimer/${id}`
-      );
-      if (response.status === 200) {
-        // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
-        const updatedTerrains = terrains.filter((terrain) => terrain.id !== id);
-
-        setTerrains(updatedTerrains);
-        Swal.fire({
-          icon: "success",
-          title: "Succès!",
-          text: "Terrain supprimée avec succès!",
-        });
-      } else {
-        console.error("Erreur lors de la suppression de la terrain");
+      if (token || role==="admin"){
+        const response = await axios.delete(
+          `http://localhost:8000/api/terrain/supprimer/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (response.status === 200) {
+          // Filtrez la liste des catégories pour exclure celle qui vient d'être supprimée
+          const updatedTerrains = terrains.filter((terrain) => terrain.id !== id);
+  
+          setTerrains(updatedTerrains);
+          Swal.fire({
+            icon: "success",
+            title: "Succès!",
+            text: "Terrain supprimée avec succès!",
+          });
+        } else {
+          console.error("Erreur lors de la suppression de la terrain");
+        }
       }
     } catch (error) {}
   };

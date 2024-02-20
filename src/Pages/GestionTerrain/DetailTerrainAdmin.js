@@ -16,16 +16,28 @@ export default function DetailTerrainAdmin() {
 
   useEffect(() => {
     const fetchTerrDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8000/api/terrain/detail/${id}`
-        );
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
 
-        if (response.data.terrain) {
-          setTerrainDetails(response.data.terrain);
-          console.log(response.data, "ici la reponse de detail");
-        } else {
-          console.error("La réponse de détail est undefined ou null.");
+      try {
+        if (token || role==="admin"){
+
+          const response = await axios.get(
+            `http://localhost:8000/api/terrain/detail/${id}`,
+            
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (response.data.terrain) {
+            setTerrainDetails(response.data.terrain);
+            console.log(response.data, "ici la reponse de detail");
+          } else {
+            console.error("La réponse de détail est undefined ou null.");
+          }
         }
       } catch (error) {
         console.error(

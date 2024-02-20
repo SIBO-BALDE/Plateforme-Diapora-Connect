@@ -44,16 +44,25 @@ export default function DetailMaisonAdmin() {
 
   useEffect(() => {
     const fetchMaisonDetails = async () => {
+      const token = localStorage.getItem('tokencle')
+    const role = localStorage.getItem("rolecle");
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/maison/detail/${id}`
-        );
-
-        if (response.data.maison) {
-          setMaisonDetails(response.data.maison);
-          console.log(response.data, "ici la reponse de detail");
-        } else {
-          console.error("La réponse de détail est undefined ou null.");
+        if (token || role==="admin"){
+          const response = await axios.get(
+            `http://localhost:8000/api/maison/detail/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (response.data.maison) {
+            setMaisonDetails(response.data.maison);
+            console.log(response.data, "ici la reponse de detail");
+          } else {
+            console.error("La réponse de détail est undefined ou null.");
+          }
         }
       } catch (error) {
         console.error(
