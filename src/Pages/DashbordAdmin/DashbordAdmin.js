@@ -23,20 +23,29 @@ import GestionMessage from "../../Pages/GestionMessage/GestionMessage";
 
 function KPI() {
   const [userLists, setUserLists] = useState([]);
+ 
 
   useEffect(() => {
     const fetchUsers = async () => {
+      const role = localStorage.getItem("rolecle");
+      const token = localStorage.getItem("tokencle");
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/users/liste"
-        );
-        // setCategories(response.categories);
-        setUserLists(response.data.users);
-        console.log(response, "reponse");
-
-        console.log(userLists);
+        if (token || role === "admin") {
+          const response = await axios.get(
+            "http://localhost:8000/api/users/liste"
+            , {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setUserLists(response.data.users);
+          console.log(response, "reponse");
+  
+          console.log(userLists);
+        }
       } catch (error) {
-        console.error("Erreur lors de la récupération des terrains:", error);
+        console.error("Erreur lors de la récupération des users:", error);
       }
     };
     fetchUsers();
@@ -203,18 +212,20 @@ export default function DashbordAdmin() {
   };
   const navigate = useNavigate();
   const { userRole } = useAuth();
+  const role = localStorage.getItem("rolecle");
+  const token = localStorage.getItem("tokencle");
 
   useEffect(() => {
-    // Redirigez l'utilisateur si son rôle n'est pas admin
-    if (userRole !== "admin") {
+   
+    if ( role !== "admin") {
       Swal.fire({
         icon: "error",
         title: "Oops!",
-        text: "Acces interdit, connecter vous en tant qu'admin pour avoire accée au dashboard!",
+        text: "Acces interdit, connecter vous en tant qu'admin pour avoir accée au dashboard!",
       });
-      navigate("/"); // Remplacez '/accueil' par l'URL de votre page d'accueil ou autre page
+      navigate("/"); 
     }
-  }, [userRole, navigate]);
+  }, [ role , navigate]);
 
   
 

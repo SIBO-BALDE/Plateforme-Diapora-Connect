@@ -6,6 +6,7 @@ import photo from "../../fichiers/profile.png";
 import { Button, Form, Image } from "react-bootstrap";
 import "./Auth.css";
 import axios from "axios";
+import { emailPattern} from '../../Components/Regex/Regex.js' 
 
 import { useAuth } from "../Authentification/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,12 +23,20 @@ export default function Connexion() {
     setShowPassword(!showPassword);
   };
 
+  // Function pour button connexion
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const credentials = {
-      email,
-      password,
-    };
+
+    validateField("email", email);
+    validateField("password", password);
+
+
+    if (validationStatus) {
+      const credentials = {
+        email,
+        password,
+      }};
+
     try {
       const response = await axios.post(
         "http://localhost:8000/api/auth/login",
@@ -72,6 +81,8 @@ export default function Connexion() {
       });
     }
   };
+
+  // function pour button annuler
   const handleCancel = async (e) => {
     e.preventDefault();
     Swal.fire({
@@ -95,6 +106,62 @@ export default function Connexion() {
       setPassword("");
 
   }
+
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+   
+  });
+  
+  const [successeds, setSuccesseds] = useState({
+    email: "",
+    password: "",
+  });
+  
+  const [validationStatus, setValidationStatus] = useState(false);
+  
+  // function validation
+  const validateField = (name, value) => {
+    let errorMessage = "";
+    let successMessage = "";
+   
+     if (name === "email") {
+      if (!value.trim()) {
+        errorMessage = "L'email ne peut pas être vide";
+      } else if (!emailPattern.test(email)) {
+        errorMessage = "L'email n'est pas valide";
+      } else {
+        successMessage = "L'adresse est valide";
+      }
+    }
+    else if (name === "password") {
+      if (!value.trim()) {
+        errorMessage = "Le mot de passe ne peut pas être vide";
+      } else if (value.trim().length < 7) {
+        errorMessage = "Le mot de passe doit contenir au moins 8 chaines de caracteres";
+      } else {
+        successMessage = "Le mot de passe est valide";
+      }
+    }
+    
+  
+  
+  
+    // Mettez à jour le state en utilisant le nom du champ actuel
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: errorMessage,
+    }));
+    setSuccesseds((prevSuccess) => ({
+      ...prevSuccess,
+      [name]: successMessage,
+    }));
+  
+    const isValid = Object.values(errors).every((error) => !error);
+    setValidationStatus(isValid);
+  };
+
+
 
   // mettre a jour la connexion
   // useEffect(() => {
@@ -150,16 +217,24 @@ export default function Connexion() {
             <Form.Label>Email</Form.Label><span style={{color:'red'}}>*</span>
             <Form.Control
               type="text"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>{
+                setEmail(e.target.value)
+                validateField("email", e.target.value);
+              }}
             />
+            <p style={{ color: "red" }}>{errors.email}</p>
+            <p style={{ color: "green" }}>{successeds.email}</p>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput4">
-            <Form.Label>Mot de pass</Form.Label><span style={{color:'red'}}>*</span>
+            <Form.Label>Mot de passe</Form.Label><span style={{color:'red'}}>*</span>
             <div style={{  position: 'relative'}}>
             <Form.Control
               type={showPassword ? 'text' : 'password'}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) =>{
+                setPassword(e.target.value)
+                validateField("password", e.target.value);
+              }}
               style={{ paddingRight: '30px' }}
             />
             <span
@@ -175,8 +250,9 @@ export default function Connexion() {
           <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
         </span>
         </div>
+        <p style={{ color: "red" }}>{errors.password}</p>
+        <p style={{ color: "green" }}>{successeds.password}</p>
           </Form.Group>
-
           <div className="btn-content-position">
             <Button type="submit" className="btn-colour">
               Se connecter

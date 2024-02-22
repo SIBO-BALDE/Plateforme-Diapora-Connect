@@ -69,7 +69,6 @@ export default function GestionUtilisateurs() {
 
 
 //  function pour bloquer un user
- 
 const handleBloquer = async (userId) => {
   const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem('tokencle')

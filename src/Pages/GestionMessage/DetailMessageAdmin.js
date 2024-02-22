@@ -12,7 +12,10 @@ export default function DetailMessageAdmin() {
   // tableau ou stocker la liste des messages
   const [messages, setMessages] = useState([]);
   const [messageDetails, setMessageDetails] = useState({});
+
+
   const fetchMessage = async () => {
+   
     const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem("tokencle");
 

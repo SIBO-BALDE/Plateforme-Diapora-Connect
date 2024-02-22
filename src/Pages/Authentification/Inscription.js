@@ -32,6 +32,7 @@ export default function Inscription() {
   
 
   const handleSubmit = async (e)=>{
+    
     e.preventDefault();
     if (validationStatus) {
      try {

@@ -85,41 +85,53 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem("tokencle");
     
   try {
     // Utilisez votre instance Axios configurée
-    const response = await axios.post("http://localhost:8000/api/auth/logout");
-
-    if (response.status === 200) {
-      // Votre code de déconnexion réussie ici
-
-      Swal.fire({
-        title: "Etes-vous sûr ?",
-        text: "De vouloir se déconnecter!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Oui, bien sûr!"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Supprimer le token du localStorage lors de la déconnexion
-          localStorage.removeItem("token");
-
-          Swal.fire({
-            title: "Deconnexion!",
-            text: "Vous êtes déconnecté avec succès.",
-            icon: "success"
-          });
-          navigate("/connexion");
-        }
-      });
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Oops!",
-        text: "Échec de déconnexion!",
-      });
+    if (token || role === "admin"){
+      const response = await axios.post("http://localhost:8000/api/auth/logout"
+      , {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+      );
+  
+      if (response.status === 200) {
+        // Votre code de déconnexion réussie ici
+  
+        Swal.fire({
+          title: "Etes-vous sûr ?",
+          text: "De vouloir se déconnecter!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Oui, bien sûr!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Supprimer le token du localStorage lors de la déconnexion
+            // localStorage.removeItem("token");
+            localStorage.removeItem("tokencle");
+            localStorage.removeItem("rolecle");
+  
+            Swal.fire({
+              title: "Deconnexion!",
+              text: "Vous êtes déconnecté avec succès.",
+              icon: "success"
+            });
+            navigate("/connexion");
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Échec de déconnexion!",
+        });
+      }
     }
   } catch (error) {
     console.error("Erreur lors de la déconnexion :", error);

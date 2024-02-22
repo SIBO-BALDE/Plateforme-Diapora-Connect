@@ -158,7 +158,7 @@ export default function GestionTerrain(id) {
   };
 
 
-  //  etat pour modifier categorie
+  //  etat pour modifier terrain
   const [editTerrainData, setEditTerrainData] = useState({
     id: null,
     addresse: "",
@@ -282,7 +282,7 @@ export default function GestionTerrain(id) {
     const indexOfFirstTerrain = indexOfLastTerrain - terrainsParPage;
     const currentTerrains = filteredTerrains.slice(indexOfFirstTerrain, indexOfLastTerrain);
 
-const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
+    const totalPaginationPages = Math.ceil(terrains.length / terrainsParPage);
 
 // etat pour faire la validation des champs
 const [errors, setErrors] = useState({

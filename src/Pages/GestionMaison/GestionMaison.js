@@ -575,6 +575,7 @@ export default function GestionMaison({ id }) {
                     )}
 
                     {maison && <td>{maison.addresse || "N/A"}</td>}
+                    
                     <td>{maison.superficie}m2 </td>
                     <td>{maison.prix}FCFA </td>
                     <td>
