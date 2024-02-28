@@ -64,6 +64,7 @@ function App() {
         <Route path="gestionmessage" element={<GestionMessage/>}></Route>
         <Route path="pageerror" element={<PageError/>}></Route>
         <Route path="detailmessageadmin/:id" element={<DetailMessageAdmin/>}></Route>
+        <Route path="*" element={<PageError/>}></Route>
         </Routes>
       </AuthProvider>
     </div>

@@ -186,8 +186,8 @@ function RenderContent(name) {
     //   return <GestionCommentaire />;
     case "gestionservices":
       return <GestionServices />;
-    // case "gestionarticle":
-    //   return <GestionArticles />;
+    case "gestionfavorie":
+      return <GestionFavorie />;
     case "gestionfavorie":
       return <GestionFavorie />;
     case "gestioncategorie":

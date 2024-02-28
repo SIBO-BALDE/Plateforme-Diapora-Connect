@@ -49,34 +49,25 @@ const links = [
     text: "Gestion Services",
     icon: faGear,
   },
-  // {
-  //   path: "gestioncommenentaire",
-  //   text: "Gestion Commentaire",
-  //   icon: faComment,
-  // },
-  // {
-  //   path: "gestionarticle",
-  //   text: "Gestion Articles",
-  //   icon: faFile,
-  // },
+  
   {
     path: "gestioncategorie",
     text: "Gestion Catégories",
     icon: faLayerGroup,
   },
-  // {
-  //   // path: "gestionfavorie",
-  //   // text: "Gestion Favoris",
-  //   // icon: faHeart,
-  // },
+  {
+    path: "gestionfavorie",
+    text: "Gestion Témoignages",
+    icon: faHeart,
+  },
   {
     path: "gestionnewletter",
-    text: "Gestion New Letter",
+    text: "Gestion Newsletters",
     icon: faEnvelope,
   },
   {
     path: "gestionmessage",
-    text: "Gestion Contact",
+    text: "Gestion Contacts",
     icon: faMessage,
   },
 ];
@@ -107,7 +98,7 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
           text: "De vouloir se déconnecter!",
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#3085d6",
+          confirmButtonColor: "#D46F4D",
           cancelButtonColor: "#d33",
           confirmButtonText: "Oui, bien sûr!"
         }).then((result) => {
@@ -154,8 +145,8 @@ export default function SideBars({ isOpen, name, handleChangePath }) {
         <div id="content-try-content">
           {links.map((link, index) => (
             <div key={index}
-              className={`contentlink mt-4 ${
-                name === link.path && "active text-light"
+              className={`contentlink mt-3 ${
+                name === link.path && "activeclassbar text-light"
               }`}
             >
               <FontAwesomeIcon icon={link.icon} className="ms-2" />

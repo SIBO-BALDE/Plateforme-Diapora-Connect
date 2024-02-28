@@ -58,6 +58,16 @@ export default function GestionTerrain(id) {
   const ajouterTerrain = async () => {
     const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem('tokencle')
+    if(terrainData.addresse === "" || terrainData.superficie === "" || terrainData.prix === "" 
+    || terrainData.image === "" 
+     || terrainData.description === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "les champs sont  obligatoires!",
+      });
+      return
+    }
     try {
 
       const formData = new FormData();

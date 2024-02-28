@@ -51,6 +51,15 @@ export default function GestionCategorie() {
   const ajouterCategory = async () => {
     const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem("tokencle");
+  
+    if(categoryData.titre === "" ||categoryData.description === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "les champs sont  obligatoires!",
+      });
+      return
+    }
     try {
       if (token || role === "admin") {
         const response = await axios.post(

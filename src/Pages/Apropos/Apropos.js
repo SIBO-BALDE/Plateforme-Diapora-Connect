@@ -5,6 +5,7 @@ import Underline from '../../Components/Underline/Underline'
 import { Image } from 'react-bootstrap'
 import banpropos from '../../fichiers/bann _about.png'
 import photo1 from '../../fichiers/bann accueil.jpeg'
+// import photo2 from '../../fichiers/maison2.png'
 
 import './Apropos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

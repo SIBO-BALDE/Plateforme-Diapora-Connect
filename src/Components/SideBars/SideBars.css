@@ -29,7 +29,7 @@ body {
   margin-top: 25px;
 }
 
-.active {
+.activeclassbar {
   background-color: var(--principal) !important;
   /* color: #fff !important; */
 }

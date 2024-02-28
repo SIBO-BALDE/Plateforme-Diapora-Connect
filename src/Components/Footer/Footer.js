@@ -9,6 +9,7 @@ import axios from 'axios';
 import './Footer.css';
 import { Button, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { faCopyright } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -21,38 +22,42 @@ export default function Footer() {
   });
   const [emailVal, setEmailVal] = useState([]);
 
-  // const handleEmailChange = (e) => {
-  //   setEmail(e.target.value);
-  // };
-
-  // const handleSubscribe = async (e) => {
-  //   e.preventDefault();
-  //   // Envoyer la requête POST vers votre backend avec l'email en utilisant Axios
-  //  await axios.post('http://votre-backend.com/newsletter/create', { email })
-  //     .then(response => {
-  //       // Gérer la réponse du backend (par exemple, afficher un message de succès)
-  //       console.log('Réponse du backend:', response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error('Erreur lors de l\'envoi de la newsletter:', error);
-  //     });
-  // };
+ 
   const handleSubscribe = async () => {
+
     try {
+      
       const response = await axios.post(
         "http://localhost:8000/api/newsletter/create",
         emailData
       );
+     if (response.data.status_code === 422) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Email obligatoire!",
+        });
+        setEmailData('')
+        return
+      }
+      if (response.data.status === "error") {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Email existe déja!",
+          });
+          setEmailData('')
+          return
+        }
+      
 
       // Vérifiez si la requête a réussi
-      if (response.status === 200) {
+      else if (response.status === 200) {
         // Ajoutez la nouvelle maison à la liste existante
         setEmailVal([...emailVal, response.data]);
         // Réinitialisez les valeurs du formulaire après avoir ajouté la maison
-        setEmailData({
-          email: "",
-          
-        });
+        console.log(response.data, 'response.status footer')
+        setEmailData({email: "" });
         Swal.fire({
           icon: "success",
           title: "Succès!",
@@ -72,7 +77,7 @@ export default function Footer() {
 
 
   return (
-<div>
+    <div>
 <footer className='mt-5'>
   <div className="Footer_Container">
    <br /> <br />
@@ -129,22 +134,22 @@ export default function Footer() {
       </div>
       <div>
         <h3>FAQ</h3>
-        <p>Qui sommes nous ?</p>
+        <Link to={'/a-propos'}><p>Qui sommes nous ?</p></Link>
         <p>FAQ</p>
       </div>
       <div>
         <h3>Autre</h3>
         <p><Link to={'/mentionlegal'}>Mention Légale</Link></p>
         <p><Link to={'/confidentialite'}>Confidentialité</Link></p>
-        <p><Link to={'conditionutiliation'}>Condition d'utilisation</Link></p>
+        <p><Link to={'/conditionutiliation'}>Condition d'utilisation</Link></p>
       </div>
     </div>
     <br />  <br />
     <hr  className='reference'/>
-    <p className="Copyright">Copyright &nbsp;<i className="fa-solid fa-copyright"></i> &nbsp;2023 Diaspora-Connect</p>
+    <p className="Copyright">Copyright &nbsp;<FontAwesomeIcon icon={faCopyright} /> &nbsp;2023 Diaspora-Connect</p>
     <br />
   </div>
 </footer>
-</div>
-  )
+    </div>
+    )
 }

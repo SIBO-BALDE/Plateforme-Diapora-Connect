@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './NavbarAccueil.css'; 
 import { Image } from 'react-bootstrap';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
@@ -14,6 +14,8 @@ import logo from '../../../fichiers/logo.png'
 import ButtonLogin from '../../Buttons/ButtonLogin/ButtonLogin';
 import ButtonLogOut from '../../Buttons/ButtonLogOut/ButtonLogOut';
 import { useAuth } from '../../../Pages/Authentification/AuthContext';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 
 
@@ -23,8 +25,7 @@ import { useAuth } from '../../../Pages/Authentification/AuthContext';
 
 export default function NavbarAccueil() {
   // const [isAuthenticated, setIsAuthenticated]=useState(false)
-  const { isAuthenticated, login, logout } = useAuth();
-  const [showLoginButton, setShowLoginButton] = useState(false);
+
       
   // État pour suivre le lien actif
   const [linkActive, setLinkActive] = useState('');
@@ -33,6 +34,9 @@ export default function NavbarAccueil() {
   //l'objet de localisation qui contient des informations sur l'URL actuelle
   const location = useLocation();
   const locationBtn = useLocation();
+
+  const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem('tokencle')
 
   useEffect(() => {
     // Mise à jour de l'état lorsque l'emplacement (route) change
@@ -45,29 +49,64 @@ export default function NavbarAccueil() {
     setLinkButtonActive(locationBtn .pathname);
   }, [locationBtn]);
 
-
-  const handleLogin = async () => {
-    try {
-      login();
-    } catch (error) {
-      console.log(error.message, 'voici lerreur');
-    }
-  };
-
   const handleLogout = async () => {
-    try {
-      // Votre code de déconnexion ici
-      // ...
+    const role = localStorage.getItem("rolecle");
+    const token = localStorage.getItem("tokencle");
+    // const navigate = useNavigate()
+    
+  try {
+    if (token || role ==='user' ){
+      const response = await axios.post("http://localhost:8000/api/auth/logout",
+      {},
+       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+      );
+  
+      if (response.status === 200) {
+        // Votre code de déconnexion réussie ici
+        console.log(response, 'response logout home')
+  
+        Swal.fire({
+          title: "Etes-vous sûr ?",
+          text: "De vouloir se déconnecter!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#D46F4D",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Oui, bien sûr!"
+        }).then((result) => {
+          if (result.isConfirmed) {
 
-      // Supprimer le token du localStorage lors de la déconnexion
-      localStorage.removeItem("token");
-
-      // Mettre à jour l'état d'authentification
-      logout();
-    } catch (error) {
-      console.error("Erreur lors de la déconnexion :", error);
+            // Supprimer le token et le role  du localStorage lors de la déconnexion
+            localStorage.removeItem("tokencle");
+            localStorage.removeItem("rolecle");
+  
+            Swal.fire({
+              title: "Deconnexion!",
+              text: "Vous êtes déconnecté avec succès.",
+              icon: "success"
+            });
+            // navigate("/connexion");
+          }
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops!",
+          text: "Échec de déconnexion!",
+        });
+      }
     }
-  };
+  } catch (error) {
+    console.error("Erreur lors de la déconnexion :", error);
+    
+  }
+};
+
+  
 
 
 
@@ -105,15 +144,7 @@ export default function NavbarAccueil() {
             
             
                 </Nav>
-                  {!isAuthenticated && (
-                  <ButtonLogOut  onClick={handleLogin} />
-           
-                  )}
-                {/* Afficher le bouton de déconnexion si l'utilisateur est authentifié */}
-                  {isAuthenticated && (
-                  <ButtonLogin  onClick={handleLogout} />
-         
-                  )}
+                {token || role==='user' ? <ButtonLogOut handleLogout={handleLogout} /> : <ButtonLogin />}
                   </Navbar.Collapse>
               </Container>
             </Navbar>

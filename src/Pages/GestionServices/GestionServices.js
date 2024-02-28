@@ -48,6 +48,16 @@ export default function GestionServices({ id }) {
   const ajouterService = async () => {
     const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem('tokencle')
+    if(serviceData.titre === "" 
+    || serviceData.image === "" 
+     || serviceData.description === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "les champs sont  obligatoires!",
+      });
+      return
+    }
     try {
       const formData = new FormData();
       formData.append('titre', serviceData.titre);

@@ -105,6 +105,17 @@ export default function GestionNewsLetter() {
   const handleAddArticle = async ()=>{
     const role =localStorage.getItem("rolecle")
     const token = localStorage.getItem("tokencle")
+
+    if(newLetterData.titre === "" 
+    || newLetterData.image === "" 
+     || newLetterData.description === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "les champs sont  obligatoires!",
+      });
+      return
+    }
     const formData= new FormData();
     formData.append('id', newLetterData.id)
     formData.append('titre', newLetterData.titre)
@@ -201,9 +212,9 @@ export default function GestionNewsLetter() {
                 Email
               </th>
               <th style={{ backgroundColor: "#d46f4d", color: "#fff" }}>
-                Date creation
+                Date d'abonnement 
               </th>
-              <th
+              {/* <th
                 className="d-flex  justify-content-center "
                 style={{
                   backgroundColor: "#d46f4d",
@@ -212,7 +223,7 @@ export default function GestionNewsLetter() {
                 }}
               >
                 Action
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -222,7 +233,7 @@ export default function GestionNewsLetter() {
                 <td style={{ color: "black" }}>
                   {formatDate(emailValue.created_at)}
                 </td>
-                <td className="d-flex justify-content-evenly">
+                {/* <td className="d-flex justify-content-evenly">
                   <Button
                     variant="primary"
                     onClick={handleShowOne}
@@ -235,7 +246,7 @@ export default function GestionNewsLetter() {
                   >
                     <FontAwesomeIcon icon={faShare} />
                   </Button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>

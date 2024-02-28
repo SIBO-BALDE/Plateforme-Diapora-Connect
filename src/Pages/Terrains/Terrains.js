@@ -93,7 +93,9 @@ const indexOfLastTerrain = currentPage * terrainsParPage;
         <div>
           <Image src={banland1}  id='imgbanland'/>
         </div>
+        <div className='mt-5'>
         <Underline text='Nos offre de terrains' />
+        </div>
         <ButtonWatshapp />
         
         <div className='container'>

@@ -101,6 +101,16 @@ export default function GestionMaison({ id }) {
     e.preventDefault();
     const role = localStorage.getItem("rolecle");
     const token = localStorage.getItem('tokencle')
+    if(maisonData.addresse === "" || maisonData.superficie === "" || maisonData.prix === "" 
+    || maisonData.categories_id === "" || maisonData.image === "" || maisonData.annee_construction === ""
+     || maisonData.description === ""){
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "les champs sont  obligatoires!",
+      });
+      return
+    }
     
 
     if (validationStatus) {
@@ -517,7 +527,7 @@ export default function GestionMaison({ id }) {
         </div>
       </div>
       <div className="mt-4 ms-3  me-3">
-        <h3>Liste des</h3>
+        <h3>Liste des maisons</h3>
         <table className="table border  border-1">
           <thead
             className=""

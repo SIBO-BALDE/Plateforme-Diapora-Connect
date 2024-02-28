@@ -5,15 +5,9 @@ import { useNavigate } from 'react-router-dom';
 export default function ButtonLogin({ onLogin }) {
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    try {
-      
-      onLogin();
-
-      navigate("/connexion");
-    } catch (error) {
-      console.log(error.message, 'voici lerreur');
-    }
+  const handleLogin = async (e) => {
+    navigate('connexion')
+    
   };
   
        

@@ -14,6 +14,7 @@ import { faEnvelope, faPhone, faQuestion, faVoicemail } from '@fortawesome/free-
 import ButtonWatshapp from '../../Components/Buttons/BouttonWatshapp/ButtonWatshapp'
 import Swal from 'sweetalert2'
 import axios from 'axios'
+import { emailPattern} from '../../Components/Regex/Regex.js' 
 
 export default function Contacts() {
 
@@ -26,6 +27,24 @@ export default function Contacts() {
       
       const ajouterMessage = async (e) => {
         e.preventDefault();
+
+        if(messageData.email === "" || messageData.message === ""){
+          Swal.fire({
+            icon: "error",
+            title: "Oops!",
+            text: "les champs sont  obligatoires!",
+          });
+          return
+        }
+        if (!emailPattern.test(messageData.email)){
+          Swal.fire({
+            icon: "error",
+            title: "Oops!",
+            text: "L'email  invalide!",
+          });
+          return
+          
+        }
         
         try {
             const response = await axios.post(
